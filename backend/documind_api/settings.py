@@ -8,6 +8,7 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = os.getenv("DJANGO_DEBUG", "0") == "1"
 DEMO_READONLY = os.getenv("DOCUMIND_DEMO_READONLY", "0") == "1"
+DOCUMIND_AI_ENABLED = (os.getenv("DOCUMIND_AI_ENABLED", "0") == "1" and not DEMO_READONLY)
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "")
 if not SECRET_KEY:
     if DEBUG or "test" in sys.argv:
@@ -94,14 +95,15 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 20,
     "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.AnonRateThrottle",
                                  "rest_framework.throttling.UserRateThrottle"],
-    "DEFAULT_THROTTLE_RATES": {"anon": "120/hour", "user": "600/hour"},
+    "DEFAULT_THROTTLE_RATES": {"anon": "120/hour", "user": "600/hour", "rag": "10/min"},
 }
 SPECTACULAR_SETTINGS = {
-    "TITLE": "DocuMind API D1/D2",
+    "TITLE": "DocuMind API D1-D4",
     "DESCRIPTION": (
         "Render public: D1 synthetic read-only metadata, no pipeline running. "
         "Local: D2 PDF/CSV/XLSX ingestion, quality and provenance, with optional Airflow. "
-        "Metabase and AI are not implemented."
+        "D3 Metabase BI is local. D4 local-only RAG via Ollama/ChromaDB is enabled "
+        "only on the separate optional AI service; Render demo stays D1 read-only."
     ),
-    "VERSION": "0.2.0",
+    "VERSION": "0.4.0",
 }

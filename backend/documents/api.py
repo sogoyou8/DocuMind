@@ -17,6 +17,8 @@ from .serializers import (
     ProcessOptionsSerializer, ProcessResultSerializer,
     ProcessingRunSerializer, ExtractedRecordSerializer,
     QualityIssueSerializer, InvoiceSerializer,
+    AskDocumentSerializer, AssistantAnswerSerializer,
+    AssistantStatusSerializer, IndexResultSerializer,
 )
 
 def home(request):
@@ -48,7 +50,8 @@ def health(request):
 def overview(request):
     if not settings.DEMO_READONLY and not request.user.is_authenticated:
         raise PermissionDenied()
-    records = Document.objects.all()
+    records = (Document.objects.filter(source=Document.Source.DEMO)
+               if settings.DEMO_READONLY else Document.objects.all())
     return Response({
         "mode": "synthetic-demo" if settings.DEMO_READONLY else "local",
         "total": records.count(),
@@ -58,13 +61,19 @@ def overview(request):
             Document.State.ACCEPTED, Document.State.INDEXED
         ]).count(),
         "airflow_enabled": False,
-        "ai_enabled": False,
-        "note": "D1 metadata only; no actual PDF extraction or AI.",
+        "ai_enabled": bool(settings.DOCUMIND_AI_ENABLED and not settings.DEMO_READONLY),
+        "note": "Render: fictional D1 metadata only. Local D2/D3 and optional D4 service.",
     })
 
 class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     permission_classes = [DocumentPermission]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if settings.DEMO_READONLY:
+            return qs.filter(source=Document.Source.DEMO)
+        return qs
     http_method_names = ["get", "post", "head", "options"]
 
     def get_serializer_class(self):
@@ -92,6 +101,28 @@ class DocumentViewSet(viewsets.ModelViewSet):
         description="D2 local : traitement idempotent d'un document déjà importé. "
                     "Un rejeu volontaire exige force=true. Interdit sur la démo Render.",
     )
+
+    @extend_schema(
+        request=None,
+        responses={200: IndexResultSerializer},
+        description="D4 local uniquement : indexe un document D2 valide vers Chroma/Ollama. "
+                    "Requiert rôle opérateur/admin, interdit sur Render.",
+    )
+    @action(detail=True, methods=["post"], url_path="index")
+    def index(self, request, pk=None):
+        from .rag.security import require_d4
+        require_d4()
+        document = self.get_object()
+        from .rag.indexer import index_document, IndexNotAllowed
+        from .rag.ollama import LocalModelUnavailable
+        try:
+            result = index_document(document.id)
+        except IndexNotAllowed as exc:
+            raise ValidationError({"document": str(exc)}) from exc
+        except LocalModelUnavailable as exc:
+            return Response({"detail": str(exc)}, status=503)
+        return Response(result)
+
     @action(detail=True, methods=["post"], url_path="process")
     def process(self, request, pk=None):
         from .pipeline.runner import process_document, ProcessingNotAllowed

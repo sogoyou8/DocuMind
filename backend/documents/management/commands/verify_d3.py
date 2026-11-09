@@ -30,7 +30,9 @@ class Command(BaseCommand):
         if len(set(fixture_ids)) != 9:
             raise CommandError("D3 requires nine distinct synthetic source documents.")
 
-        valid_docs = Document.objects.filter(id__in=fixture_ids, state="ACCEPTED")
+        valid_docs = Document.objects.filter(
+            id__in=fixture_ids, state__in=["ACCEPTED", "INDEXED"]
+        )
         rejected_docs = Document.objects.filter(id__in=fixture_ids, state="REJECTED")
         if valid_docs.count() != 7 or rejected_docs.count() != 2:
             raise CommandError("Expected seven accepted and two rejected documents.")

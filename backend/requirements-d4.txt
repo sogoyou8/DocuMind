@@ -1,0 +1,4 @@
+# Full D4 dependencies are for local RAG image only, NOT Render Free or base API.
+-r requirements-d2.txt
+chromadb>=1.3,<1.5
+langgraph>=1.0,<1.3

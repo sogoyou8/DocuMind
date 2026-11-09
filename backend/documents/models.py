@@ -127,3 +127,33 @@ class Invoice(models.Model):
         ]
         indexes = [models.Index(fields=["issued_on", "currency"],
                                 name="documind_invoice_date_ccy")]
+
+
+class ChunkReference(models.Model):
+    """D4: one searchable passage linked to a validated D2 record.
+
+    Raw text lives in the private Chroma store; PostgreSQL is the authority
+    for source identity and whether this reference is still eligible.
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    document = models.ForeignKey(Document, related_name="chunk_references",
+                                 on_delete=models.CASCADE)
+    run = models.ForeignKey(ProcessingRun, related_name="chunk_references",
+                            on_delete=models.CASCADE)
+    record = models.ForeignKey(ExtractedRecord, related_name="chunk_references",
+                               on_delete=models.CASCADE)
+    source_locator = models.CharField(max_length=200)
+    chunk_index = models.PositiveIntegerField()
+    index_version = models.CharField(max_length=32, default="d4-v1")
+    embedding_model = models.CharField(max_length=100)
+    content_sha256 = models.CharField(max_length=64)
+    indexed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["document_id", "source_locator", "chunk_index"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["record", "index_version", "chunk_index"],
+                name="unique_d4_chunk_per_record_index",
+            ),
+        ]
