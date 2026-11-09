@@ -33,3 +33,16 @@ Pour éviter une surprise, le mode public doit être **read-only**, sans documen
 - Aucune persistance des changements sur le mode démo jetable.
 - Pas d'Airflow, Metabase, ChromaDB ni Ollama publiquement exécutés à D1.
 - Pas de promesse de disponibilité 24/7.
+
+## Option recommandée pour la démo durable : Render Free + Neon Free
+
+Neon propose un PostgreSQL gratuit sans date d'expiration fixe (dans les limites du plan). Utiliser **la formule Free de Neon uniquement**, vérifier l'absence de frais et ne pas ajouter de moyen de paiement facultatif. En novembre 2026, les limites publiées sont 1 Go par projet et 100 CU-heures/mois. Après épuisement des quotas, les requêtes peuvent être suspendues, mais le stockage ne disparaît pas à 30 jours comme Render Free Postgres.
+
+Pour activer le **véritable backend PostgreSQL dans la démo Render** :
+1. Créer un projet PostgreSQL en plan gratuit chez Neon, sans données personnelles réelles.
+2. Dans Render, conserver le Web Service `plan: free` du Blueprint.
+3. Renseigner `DATABASE_URL` dans les variables d'environnement **secrètes de Render**, avec la chaîne PostgreSQL Neon et SSL (pas dans Git, une capture ni ce chat).
+4. Maintenir `DOCUMIND_DEMO_READONLY=1` : le public lit des données fictives, mais ne dépose pas de documents.
+5. Redéployer et vérifier les migrations, le healthcheck, les fiches synthétiques, le réveil à froid et l'absence d'accès en écriture.
+
+Par défaut, le Blueprint fonctionne **sans Neon** en SQLite jetable pour ne pas bloquer la première démonstration. L'option Neon est un choix explicite d'hébergement PostgreSQL, non activé automatiquement.
