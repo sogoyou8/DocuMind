@@ -1,0 +1,15 @@
+# Optional local-only AI API; deliberately separate from minimal Render/D1 build.
+FROM python:3.12-slim
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
+    DJANGO_STATIC_ROOT=/opt/documind-rag-static \
+    ANONYMIZED_TELEMETRY=False \
+    CHROMA_TELEMETRY_DISABLED=1 \
+    OTEL_SDK_DISABLED=true \
+    LANGCHAIN_TRACING_V2=false
+WORKDIR /app
+COPY requirements.txt requirements-d2.txt requirements-d4.txt /app/
+RUN pip install --no-cache-dir -r requirements-d4.txt
+COPY . /app
+RUN DJANGO_DEBUG=1 python manage.py collectstatic --noinput
+EXPOSE 8001
+CMD ["gunicorn", "documind_api.wsgi:application", "--bind", "0.0.0.0:8001", "--workers", "1", "--threads", "2", "--timeout", "180"]
