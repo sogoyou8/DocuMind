@@ -81,7 +81,55 @@ services:
       postgres:
         condition: service_healthy
 
+  ollama:
+    profiles: ["ai"]
+    image: ollama/ollama:0.12.11
+    environment:
+      OLLAMA_HOST: 0.0.0.0:11434
+      OLLAMA_KEEP_ALIVE: 5m
+      OLLAMA_NUM_PARALLEL: "1"
+    # Host access is intentionally loopback only. Never expose models publicly.
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - documind_ollama_models:/root/.ollama
+
+  rag:
+    profiles: ["ai"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.rag
+    environment:
+      DATABASE_URL: postgresql://documind:documind_local_only@postgres:5432/documind
+      DJANGO_SECRET_KEY: local-dev-only-unsafe-change-before-public-use
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      DJANGO_DEBUG: "1"
+      DOCUMIND_DEMO_READONLY: "0"
+      DOCUMIND_AI_ENABLED: "1"
+      DOCUMIND_OLLAMA_URL: http://ollama:11434
+      DOCUMIND_EMBED_MODEL: nomic-embed-text
+      DOCUMIND_CHAT_MODEL: qwen2.5:1.5b
+      DOCUMIND_CHROMA_PATH: /opt/documind-chroma
+      ANONYMIZED_TELEMETRY: "false"
+      OTEL_SDK_DISABLED: "true"
+      LANGCHAIN_TRACING_V2: "false"
+    ports:
+      - "127.0.0.1:8001:8001"
+    volumes:
+      - ./backend:/app
+      - documind_chroma_state:/opt/documind-chroma
+    command: sh -c "python manage.py migrate --noinput && gunicorn documind_api.wsgi:application --bind 0.0.0.0:8001 --workers 1 --threads 2 --timeout 180"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_started
+      ollama:
+        condition: service_started
+
 volumes:
   documind_pg:
   documind_airflow_state:
   documind_metabase_state:
+  documind_ollama_models:
+  documind_chroma_state:
