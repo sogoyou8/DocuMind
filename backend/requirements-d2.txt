@@ -1,0 +1,5 @@
+# Local data pipeline only. Render Free still installs requirements.txt (D1 minimal).
+-r requirements.txt
+pandas>=2.2,<2.4
+openpyxl>=3.1,<4
+pypdf>=5.9,<7
