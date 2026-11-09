@@ -1,5 +1,7 @@
 """Reproducible, explicitly fictional D2 source corpus (no real invoices)."""
 from io import BytesIO
+from datetime import datetime
+from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 from openpyxl import Workbook
 
 
@@ -48,12 +50,27 @@ def example_files() -> list[tuple[str, bytes]]:
     ).encode("utf-8")
 
     workbook = Workbook()
+    # DOCX/XLSX OOXML metadata normally embeds the current time: fix it so the
+    # same corpus has exactly the same SHA-256 on every replay.
+    workbook.properties.created = datetime(2026, 11, 9, 0, 0, 0)
+    workbook.properties.modified = datetime(2026, 11, 9, 0, 0, 0)
     sheet = workbook.active
     sheet.title = "Factures"
     sheet.append(["Supplier", "Invoice Number", "Date", "Currency", "Subtotal", "Tax", "Total"])
     sheet.append(["Librairie Fictive", "DM-2026-002", "2026-11-09", "EUR", 70, 14, 84])
     out = BytesIO()
     workbook.save(out)
+    # ZIP entry timestamps and attributes must also be stable. Repack without
+    # changing the workbook XML or its relative link targets.
+    deterministic = BytesIO()
+    with ZipFile(BytesIO(out.getvalue()), "r") as source:
+        with ZipFile(deterministic, "w", compression=ZIP_DEFLATED) as target:
+            for filename in sorted(source.namelist()):
+                info = ZipInfo(filename, date_time=(2026, 11, 9, 0, 0, 0))
+                info.compress_type = ZIP_DEFLATED
+                info.create_system = 3
+                info.external_attr = 0o600 << 16
+                target.writestr(info, source.read(filename))
 
     pdf = make_text_pdf([
         "Fournisseur: Imprimerie Fictive",
@@ -66,7 +83,7 @@ def example_files() -> list[tuple[str, bytes]]:
     ])
     return [
         ("demo-d2-facture-valide.csv", csv_ok),
-        ("demo-d2-factures.xlsx", out.getvalue()),
+        ("demo-d2-factures.xlsx", deterministic.getvalue()),
         ("demo-d2-facture-texte.pdf", pdf),
         ("demo-d2-facture-anomalie.csv", csv_bad),
     ]
