@@ -24,7 +24,7 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
 
   await page.getByRole("button", { name: "Analyse & KPI" }).click();
   await expect(page.getByText("Réconciliation par devise")).toBeVisible();
-  await expect(page.getByText(/1[\\s\\u202f]344/).first()).toBeVisible();
+  await expect(page.getByText(/1.344/).first()).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("local-analytics.png"), fullPage: true });
 
   await page.getByRole("button", { name: "Assistant IA" }).click();
