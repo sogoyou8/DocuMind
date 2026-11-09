@@ -328,6 +328,10 @@ def dashboard(session, collection_id, card_ids):
 
 
 def verify(session, card_ids):
+    """Reconcile visual questions with one another and the SQL fixture gate."""
+    from decimal import Decimal
+
+    outputs = {}
     for spec in CARDS:
         card_id = card_ids[spec["name"]]
         result = api("POST", f"/api/card/{card_id}/query", {}, session=session, timeout=90)
@@ -336,25 +340,67 @@ def verify(session, card_ids):
         data = result.get("data", {})
         if not isinstance(data.get("rows"), list):
             raise RuntimeError(f"No query rows available for {spec['name']}")
-    # Explicitly check important fixture KPI queries are numeric and consistent.
-    values = {}
-    for name in ("Factures acceptees", "TTC valide - EUR", "Documents rejetes"):
-        payload = api("POST", f"/api/card/{card_ids[name]}/query", {}, session=session)
-        found_rows = payload["data"]["rows"]
-        if len(found_rows) != 1 or len(found_rows[0]) != 1:
-            raise RuntimeError(f"Invalid scalar shape for {name}")
-        values[name] = found_rows[0][0]
-    # These are minimums because the local database may also contain extra,
-    # user-authorized uploads beyond the reproducible demo corpus.
-    if values["Factures acceptees"] < 15 or float(values["TTC valide - EUR"]) < 1344:
-        raise RuntimeError("Metabase aggregate misses the verified fictional corpus.")
-    if values["Documents rejetes"] < 2:
-        raise RuntimeError("Metabase rejected-document indicator missed the anomalies.")
+        outputs[spec["name"]] = data["rows"]
+
+    def scalar(name):
+        values = outputs[name]
+        if len(values) != 1 or len(values[0]) != 1:
+            raise RuntimeError(f"Invalid scalar result for {name}")
+        return Decimal(str(values[0][0]))
+
+    def total_for(name, column_index):
+        return sum(
+            (Decimal(str(row[column_index])) for row in outputs[name]),
+            Decimal("0"),
+        )
+
+    invoice_count = scalar("Factures acceptees")
+    amount_eur = scalar("TTC valide - EUR")
+    rejected = scalar("Documents rejetes")
+    if invoice_count < 15 or amount_eur < Decimal("1344") or rejected < 2:
+        raise RuntimeError("The SQL questions do not include the verified fictional corpus.")
+
+    monthly_eur = total_for("Depenses TTC mensuelles - EUR", 1)
+    suppliers_eur = total_for("TTC par fournisseur - EUR", 1)
+    if monthly_eur != amount_eur or suppliers_eur != amount_eur:
+        raise RuntimeError("Metabase monthly/supplier charts do not reconcile to the EUR KPI.")
+
+    status_rejected = sum(
+        (Decimal(str(row[1])) for row in outputs["Documents par etat"]
+         if row[0] == "REJECTED"),
+        Decimal("0"),
+    )
+    if status_rejected != rejected:
+        raise RuntimeError("Metabase rejected-document KPI differs from status breakdown.")
+
+    currency_rows = outputs["Totaux par devise"]
+    count_all = sum(
+        (Decimal(str(row[1])) for row in currency_rows), Decimal("0")
+    )
+    if count_all != invoice_count:
+        raise RuntimeError("Invoice count differs from total of each currency's count.")
+    euro_currency = next((Decimal(str(row[5])) for row in currency_rows
+                          if row[0] == "EUR"), None)
+    if euro_currency != amount_eur:
+        raise RuntimeError("EUR KPI differs from the BI currency totals.")
+
+    issue_count = sum(
+        (Decimal(str(row[1])) for row in outputs["Anomalies par regle"]),
+        Decimal("0"),
+    )
+    if issue_count != len(outputs["Anomalies localisees"]):
+        raise RuntimeError("Issue code chart and row-level anomaly table differ.")
+
+    if invoice_count <= 2000 and Decimal(
+        len(outputs["Factures et sources"])
+    ) != invoice_count:
+        raise RuntimeError("Invoice count does not match row-level source traceability.")
+
     print(
-        "D3 METABASE OK: dashboard + 12 live SQL questions; "
-        f"accepted_invoices={values['Factures acceptees']}, "
-        f"EUR_TTC={values['TTC valide - EUR']}, "
-        f"rejected_documents={values['Documents rejetes']}"
+        "D3 METABASE OK: 12 live SQL questions and two dashboard tabs; "
+        "EUR monthly, supplier and currency totals reconciled; "
+        f"accepted_invoices={invoice_count}, EUR_TTC={amount_eur}, "
+        f"rejected_documents={rejected}, quality_issues={issue_count}"
     )
 
 
