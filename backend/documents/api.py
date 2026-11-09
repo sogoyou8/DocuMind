@@ -118,6 +118,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
 class _D2ReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [DocumentPermission]
+    document_filter = "document_id"
 
     def get_queryset(self):
         # The public demo has *no* D2 processing, even if its DB is populated
@@ -132,7 +133,7 @@ class _D2ReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
                 document_id = UUID(document_id)
             except (ValueError, AttributeError) as exc:
                 raise ValidationError({"document": "UUID attendu."}) from exc
-            qs = qs.filter(document_id=document_id)
+            qs = qs.filter(**{self.document_filter: document_id})
         return qs
 
 
@@ -149,13 +150,7 @@ class ExtractedRecordViewSet(_D2ReadOnlyViewSet):
 class QualityIssueViewSet(_D2ReadOnlyViewSet):
     queryset = QualityIssue.objects.select_related("record", "run").all()
     serializer_class = QualityIssueSerializer
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        document_id = self.request.query_params.get("document")
-        if document_id and not settings.DEMO_READONLY:
-            qs = qs.filter(run__document_id=document_id)
-        return qs
+    document_filter = "run__document_id"
 
 
 class InvoiceViewSet(_D2ReadOnlyViewSet):
