@@ -2,6 +2,8 @@ param(
     [switch]$SkipAirflow
 )
 
+# ASCII-only file: Windows PowerShell 5.1 may read UTF-8 without BOM as ANSI.
+# UTF-8 em dash bytes can decode into a smart quote and break script parsing.
 $ErrorActionPreference = "Stop"
 $projectRoot = Join-Path $PSScriptRoot ".."
 Set-Location $projectRoot
@@ -26,7 +28,7 @@ docker compose exec -T api python manage.py process_pending --limit 20
 if ($LASTEXITCODE -ne 0) { throw "D2 batch worker failed" }
 
 if (-not $SkipAirflow) {
-    Write-Host "D2 Airflow 3.4.0 — image locale et DAG" -ForegroundColor Cyan
+    Write-Host "D2 Airflow 3.4.0 - image locale et DAG" -ForegroundColor Cyan
     docker compose --profile pipeline build airflow
     if ($LASTEXITCODE -ne 0) { throw "Airflow image build failed" }
 
@@ -56,8 +58,8 @@ if (-not $SkipAirflow) {
 }
 
 if ($SkipAirflow) {
-    Write-Host "D2 CORE OK : Pandas/PDF/XLSX, PostgreSQL, quarantine et replays ; Airflow NON TESTÉ" -ForegroundColor Yellow
-    Write-Host "Pour la recette complète, relancez sans -SkipAirflow." -ForegroundColor Yellow
+    Write-Host "D2 CORE OK : Pandas/PDF/XLSX, PostgreSQL, quarantine et replays ; Airflow NON TESTE" -ForegroundColor Yellow
+    Write-Host "Pour la recette complete, relancez sans -SkipAirflow." -ForegroundColor Yellow
 } else {
     Write-Host "D2 LOCAL OK : extraction, normalisation, quarantine, replays et DAG Airflow" -ForegroundColor Green
 }
