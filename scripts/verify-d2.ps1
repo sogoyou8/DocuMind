@@ -55,7 +55,9 @@ if (-not $SkipAirflow) {
     Write-Host "Airflow UI (local): http://127.0.0.1:8088" -ForegroundColor Cyan
 }
 
-Write-Host "D2 LOCAL OK : extraction, normalisation, quarantine, replays et Airflow" -ForegroundColor Green
 if ($SkipAirflow) {
-    Write-Host "Airflow was skipped: rerun without -SkipAirflow before claiming complete D2." -ForegroundColor Yellow
+    Write-Host "D2 CORE OK : Pandas/PDF/XLSX, PostgreSQL, quarantine et replays ; Airflow NON TESTÉ" -ForegroundColor Yellow
+    Write-Host "Pour la recette complète, relancez sans -SkipAirflow." -ForegroundColor Yellow
+} else {
+    Write-Host "D2 LOCAL OK : extraction, normalisation, quarantine, replays et DAG Airflow" -ForegroundColor Green
 }
