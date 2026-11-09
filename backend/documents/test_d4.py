@@ -166,15 +166,20 @@ class D4RagTests(TestCase):
         self.doc.save(update_fields=["state"])
         self.assertEqual(self.search("DM-2026-001 montant TTC"), [])
 
-    def test_post_processing_old_index_never_cited(self):
+    def test_d2_reprocessing_invalidates_old_vectors_until_reindexed(self):
         self.index()
-        self.doc.state = Document.State.ACCEPTED
-        self.doc.save(update_fields=["state"])
-        from .rag.indexer import index_document
-        result = index_document(self.doc.id, force=True,
-                                store=self.store, model=self.model)
+        old_ids = set(self.store.items)
+        run, skipped = process_document(self.doc.id, force=True)
+        self.assertFalse(skipped)
+        self.doc.refresh_from_db()
+        self.assertEqual(self.doc.state, Document.State.ACCEPTED)
+        self.assertEqual(ChunkReference.objects.count(), 0)
+        self.assertEqual(self.search("DM-2026-001 montant TTC"), [])
+        # Chroma still holds obsolete bytes; the SQL gate makes them inert.
+        self.assertEqual(set(self.store.items), old_ids)
+        result = self.index()
         self.assertFalse(result["skipped"])
-        self.assertEqual(self.doc.chunk_references.count(), self.store.count())
+        self.assertTrue(self.search("DM-2026-001 montant TTC"))
 
     def test_operator_index_endpoint_and_local_read_auth(self):
         operator = get_user_model().objects.create_user(
