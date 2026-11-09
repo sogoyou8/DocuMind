@@ -1,10 +1,10 @@
 # DocuMind
 
-**DOC 01 — Plateforme d'intelligence documentaire | D0 : conception**
+**DOC 01 — Plateforme d'intelligence documentaire | D1 : backend en validation**
 
 DocuMind est un projet d'apprentissage professionnel **en cours de conception**. Son ambition est de traiter des documents d'entreprise fictifs (PDF textuels, CSV et XLSX), de structurer les informations dans PostgreSQL, d'orchestrer les traitements avec Airflow et d'offrir une analyse BI et un assistant documentaire IA local.
 
-> **État réel :** D0 / spécifications. Aucun backend, pipeline, tableau de bord ou assistant IA n'est encore implémenté. Les diagrammes sont des conceptions, pas des captures d'application.
+> **État réel :** D0 documenté. Le backend Django REST et PostgreSQL de D1 est en cours de validation sur branche dédiée. Airflow, extraction, Metabase et IA ne sont pas encore implémentés. Aucun déploiement Render n'est revendiqué.
 
 ## Périmètre technique envisagé
 
@@ -42,3 +42,23 @@ DocuMind est un projet d'apprentissage professionnel **en cours de conception**.
 Pas de démonstration publique à D0. Le lien de code renvoie au présent dépôt et la fiche Abyss Showcase présente uniquement les **intentions et l'architecture**. D1–D5 seront développés et validés séparément.
 
 Licence et politique de contribution : à définir avant D1.
+
+## D1 — Django REST / PostgreSQL
+
+Le backend et ses tests sont dans `backend/`. Pour une exécution locale, Docker Desktop doit être démarré :
+
+```powershell
+docker compose up --build -d
+docker compose exec api python manage.py check
+docker compose exec api python manage.py test documents -v 2
+```
+
+- API : http://127.0.0.1:8000/api/v1/health/ ; documentation : http://127.0.0.1:8000/api/v1/docs/
+- Imports locaux uniquement par session authentifiée et rôle `documind_operator` ou administrateur.
+- D1 vérifie la nature et la taille des fichiers, pas leur contenu métier (D2).
+- PostgreSQL Docker : port hôte `15434`, volume persistant ; ne pas arrêter avec `docker compose down -v`.
+- [Contrat de déploiement D0.1](docs/DEPLOIEMENT-D0.1.md) ; [État D1](docs/ETAT-D1.md).
+
+### Render : coût 0 € et données fictives
+
+`render.yaml` prépare un **Web Service Render gratuit** en lecture seule, sans base PostgreSQL Render (celle-ci expirerait après 30 jours). Trois fiches synthétiques sont réinitialisées sur SQLite éphémère au redémarrage. Le backend local utilise PostgreSQL. Aucune démo complète, aucun hébergement en production ni conservation des données ne sont prétendus tant que les contrôles réels de Render n'ont pas été effectués.
