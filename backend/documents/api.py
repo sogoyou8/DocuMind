@@ -50,7 +50,8 @@ def health(request):
 def overview(request):
     if not settings.DEMO_READONLY and not request.user.is_authenticated:
         raise PermissionDenied()
-    records = Document.objects.all()
+    records = (Document.objects.filter(source=Document.Source.DEMO)
+               if settings.DEMO_READONLY else Document.objects.all())
     return Response({
         "mode": "synthetic-demo" if settings.DEMO_READONLY else "local",
         "total": records.count(),
@@ -67,6 +68,12 @@ def overview(request):
 class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
     permission_classes = [DocumentPermission]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if settings.DEMO_READONLY:
+            return qs.filter(source=Document.Source.DEMO)
+        return qs
     http_method_names = ["get", "post", "head", "options"]
 
     def get_serializer_class(self):
