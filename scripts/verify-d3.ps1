@@ -17,6 +17,9 @@ if (-not $SkipCoreTests) {
 docker compose up -d postgres api
 if ($LASTEXITCODE -ne 0) { throw "PostgreSQL or Django API unavailable" }
 
+docker compose exec -T api python /workspace/scripts/check_d3_static.py
+if ($LASTEXITCODE -ne 0) { throw "D3 static source preflight failed" }
+
 docker compose exec -T api python manage.py seed_d3 --process
 if ($LASTEXITCODE -ne 0) { throw "D3 multi-period synthetic seed failed" }
 
