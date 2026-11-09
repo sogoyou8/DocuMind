@@ -15,8 +15,21 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
   await expect(page.getByRole("heading", { name: /Vos documents/i })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("local-overview.png"), fullPage: true });
   await page.getByRole("button", { name: "Documents", exact: true }).click();
-  await expect(page.getByText("demo-d2-facture-valide.csv")).toBeVisible();
-  await page.getByRole("button", { name: "demo-d2-facture-valide.csv" }).click();
+  // Local databases may contain extra user-authorized uploads; the fixture
+  // can therefore be on a later API page without indicating a regression.
+  let found = false;
+  for (let attempt = 0; attempt < 20; attempt++) {
+    const fixture = page.getByRole("button", { name: /demo-d2-facture-valide.csv/ });
+    if (await fixture.count()) {
+      await fixture.first().click();
+      found = true;
+      break;
+    }
+    const next = page.getByRole("button", { name: "Page suivante" });
+    if (!(await next.isEnabled())) break;
+    await next.click();
+  }
+  expect(found).toBe(true);
   const drawer = page.getByRole("dialog", { name: /demo-d2-facture-valide.csv/ });
   await expect(drawer).toBeVisible();
   await expect(drawer.getByText("DM-2026-001")).toBeVisible();
