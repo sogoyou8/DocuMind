@@ -1,10 +1,10 @@
 # DocuMind
 
-**DOC 01 — Plateforme d'intelligence documentaire | D1, D2 et D3 validés localement · Render Free en lecture seule**
+**DOC 01 — Plateforme d'intelligence documentaire | D1-D3 validés · D4 assistant IA local en recette · Render Free en lecture seule**
 
 DocuMind est un projet d'apprentissage professionnel **en cours de développement**. Son ambition est de traiter des documents d'entreprise fictifs (PDF textuels, CSV et XLSX), de structurer les informations dans PostgreSQL, d'orchestrer les traitements avec Airflow et d'offrir une analyse BI et un assistant documentaire IA local.
 
-> **État réel :** D0 documenté et D1 fusionné dans `main` après recette locale du 9 novembre 2026 : 11 tests Django réussis sur PostgreSQL, migrations cohérentes, contrôles OpenAPI stricts et healthcheck OK. Déploiement Render gratuit **Live** le 9 novembre 2026 : migrations et initialisation de 3 exemples synthétiques réussies, service Gunicorn en ligne et healthcheck HTTP 200. L'API reste en lecture seule sur Render ; pas de base PostgreSQL hébergée ni de frais engagés. **D2 valide localement le 9 novembre 2026 : 30/30 tests reussis sur PostgreSQL, 3 factures fictives acceptees / 1 document rejete, 240 EUR TTC, rejeu sans doublons et execution du DAG Airflow reussie.** **D3 validé localement le 9 novembre 2026 : 36/36 tests réussis, 9 vues BI, 15 factures fictives acceptées pour 1 344 EUR TTC, lecteur SQL strictement en lecture seule, Metabase initialisé avec 12 vraies questions et leurs contrôles de cohérence réussis.** L'IA n'est pas encore implémentée.
+> **État réel :** D0 documenté et D1 fusionné dans `main` après recette locale du 9 novembre 2026 : 11 tests Django réussis sur PostgreSQL, migrations cohérentes, contrôles OpenAPI stricts et healthcheck OK. Déploiement Render gratuit **Live** le 9 novembre 2026 : migrations et initialisation de 3 exemples synthétiques réussies, service Gunicorn en ligne et healthcheck HTTP 200. L'API reste en lecture seule sur Render ; pas de base PostgreSQL hébergée ni de frais engagés. **D2 valide localement le 9 novembre 2026 : 30/30 tests reussis sur PostgreSQL, 3 factures fictives acceptees / 1 document rejete, 240 EUR TTC, rejeu sans doublons et execution du DAG Airflow reussie.** **D3 validé localement le 9 novembre 2026 : 36/36 tests réussis, 9 vues BI, 15 factures fictives acceptées pour 1 344 EUR TTC, lecteur SQL strictement en lecture seule, Metabase initialisé avec 12 vraies questions et leurs contrôles de cohérence réussis.** **D4 est implémenté sur branche distincte : RAG local Ollama + ChromaDB + LangGraph, citations de sources contrôlées, abstention et tests de sécurité ; la recette sur les vrais modèles reste à valider avant fusion.**
 
 ## Périmètre technique envisagé
 
@@ -103,3 +103,18 @@ Le script vérifie les régressions D1/D2, les KPI SQL, les permissions effectiv
 - Configuration Metabase : `scripts/provision_metabase.py` ; recette : `scripts/verify-d3.ps1`
 
 **Statut : D3 validé localement**. La recette du 9 novembre 2026 s'achève par `D3 LOCAL OK` après `Ran 36 tests ... OK`, `D3 SQL VERIFIED`, `D3 SQL ROLE VERIFIED` et `D3 METABASE OK`. Le tableau de bord contient 12 questions réellement exécutées ; ses valeurs, devises, anomalies et totaux sont réconciliés. **Limite :** aucune capture ou inspection UX du rendu Metabase n'est encore jointe à cette validation, et aucun Metabase public n'est hébergé.
+
+## D4 — Assistant documentaire IA local (recette réelle en attente)
+
+Le service optionnel `rag` ajoute une API documentaire locale sur **http://127.0.0.1:8001**, avec ChromaDB (stockage privé persistant), `nomic-embed-text` (embeddings via Ollama), `qwen2.5:1.5b` (génération locale) et LangGraph (recherche, réponse, contrôle et abstention).
+
+L'index repose **uniquement sur les documents acceptés par D2** ; `ChunkReference` conserve les identifiants du document, du traitement, de la page/ligne et l'empreinte SHA-256 de chaque passage. Une citation ne peut être affichée que si PostgreSQL confirme qu'elle correspond encore à une source autorisée. Les instructions contenues dans un document ne deviennent jamais des commandes système. Le filtrage des injections réduit le risque mais ne garantit pas l'absence totale de réponses trompeuses : une citation doit toujours pouvoir être vérifiée.
+
+- `POST /api/v1/documents/{uuid}/index/` : index local réservé opérateur/admin.
+- `POST /api/v1/assistant/ask/` : réponse `answered` avec sources, ou `abstained` sans citation inventée.
+- `GET /api/v1/assistant/status/` : état de configuration du service local authentifié.
+- `python manage.py index_pending --limit 20` et `verify_d4` : commandes d'indexation et de vérification.
+- Recette PowerShell complète : `.\scripts\verify-d4.ps1` (lance et teste Ollama et Chroma en local, sans service payant).
+- Voir [État, sécurité et validation D4](docs/ETAT-D4.md).
+
+**État : D4 développé, non fusionné tant que l'exécution réelle de `verify-d4.ps1` n'est pas validée.** Le backend Render Free reste limité à la démo D1 en lecture seule, sans Ollama ni index public. L'interface React et la release V1.0 restent prévues en D5.
