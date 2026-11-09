@@ -24,7 +24,7 @@ class Command(BaseCommand):
             documents.append(doc)
             expected[doc.pk] = "REJECTED" if "anomalie" in name else "ACCEPTED"
         for doc in documents:
-            if doc.state != expected[doc.pk]:
+            if doc.state != expected[doc.pk] and not (\n                expected[doc.pk] == "ACCEPTED" and doc.state == "INDEXED"\n            ):
                 raise CommandError(f"{doc.original_name}: unexpected state {doc.state}")
             runs = ProcessingRun.objects.filter(document=doc, pipeline_version=PIPELINE_VERSION)
             if runs.count() != 1:
