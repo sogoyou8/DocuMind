@@ -22,7 +22,17 @@ sources = [
     "documents/test_d4.py",
     "documents/management/commands/index_pending.py",
     "documents/management/commands/verify_d4.py",
+    "documents/management/commands/verify_d2.py",
+    "documents/management/commands/verify_d3.py",
     "documents/migrations/0004_chunk_references.py",
+    "documents/api.py",
+    "documents/serializers.py",
+    "documents/urls.py",
+    "documents/models.py",
+    "documents/tests.py",
+    "documents/test_d2.py",
+    "documents/test_d3.py",
+    "documind_api/settings.py",
 ]
 for rel in sources:
     file = backend / rel
