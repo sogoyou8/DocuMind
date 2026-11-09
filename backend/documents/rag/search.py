@@ -71,7 +71,7 @@ def search(question, *, store=None, model=None, limit=4, max_distance=MAX_DISTAN
             continue
         # Exact invoice identifiers are stronger evidence than generic semantic
         # proximity. Still verify source/run and SHA-256 below.
-        allowed_distance = 1.0 if invoice_ids else max_distance
+        allowed_distance = 2.0 if invoice_ids else max_distance
         if not isinstance(distance, (int, float)) or not 0 <= distance <= allowed_distance:
             continue
         doc, run, record = ref.document, ref.run, ref.record
