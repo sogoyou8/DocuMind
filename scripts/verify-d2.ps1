@@ -32,21 +32,46 @@ if (-not $SkipAirflow) {
     docker compose --profile pipeline build airflow
     if ($LASTEXITCODE -ne 0) { throw "Airflow image build failed" }
 
+    # An earlier validation may have started Airflow before its metadata DB
+    # was initialized. Stop it before migrating to avoid concurrent access.
+    docker compose --profile pipeline stop airflow
+    if ($LASTEXITCODE -ne 0) { throw "Airflow stop failed" }
+
+    # Airflow 3 requires its own metadata schema; this is separate from the
+    # DocuMind PostgreSQL migrations and uses its persistent local volume.
+    # 'run' creates a temporary container but preserves the named state volume.
+    docker compose --profile pipeline run --rm --no-deps airflow airflow db migrate
+    if ($LASTEXITCODE -ne 0) { throw "Airflow metadata migration failed" }
+
+    docker compose --profile pipeline run --rm --no-deps airflow airflow db check-migrations -t 60
+    if ($LASTEXITCODE -ne 0) { throw "Airflow metadata migrations were not confirmed" }
+
     docker compose --profile pipeline up -d airflow
     if ($LASTEXITCODE -ne 0) { throw "Airflow local startup failed" }
 
-    # Airflow standalone initializes its own metadata DB on first launch.
+    # The standalone server and DAG processor take time to start. In Windows
+    # PowerShell 5.1, native stderr with ErrorActionPreference=Stop can be a
+    # terminating NativeCommandError, so allow/capture stderr only in the poll.
     $ready = $false
-    for ($i = 0; $i -lt 25; $i++) {
-        $output = docker compose --profile pipeline exec -T airflow airflow dags list 2>&1
-        if ($LASTEXITCODE -eq 0 -and ($output -join "`n").Contains("documind_d2_ingestion")) {
+    $lastDagOutput = ""
+    for ($i = 0; $i -lt 40; $i++) {
+        $previousPreference = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
+        try {
+            $dagOutput = @(docker compose --profile pipeline exec -T airflow airflow dags list 2>&1)
+            $dagExit = $LASTEXITCODE
+        } finally {
+            $ErrorActionPreference = $previousPreference
+        }
+        $lastDagOutput = $dagOutput -join "`n"
+        if ($dagExit -eq 0 -and $lastDagOutput.Contains("documind_d2_ingestion")) {
             $ready = $true
             break
         }
         Start-Sleep -Seconds 5
     }
     if (-not $ready) {
-        throw "DAG not visible. Inspect: docker compose --profile pipeline logs --tail=100 airflow"
+        throw "DAG not visible. Last CLI result: $lastDagOutput ; inspect docker compose --profile pipeline logs --tail=100 airflow"
     }
 
     # Execute the actual DAG task, not merely its parser.
