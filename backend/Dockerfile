@@ -1,8 +1,8 @@
 FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 DJANGO_STATIC_ROOT=/opt/documind-staticfiles
 WORKDIR /app
-COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt requirements-d2.txt /app/
+RUN pip install --no-cache-dir -r requirements-d2.txt
 COPY . /app
 RUN DJANGO_DEBUG=1 python manage.py collectstatic --noinput
 EXPOSE 8000
