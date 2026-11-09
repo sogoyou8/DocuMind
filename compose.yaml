@@ -25,7 +25,9 @@ services:
       - "127.0.0.1:8000:8000"
     volumes:
       - ./backend:/app
-    command: sh -c "python manage.py collectstatic --noinput && python manage.py migrate --noinput && gunicorn documind_api.wsgi:application --bind 0.0.0.0:8000 --workers 2"
+    # Static assets were collected at image build under /opt, outside ./backend bind mount.
+    # Do not run collectstatic alongside live tests: it races with WhiteNoise scan.
+    command: sh -c "python manage.py migrate --noinput && gunicorn documind_api.wsgi:application --bind 0.0.0.0:8000 --workers 2"
     depends_on:
       postgres:
         condition: service_healthy
