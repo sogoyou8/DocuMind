@@ -96,5 +96,12 @@ REST_FRAMEWORK = {
                                  "rest_framework.throttling.UserRateThrottle"],
     "DEFAULT_THROTTLE_RATES": {"anon": "120/hour", "user": "600/hour"},
 }
-SPECTACULAR_SETTINGS = {"TITLE": "DocuMind API D1",
-    "DESCRIPTION": "D1 metadata only. No Airflow, Metabase or AI running.", "VERSION": "0.1.0"}
+SPECTACULAR_SETTINGS = {
+    "TITLE": "DocuMind API D1/D2",
+    "DESCRIPTION": (
+        "Render public: D1 synthetic read-only metadata, no pipeline running. "
+        "Local: D2 PDF/CSV/XLSX ingestion, quality and provenance, with optional Airflow. "
+        "Metabase and AI are not implemented."
+    ),
+    "VERSION": "0.2.0",
+}
