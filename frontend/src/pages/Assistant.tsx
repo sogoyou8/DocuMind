@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowUp, BookOpenCheck, BrainCircuit, CheckCheck, ChevronRight,
-  CircleHelp, Cpu, FileSearch, Fingerprint, LockKeyhole, MessageCircle,
-  RotateCcw, ShieldCheck, Sparkles, WandSparkles,
+  Cpu, FileSearch, Fingerprint, LockKeyhole, MessageCircle,
+  ShieldCheck, Sparkles,
 } from "lucide-react";
 import type { AssistantAnswer, AssistantStatus } from "../types";
-import { EmptyState, Hint, LabelPill, Pane } from "../components/Visuals";
+import { Hint, LabelPill, Pane } from "../components/Visuals";
 
 type Message = {
   id: number;
