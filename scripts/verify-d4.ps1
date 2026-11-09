@@ -7,16 +7,18 @@ Set-Location (Join-Path $PSScriptRoot "..")
 
 Write-Host "DOCUMIND D4 - Local RAG with Ollama, Chroma and LangGraph" -ForegroundColor Cyan
 
+# Parse all modified Python files before running Django tests so a syntax
+# regression is detected immediately with its exact filename.
+docker compose up -d postgres api
+if ($LASTEXITCODE -ne 0) { throw "Core local services unavailable" }
+docker compose exec -T api python /workspace/scripts/check_d4_static.py
+if ($LASTEXITCODE -ne 0) { throw "D4 source/architecture preflight failed" }
+
 if (-not $SkipCoreTests) {
     # Runs Django, SQL/fixture and OpenAPI regressions on local PostgreSQL.
     & (Join-Path $PSScriptRoot "verify-d2.ps1") -SkipAirflow
     if (-not $?) { throw "Regression D1/D2/D3 failed" }
 }
-
-docker compose up -d postgres api
-if ($LASTEXITCODE -ne 0) { throw "Core local services unavailable" }
-docker compose exec -T api python /workspace/scripts/check_d4_static.py
-if ($LASTEXITCODE -ne 0) { throw "D4 source/architecture preflight failed" }
 
 docker compose exec -T api python manage.py seed_d3 --process
 if ($LASTEXITCODE -ne 0) { throw "D3 synthetic source corpus unavailable" }
