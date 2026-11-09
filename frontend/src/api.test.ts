@@ -11,7 +11,7 @@ function jsonResponse(payload: unknown, status = 200): Response {
     status,
     headers: { get: () => "application/json" },
     json: async () => payload,
-  } as Response;
+  } as unknown as Response;
 }
 
 describe("D5 HTTP client", () => {
