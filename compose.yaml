@@ -155,7 +155,7 @@ services:
       CI: "1"
     volumes:
       - ./frontend:/app
-      - documind_web_node_modules:/app/node_modules
+      - documind_ui_e2e_node_modules:/app/node_modules
     command: sh -c "npm install --no-audit --no-fund && npm run test:e2e"
     depends_on:
       web:
@@ -170,3 +170,4 @@ volumes:
   documind_ollama_models:
   documind_chroma_state:
   documind_web_node_modules:
+  documind_ui_e2e_node_modules:
