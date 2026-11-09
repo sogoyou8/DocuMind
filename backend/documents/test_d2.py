@@ -59,6 +59,11 @@ class NormalizationTests(SimpleTestCase):
 
 
 class ExtractionTests(SimpleTestCase):
+    def test_fixture_xlsx_is_byte_for_byte_stable(self):
+        first = {name: body for name, body in example_files()}
+        second = {name: body for name, body in example_files()}
+        self.assertEqual(first["demo-d2-factures.xlsx"], second["demo-d2-factures.xlsx"])
+
     def test_three_real_file_formats(self):
         samples = example_files()
         self.assertEqual(len(samples), 4)
