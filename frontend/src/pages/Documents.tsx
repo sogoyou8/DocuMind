@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, ChevronRight,
-  FileCheck, FileClock, FileText, FileUp, Fingerprint, LockKeyhole,
+  FileCheck, FileText, FileUp, Fingerprint, LockKeyhole,
   Search, Sparkles, Upload, X,
 } from "lucide-react";
 import type { Document, Page } from "../types";
