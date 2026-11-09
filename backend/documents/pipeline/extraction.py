@@ -102,7 +102,8 @@ def _xlsx_records(data: bytes) -> list[RawRecord]:
                 if len(values) > len(names) and any(v is not None for v in values[len(names):]):
                     raise ExtractionError("COLUMN_LIMIT", "Cellules hors en-têtes Excel.")
                 rows.append({
-                    key: "" if value is None else str(value)
+                    key: (value.isoformat() if hasattr(value, "isoformat")
+                          else ("" if value is None else str(value)))
                     for key, value in zip(names, values)
                 })
                 if len(rows) + len(result) > MAX_ROWS:
