@@ -92,7 +92,7 @@ services:
       OLLAMA_NUM_PARALLEL: "1"
     # Host access is intentionally loopback only. Never expose models publicly.
     ports:
-      - "127.0.0.1:11434:11434"
+      - "127.0.0.1:11435:11434"
     volumes:
       - documind_ollama_models:/root/.ollama
 
