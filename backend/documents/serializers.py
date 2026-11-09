@@ -164,3 +164,35 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "subtotal", "tax", "total",
         ]
         read_only_fields = fields
+
+
+# D4 local assistant: model returns text but server selects verified source citations.
+class AskDocumentSerializer(serializers.Serializer):
+    question = serializers.CharField(min_length=4, max_length=500, trim_whitespace=True)
+
+
+class AssistantCitationSerializer(serializers.Serializer):
+    id = serializers.CharField()
+    document_id = serializers.UUIDField()
+    document = serializers.CharField()
+    source_locator = serializers.CharField()
+    excerpt = serializers.CharField()
+
+
+class AssistantAnswerSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=["answered", "abstained"])
+    answer = serializers.CharField()
+    citations = AssistantCitationSerializer(many=True)
+
+
+class AssistantStatusSerializer(serializers.Serializer):
+    mode = serializers.CharField()
+    enabled = serializers.BooleanField()
+    embedding_model = serializers.CharField()
+    generation_model = serializers.CharField()
+    indexed_chunks = serializers.IntegerField()
+
+
+class IndexResultSerializer(serializers.Serializer):
+    indexed_chunks = serializers.IntegerField()
+    skipped = serializers.BooleanField()
