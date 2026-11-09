@@ -39,7 +39,8 @@ function New-LocalSecret {
     $bytes = New-Object byte[] 40
     $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
     try { $rng.GetBytes($bytes) } finally { $rng.Dispose() }
-    return ([Convert]::ToBase64String($bytes).TrimEnd('=') -replace '\+', '-' -replace '/', '_')
+    # Prefix ensures a digit, as required by Metabase password policy.
+    return ('D3x9_' + ([Convert]::ToBase64String($bytes).TrimEnd('=') -replace '\+', '-' -replace '/', '_'))
 }
 
 if (-not (Test-Path -LiteralPath $secretsFile)) {
