@@ -112,6 +112,7 @@ class BrowserAuthContracts(TestCase):
         self.assertEqual(anonymous.get("/api/v1/analytics/").status_code, 403)
         self.assertEqual(anonymous.get("/api/v1/audit/").status_code, 403)
 
+    @skipUnless(connection.vendor == "postgresql", "Local operator needs PostgreSQL")
     def test_bootstrap_local_operator_is_idempotent(self):
         secret = "localsecret2026-0123456789-unique"
         with patch.dict("os.environ", {"DOCUMIND_LOCAL_PASSWORD": secret}):
