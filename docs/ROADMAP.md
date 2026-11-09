@@ -4,7 +4,7 @@
 |---|---|---|---|
 | D0 | Sujet, architecture, UML | Documentation MD/PDF et tests de cohérence | Terminé |
 | D1 | Django REST + PostgreSQL | 11 tests locaux sur PostgreSQL + Render Free Live | Validé (9 nov. 2026) |
-| D2 | Python/Pandas + Airflow | Corpus 3 acceptés/1 rejeté, rejeu, tests et DAG exécuté | Implémenté sur branche, recette en attente |
+| D2 | Python/Pandas + Airflow | 30 tests reussis, 3 acceptes/1 rejete, 240 EUR TTC, rejeu sans doublons et DagRun Airflow `success` | Valide localement (9 nov. 2026) |
 | D3 | SQL métier + Metabase | KPI réconciliés sur données synthétiques | Non commencé |
 | D4 | RAG, ChromaDB, Ollama, LangGraph | Citations, abstention, tests d'injection | Non commencé |
 | D5 | Intégration, UX, QA et V1.0 | Recette E2E, captures réelles, release | Non commencé |
