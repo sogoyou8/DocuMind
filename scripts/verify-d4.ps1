@@ -36,7 +36,7 @@ if ($LASTEXITCODE -ne 0) { throw "Ollama local startup failed" }
 $ollamaReady = $false
 for ($i = 0; $i -lt 35; $i++) {
     try {
-        $tags = Invoke-RestMethod -Uri "http://127.0.0.1:11434/api/tags" -TimeoutSec 5
+        $tags = Invoke-RestMethod -Uri "http://127.0.0.1:11435/api/tags" -TimeoutSec 5
         if ($null -ne $tags.models) {
             $ollamaReady = $true
             break
