@@ -21,6 +21,20 @@ class ApiD1Tests(TestCase):
             "whitenoise.storage.CompressedManifestStaticFilesStorage",
         )
 
+    def test_openapi_health_and_overview_have_explicit_schema(self):
+        from io import StringIO
+        from django.core.management import call_command
+        from drf_spectacular.generators import SchemaGenerator
+
+        schema = SchemaGenerator().get_schema(request=None, public=True)
+        for endpoint in ("/api/v1/health/", "/api/v1/overview/"):
+            with self.subTest(endpoint=endpoint):
+                response = schema["paths"][endpoint]["get"]["responses"]["200"]
+                self.assertIn("application/json", response["content"])
+        self.assertIn("503", schema["paths"]["/api/v1/health/"]["get"]["responses"])
+        # This must fail on generator diagnostics, not only OpenAPI-format validation.
+        call_command("spectacular", validate=True, fail_on_warn=True, stdout=StringIO())
+
     def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(username="operator", password="test-password-unique")
