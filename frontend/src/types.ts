@@ -162,3 +162,11 @@ export type ProcessResult = {
 
 export type IndexResult = { indexed_chunks: number; skipped: boolean };
 export type Tab = "overview" | "documents" | "analytics" | "assistant" | "activity";
+
+export type DocumentDetail = {
+  invoices: Invoice[];
+  records: RecordRow[];
+  issues: Issue[];
+  runs: Run[];
+  audit: Audit[];
+};
