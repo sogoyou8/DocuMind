@@ -18,7 +18,7 @@ Les extraits bruts sont dans Chroma local ; les seules métadonnées de référe
 
 - **Backend Django classique** : `127.0.0.1:8000`, inchangé ; PostgreSQL local : `15434`.
 - **API RAG optionnelle** : `127.0.0.1:8001`, profil `ai`, image `Dockerfile.rag` avec ChromaDB et LangGraph.
-- **Ollama local** : `127.0.0.1:11434`, image `ollama/ollama:0.12.11` ; modèle d'embedding `nomic-embed-text` et modèle de génération compact `qwen2.5:1.5b`.
+- **Ollama local** : `127.0.0.1:11435`, image `ollama/ollama:0.12.11` ; modèle d'embedding `nomic-embed-text` et modèle de génération compact `qwen2.5:1.5b`.
 - **ChromaDB embedded** : volume `documind_chroma_state`, **aucun port Chroma public**. Modèles Ollama : volume `documind_ollama_models`.
 - **Render Free** : uniquement la démo D1 en lecture seule. L'option `DOCUMIND_AI_ENABLED` est désactivée sur Render et forcée à `false` lorsque `DOCUMIND_DEMO_READONLY=1`. Aucun hébergement IA, aucune base vectorielle hébergée et **aucun abonnement payant**.
 
