@@ -19,3 +19,7 @@ backend/private_uploads/
 *.pyc
 .coverage
 venv/
+
+# D3 locally generated BI credentials and temporary inspection output
+/data/local/
+/data/metabase/
