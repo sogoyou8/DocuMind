@@ -24,7 +24,13 @@ class Command(BaseCommand):
             cur.execute("SELECT 1 FROM pg_roles WHERE rolname = 'documind_bi'")
             if cur.fetchone() is None:
                 cur.execute("CREATE ROLE documind_bi LOGIN")
-            cur.execute(f"ALTER ROLE documind_bi LOGIN PASSWORD {safe}")
+            cur.execute(f"ALTER ROLE documind_bi WITH LOGIN NOSUPERUSER "
+                        f"NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD {safe}")
+            current_database = connection.settings_dict["NAME"]
+            cur.execute(
+                f"GRANT CONNECT ON DATABASE "
+                f"{connection.ops.quote_name(current_database)} TO documind_bi"
+            )
             cur.execute("GRANT USAGE ON SCHEMA bi TO documind_bi")
             cur.execute("GRANT SELECT ON ALL TABLES IN SCHEMA bi TO documind_bi")
             cur.execute("REVOKE ALL ON ALL TABLES IN SCHEMA public FROM documind_bi")
