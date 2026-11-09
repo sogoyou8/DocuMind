@@ -44,6 +44,20 @@ Airflow UI locale : `http://127.0.0.1:8088` ; l'identifiant administrateur et le
 ## État de vérification
 Code D2 sur branche `work/d2-pandas-airflow`, tests ajoutés et script de recette disponible. La réussite de ces tests et du DAG dans l'environnement Docker de l'utilisateur doit être **observée** avant de fusionner la branche ou d'affirmer D2 validé. Les quotas GitHub Actions étant épuisés, la validation locale remplace la CI distante.
 
+## Recette locale du 9 novembre 2026 - preuves et reprise Airflow
+
+Le journal fourni confirme :
+- 30 tests Django/D2 reussis sur PostgreSQL (migrations D1 et D2 appliquees) ;
+- le schema OpenAPI et le healthcheck valides ;
+- trois documents synthétiques acceptes (CSV, XLSX, PDF) et un document rejete pour incoherence ;
+- exactement trois factures pour 240,00 EUR TTC ;
+- relecture idempotente sans double creation, worker de lot sans document en attente ;
+- image Apache Airflow 3.4.0 construite et conteneur lance.
+
+La premiere tentative Airflow s'est arretee sur `Database migration required` au moment du premier `airflow dags list`. Les migrations metier PostgreSQL ne remplacent pas le schema des metadonnees Airflow. Le script a ete corrige pour stopper Airflow, executer `airflow db migrate` sur son volume local, verifier `airflow db check-migrations`, puis attendre de maniere tolerante l'enregistrement du DAG (y compris les messages stderr transitoires sur Windows PowerShell).
+
+**Porte de sortie restante :** obtenir la reussite de `airflow dags test documind_d2_ingestion` lors d'une nouvelle execution de `scripts/verify-d2.ps1`. Les tests metier sont valides, mais la validation de l'orchestration complete reste ouverte. La PR #3 doit rester non fusionnee jusqu'a cette preuve.
+
 ## Hors D2
 - Metabase, réconciliation BI et vues SQL analytiques : D3.
 - ChromaDB, Ollama, LangGraph, citations RAG : D4.
