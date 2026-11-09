@@ -1,10 +1,10 @@
 # DocuMind
 
-**DOC 01 — Plateforme d'intelligence documentaire | D1 : backend en validation**
+**DOC 01 — Plateforme d'intelligence documentaire | D1 : backend local validé**
 
-DocuMind est un projet d'apprentissage professionnel **en cours de conception**. Son ambition est de traiter des documents d'entreprise fictifs (PDF textuels, CSV et XLSX), de structurer les informations dans PostgreSQL, d'orchestrer les traitements avec Airflow et d'offrir une analyse BI et un assistant documentaire IA local.
+DocuMind est un projet d'apprentissage professionnel **en cours de développement**. Son ambition est de traiter des documents d'entreprise fictifs (PDF textuels, CSV et XLSX), de structurer les informations dans PostgreSQL, d'orchestrer les traitements avec Airflow et d'offrir une analyse BI et un assistant documentaire IA local.
 
-> **État réel :** D0 documenté. Le backend Django REST et PostgreSQL de D1 est en cours de validation sur branche dédiée. Airflow, extraction, Metabase et IA ne sont pas encore implémentés. Aucun déploiement Render n'est revendiqué.
+> **État réel :** D0 documenté et D1 fusionné dans `main` après recette locale du 9 novembre 2026 : 11 tests Django réussis sur PostgreSQL, migrations cohérentes, contrôles OpenAPI stricts et healthcheck OK. Aucun déploiement Render confirmé. Airflow, extraction, Metabase et IA ne sont pas encore implémentés.
 
 ## Périmètre technique envisagé
 
@@ -39,9 +39,9 @@ DocuMind est un projet d'apprentissage professionnel **en cours de conception**.
 
 ## Démonstration
 
-Pas de démonstration publique à D0. Le lien de code renvoie au présent dépôt et la fiche Abyss Showcase présente uniquement les **intentions et l'architecture**. D1–D5 seront développés et validés séparément.
+Aucune démonstration publique de l'application complète à ce stade. Le lien de code renvoie au présent dépôt et la fiche Abyss Showcase montre toujours les **intentions et l'architecture D0**. Le backend D1 est validé localement ; D2–D5 restent à développer.
 
-Licence et politique de contribution : à définir avant D1.
+Licence et politique de contribution : à préciser avant publication de la V1.
 
 ## D1 — Django REST / PostgreSQL
 
@@ -57,7 +57,8 @@ docker compose exec api python manage.py test documents -v 2
 - Imports locaux uniquement par session authentifiée et rôle `documind_operator` ou administrateur.
 - D1 vérifie la nature et la taille des fichiers, pas leur contenu métier (D2).
 - PostgreSQL Docker : port hôte `15434`, volume persistant ; ne pas arrêter avec `docker compose down -v`.
-- [Contrat de déploiement D0.1](docs/DEPLOIEMENT-D0.1.md) ; [État D1](docs/ETAT-D1.md).
+- [Contrat de déploiement D0.1](docs/DEPLOIEMENT-D0.1.md) ; [État D1 et validation du 9 novembre](docs/ETAT-D1.md).
+- Recette officielle locale : `./scripts/verify-d1.ps1` sous PowerShell avec Docker Desktop.
 
 ### Render : coût 0 € et données fictives
 
