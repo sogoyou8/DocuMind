@@ -42,7 +42,7 @@ Un lancement plus léger `.\scripts\verify-d2.ps1 -SkipAirflow` teste les transf
 Airflow UI locale : `http://127.0.0.1:8088` ; l'identifiant administrateur et le mot de passe générés sont visibles dans les journaux Airflow locaux, à ne jamais publier. Le service peut être arrêté avec `docker compose --profile pipeline stop airflow`. **Ne pas utiliser `docker compose down -v`** : cela détruirait les volumes de base et d'Airflow.
 
 ## État de vérification
-Code D2 sur branche `work/d2-pandas-airflow`, tests ajoutés et script de recette disponible. La réussite de ces tests et du DAG dans l'environnement Docker de l'utilisateur doit être **observée** avant de fusionner la branche ou d'affirmer D2 validé. Les quotas GitHub Actions étant épuisés, la validation locale remplace la CI distante.
+**D2 valide localement le 9 novembre 2026 :** les 30 tests Django / PostgreSQL ont reussi, ainsi que les migrations, la validation OpenAPI, le rejeu idempotent et le test du DAG Apache Airflow 3.4.0. GitHub Actions reste inutilise car les quotas mensuels sont epuises. Le service Render Free conserve une demo D1 en lecture seule.
 
 ## Recette locale du 9 novembre 2026 - preuves et reprise Airflow
 
@@ -56,9 +56,18 @@ Le journal fourni confirme :
 
 La premiere tentative Airflow s'est arretee sur `Database migration required` au moment du premier `airflow dags list`. Les migrations metier PostgreSQL ne remplacent pas le schema des metadonnees Airflow. Le script a ete corrige pour stopper Airflow, executer `airflow db migrate` sur son volume local, verifier `airflow db check-migrations`, puis attendre de maniere tolerante l'enregistrement du DAG (y compris les messages stderr transitoires sur Windows PowerShell).
 
-**Porte de sortie restante :** obtenir la reussite de `airflow dags test documind_d2_ingestion` lors d'une nouvelle execution de `scripts/verify-d2.ps1`. Les tests metier sont valides, mais la validation de l'orchestration complete reste ouverte. La PR #3 doit rester non fusionnee jusqu'a cette preuve.
+**Porte de sortie franchie le 9 novembre 2026 :** la nouvelle execution de `scripts/verify-d2.ps1` s'est terminee par `D2 LOCAL OK`. Le DAG `documind_d2_ingestion` a ete charge et son `DagRun` s'est termine avec `state=success`, apres la reussite de la tache `process_received_documents`. Cette execution a traite 0 nouveau document, le corpus etant deja integre ; c'est une validation du DAG et du worker a vide, et non une preuve d'un nouveau traitement via Airflow.
 
 ## Hors D2
 - Metabase, réconciliation BI et vues SQL analytiques : D3.
 - ChromaDB, Ollama, LangGraph, citations RAG : D4.
 - Interface React complète et démonstration utilisateur finale : D5.
+
+## Preuves finales D2 - recette du 9 novembre 2026
+
+- `Ran 30 tests` puis `OK` : tests D1 et D2 sur PostgreSQL reussis, migrations sans divergence.
+- Corpus synthetique : 3 documents acceptes, 1 rejete ; 3 factures valides pour **240,00 EUR TTC**. Deuxieme lecture : `skipped=True` sur les quatre fichiers, sans doublons.
+- `D2 LOCAL VERIFIED` : totaux, anomalies et idempotence controles par la base de donnees.
+- Airflow 3.4.0 : `Database migration done!`, DAG `documind_d2_ingestion` detecte, execution de `process_received_documents` avec etat `success`, puis `DagRun Finished ... state=success` et `D2 LOCAL OK`.
+- Portee de la preuve : 0 document restait en attente lors de l'execution Airflow ; le chemin du DAG a fonctionne mais une ingestion Airflow avec file non vide n'a pas encore ete observee.
+- Pas de service Airflow public ni de base de donnees payante. D3 (BI), D4 (RAG), D5 (interface) restent a developper.
