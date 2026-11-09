@@ -8,6 +8,9 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Sum
 
 from documents.models import ChunkReference, Document, Invoice
+from documents.pipeline.fixtures import example_files
+from documents.bi.fixtures import d3_example_files
+import hashlib
 from documents.rag.graph import answer_question
 from documents.rag.indexer import index_document
 from documents.rag.store import collection
@@ -59,8 +62,12 @@ class Command(BaseCommand):
         if malicious["status"] != "abstained" or malicious["citations"]:
             raise CommandError("Prompt-injection refusal check failed.")
 
+        fixture_hashes = [
+            hashlib.sha256(raw).hexdigest()
+            for _, raw in example_files() + d3_example_files()
+        ]
         totals = Invoice.objects.filter(
-            document__source=Document.Source.UPLOAD,
+            document__sha256__in=fixture_hashes,
             document__state__in=[Document.State.ACCEPTED, Document.State.INDEXED],
         ).aggregate(s=Sum("total"))["s"]
         if totals != Decimal("1344.00"):
