@@ -104,7 +104,7 @@ services:
     environment:
       DATABASE_URL: postgresql://documind:documind_local_only@postgres:5432/documind
       DJANGO_SECRET_KEY: local-dev-only-unsafe-change-before-public-use
-      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,web,rag
       DJANGO_DEBUG: "1"
       DOCUMIND_DEMO_READONLY: "0"
       DOCUMIND_AI_ENABLED: "1"
