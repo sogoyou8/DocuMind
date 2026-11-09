@@ -90,7 +90,10 @@ CSRF_TRUSTED_ORIGINS = [v.strip() for v in
 # Vite's local /api reverse proxy preserves first-party CSRF protection.
 # Do not trust local development origins in Render's read-only production.
 if DEBUG and not DEMO_READONLY:
-    CSRF_TRUSTED_ORIGINS += ["http://127.0.0.1:5173", "http://localhost:5173"]
+    CSRF_TRUSTED_ORIGINS += [
+        "http://127.0.0.1:5173", "http://localhost:5173",
+        "http://web:5173",
+    ]
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
