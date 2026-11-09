@@ -1,10 +1,10 @@
 # DocuMind
 
-**DOC 01 — Plateforme d'intelligence documentaire | D1 : backend local validé**
+**DOC 01 — Plateforme d'intelligence documentaire | D1 : backend local validé et Render Free en ligne**
 
 DocuMind est un projet d'apprentissage professionnel **en cours de développement**. Son ambition est de traiter des documents d'entreprise fictifs (PDF textuels, CSV et XLSX), de structurer les informations dans PostgreSQL, d'orchestrer les traitements avec Airflow et d'offrir une analyse BI et un assistant documentaire IA local.
 
-> **État réel :** D0 documenté et D1 fusionné dans `main` après recette locale du 9 novembre 2026 : 11 tests Django réussis sur PostgreSQL, migrations cohérentes, contrôles OpenAPI stricts et healthcheck OK. Aucun déploiement Render confirmé. Airflow, extraction, Metabase et IA ne sont pas encore implémentés.
+> **État réel :** D0 documenté et D1 fusionné dans `main` après recette locale du 9 novembre 2026 : 11 tests Django réussis sur PostgreSQL, migrations cohérentes, contrôles OpenAPI stricts et healthcheck OK. Déploiement Render gratuit **Live** le 9 novembre 2026 : migrations et initialisation de 3 exemples synthétiques réussies, service Gunicorn en ligne et healthcheck HTTP 200. L'API reste en lecture seule sur Render ; pas de base PostgreSQL hébergée ni de frais engagés. Airflow, extraction, Metabase et IA ne sont pas encore implémentés.
 
 ## Périmètre technique envisagé
 
@@ -35,11 +35,11 @@ DocuMind est un projet d'apprentissage professionnel **en cours de développemen
 ## Abyss Showcase
 
 - [Fiche DocuMind](https://abyss-public-showcase.vercel.app/projects/documind) — état D0, schémas de conception, boutons **Code source** et **Document**.
-- Il n'existe **aucune démo** de l'application à ce stade. Ne pas confondre les schémas pédagogiques avec des captures d'un service exécuté.
+- Le socle backend D1 fonctionne sur Render, mais **aucune démo visuelle du produit Full Stack V1 n'existe encore**. Les schémas de la fiche restent des conceptions, pas des captures d'une application complète.
 
 ## Démonstration
 
-Aucune démonstration publique de l'application complète à ce stade. Le lien de code renvoie au présent dépôt et la fiche Abyss Showcase montre toujours les **intentions et l'architecture D0**. Le backend D1 est validé localement ; D2–D5 restent à développer.
+Une **prévisualisation publique du socle backend D1** existe sur Render, mais aucune démonstration de l'application Full Stack complète à ce stade. Le lien de code renvoie au présent dépôt et la fiche Abyss Showcase montre toujours les **intentions et l'architecture D0**. Le backend D1 est validé localement ; D2–D5 restent à développer.
 
 Licence et politique de contribution : à préciser avant publication de la V1.
 
@@ -62,4 +62,9 @@ docker compose exec api python manage.py test documents -v 2
 
 ### Render : coût 0 € et données fictives
 
-`render.yaml` prépare un **Web Service Render gratuit** en lecture seule, sans base PostgreSQL Render (celle-ci expirerait après 30 jours). Trois fiches synthétiques sont réinitialisées sur SQLite éphémère au redémarrage. Le backend local utilise PostgreSQL. Aucune démo complète, aucun hébergement en production ni conservation des données ne sont prétendus tant que les contrôles réels de Render n'ont pas été effectués.
+**Service actuellement déployé :** [DocuMind D1 API](https://documind-d1-api-htpg.onrender.com) (Render Web Service Free, région Francfort), via `render.yaml`. Render confirme un déploiement `Live`, les migrations Django et le healthcheck `GET /api/v1/health/` HTTP 200. Le mode public `DOCUMIND_DEMO_READONLY=1` expose trois **fiches fictives** stockées sur SQLite éphémère ; il n'autorise pas les imports publics. Le backend local, lui, utilise PostgreSQL. Le déploiement n'embarque ni Airflow, ni Metabase, ni Ollama. Il ne garantit pas la persistance des données ni la disponibilité 24/7. Les autres routes ont été couvertes par les tests Django locaux ; un smoke test HTTP public complémentaire reste disponible.
+
+
+### Recette HTTP de la démo Render
+
+En PowerShell : `./scripts/verify-d1-render.ps1`. Ce script contrôle les routes publiques, les trois exemples synthétiques et l'interdiction d'écriture via un POST non authentifié. Un éventuel sommeil de l'instance Render Free peut ralentir la première requête. **La preuve d'exécution de ce script depuis l'extérieur n'est pas encore enregistrée dans le dépôt.**
