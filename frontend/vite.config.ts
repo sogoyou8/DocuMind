@@ -9,8 +9,9 @@ export default defineConfig({
     host: "127.0.0.1",
     port: 5173,
     strictPort: true,
+    allowedHosts: ["web"],
     proxy: {
-      "/api": { target: backend, changeOrigin: true, secure: false },
+      "/api": { target: backend, changeOrigin: false, secure: false },
     },
   },
   test: {
