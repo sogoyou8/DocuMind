@@ -1,10 +1,10 @@
 # DocuMind
 
-**DOC 01 — Plateforme d'intelligence documentaire | D1 validé · D2 Python/Pandas + Airflow en cours de recette**
+**DOC 01 — Plateforme d'intelligence documentaire | D1 et D2 valides localement ; Render Free en lecture seule**
 
 DocuMind est un projet d'apprentissage professionnel **en cours de développement**. Son ambition est de traiter des documents d'entreprise fictifs (PDF textuels, CSV et XLSX), de structurer les informations dans PostgreSQL, d'orchestrer les traitements avec Airflow et d'offrir une analyse BI et un assistant documentaire IA local.
 
-> **État réel :** D0 documenté et D1 fusionné dans `main` après recette locale du 9 novembre 2026 : 11 tests Django réussis sur PostgreSQL, migrations cohérentes, contrôles OpenAPI stricts et healthcheck OK. Déploiement Render gratuit **Live** le 9 novembre 2026 : migrations et initialisation de 3 exemples synthétiques réussies, service Gunicorn en ligne et healthcheck HTTP 200. L'API reste en lecture seule sur Render ; pas de base PostgreSQL hébergée ni de frais engagés. **D2 en branche de travail : extraction Pandas/PDF/XLSX, qualité, factures PostgreSQL et DAG Airflow local implémentés, mais non encore validés sur Docker**. Metabase et IA ne sont pas encore implémentés.
+> **État réel :** D0 documenté et D1 fusionné dans `main` après recette locale du 9 novembre 2026 : 11 tests Django réussis sur PostgreSQL, migrations cohérentes, contrôles OpenAPI stricts et healthcheck OK. Déploiement Render gratuit **Live** le 9 novembre 2026 : migrations et initialisation de 3 exemples synthétiques réussies, service Gunicorn en ligne et healthcheck HTTP 200. L'API reste en lecture seule sur Render ; pas de base PostgreSQL hébergée ni de frais engagés. **D2 valide localement le 9 novembre 2026 : 30/30 tests reussis sur PostgreSQL, 3 factures fictives acceptees / 1 document rejete, 240 EUR TTC, rejeu sans doublons et execution du DAG Airflow reussie.** Metabase et IA ne sont pas encore implémentés.
 
 ## Périmètre technique envisagé
 
@@ -39,7 +39,7 @@ DocuMind est un projet d'apprentissage professionnel **en cours de développemen
 
 ## Démonstration
 
-Une **prévisualisation publique du socle backend D1** existe sur Render, mais aucune démonstration de l'application Full Stack complète à ce stade. Le lien de code renvoie au présent dépôt et la fiche Abyss Showcase montre toujours les **intentions et l'architecture D0**. Le backend D1 est validé localement ; D2 se développe sur `work/d2-pandas-airflow`, sans fusion tant que la recette locale complète ne passe pas. D3–D5 restent à développer.
+Une **prévisualisation publique du socle backend D1** existe sur Render, mais aucune démonstration de l'application Full Stack complète à ce stade. Le lien de code renvoie au présent dépôt et la fiche Abyss Showcase montre toujours les **intentions et l'architecture D0**. Le backend D1 et le pipeline D2 sont valides localement. La demo Render Free reste volontairement limitee aux metadonnees fictives et a la lecture seule. D3-D5 restent a developper.
 
 Licence et politique de contribution : à préciser avant publication de la V1.
 
@@ -69,7 +69,7 @@ docker compose exec api python manage.py test documents -v 2
 
 En PowerShell : `./scripts/verify-d1-render.ps1`. Ce script contrôle les routes publiques, les trois exemples synthétiques et l'interdiction d'écriture via un POST non authentifié. Un éventuel sommeil de l'instance Render Free peut ralentir la première requête. **La preuve d'exécution de ce script depuis l'extérieur n'est pas encore enregistrée dans le dépôt.**
 
-## D2 — Traitement documentaire déterministe (en cours de validation)
+## D2 — Traitement documentaire deterministe (recette locale reussie)
 
 Le pipeline D2 utilise **Pandas, openpyxl et pypdf** en local. Il extrait les tables CSV/XLSX ou les pages d'un PDF textuel, normalise les champs requis des factures (fournisseur, numéro, date, devise, HT, TVA, TTC), conserve la provenance et les anomalies, puis produit uniquement les factures acceptées. Les documents incohérents sont mis en quarantaine sans contribuer aux indicateurs. La reprise est idempotente par document/version.
 
@@ -80,4 +80,4 @@ Le pipeline D2 utilise **Pandas, openpyxl et pypdf** en local. Il extrait les ta
 - Corpus entièrement fictif et reproductible : 3 factures acceptées, 1 document rejeté ; montant validé attendu 240,00 EUR TTC (aucun montant inventé).
 - Documentation : [État et recette D2](docs/ETAT-D2.md).
 
-**Important :** la branche D2 n'est pas encore fusionnée ; ses tests sur Docker/Airflow doivent réussir avant de déclarer le lot terminé. Le Web Service Render Free reste celui de D1, en lecture seule, sans import ni Airflow hébergé.
+**Recette du 9 novembre 2026 :** `Ran 30 tests ... OK`, `D2 LOCAL VERIFIED` et `D2 LOCAL OK`, avec DAG Airflow termine en etat `success`. La tache Airflow n'a pas traite de nouveau document, puisque la file de traitement etait deja vide. Le service public Render Free reste une demo D1 en lecture seule, sans Airflow heberge.
