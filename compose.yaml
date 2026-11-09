@@ -26,6 +26,8 @@ services:
     volumes:
       - ./backend:/app
       - ./scripts:/workspace/scripts:ro
+      - ./compose.yaml:/workspace/compose.yaml:ro
+      - ./render.yaml:/workspace/render.yaml:ro
     # Static assets were collected at image build under /opt, outside ./backend bind mount.
     # Do not run collectstatic alongside live tests: it races with WhiteNoise scan.
     command: sh -c "python manage.py migrate --noinput && gunicorn documind_api.wsgi:application --bind 0.0.0.0:8000 --workers 2"
