@@ -61,7 +61,7 @@ def overview(request):
             Document.State.ACCEPTED, Document.State.INDEXED
         ]).count(),
         "airflow_enabled": False,
-        "ai_enabled": bool(settings.DOCUMIND_AI_ENABLED),
+        "ai_enabled": bool(settings.DOCUMIND_AI_ENABLED and not settings.DEMO_READONLY),
         "note": "Render: fictional D1 metadata only. Local D2/D3 and optional D4 service.",
     })
 
