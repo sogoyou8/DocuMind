@@ -45,6 +45,7 @@ services:
       AIRFLOW_HOME: /opt/airflow/state
       AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
       AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "False"
       PYTHONPATH: /opt/documind/backend
     ports:
       - "127.0.0.1:8088:8080"
