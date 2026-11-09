@@ -92,11 +92,15 @@ def answer_question(question: str, *, store=None, model=None, retriever=None):
             r"\b[A-Za-z]{2,}[A-Za-z0-9]*[-_]\d+[A-Za-z0-9-]*\b",
             state["question"],
         )
-        if identifiers and not any(
-            all(token.casefold() in e["text"].casefold() for token in identifiers)
-            for e in results
-        ):
-            results = []
+        if identifiers:
+            results = [
+                item for item in results
+                if all(token.casefold() in item["text"].casefold()
+                       for token in identifiers)
+            ]
+            # Renumber after filtering, so the LLM receives only valid E1..E4.
+            for index, item in enumerate(results, 1):
+                item["id"] = f"E{index}"
         return {"evidence": results}
 
     def route(state: RAGState):
