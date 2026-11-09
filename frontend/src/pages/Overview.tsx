@@ -105,7 +105,7 @@ export default function OverviewView({
         aside={<button type="button" className="text-button" onClick={() => onTab("analytics")}>Analyse <ArrowRight size={14}/></button>}>
         {real ? <SupplierBars rows={suppliers}/> :
           <EmptyState icon="chart" title="Données financières indisponibles"
-            description="Passez sur l'instance locale pour interroger les vues SQL."/ >}
+            description="Passez sur l'instance locale pour interroger les vues SQL."/>}
       </Pane>
       <Pane title="Intégrité & provenance" subtitle="Le circuit de confiance DocuMind">
         <div className="trust-steps">
