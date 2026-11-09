@@ -55,11 +55,10 @@ vite = (frontend / "vite.config.ts").read_text(encoding="utf-8")
 if "changeOrigin: false" not in vite or 'allowedHosts: ["web"]' not in vite:
     raise SystemExit("D5 Vite proxy origin/host isolation missing.")
 
-compose = (root / "compose.yaml").read_text(encoding="utf-8")
-if not compose.exists():
-    compose = (Path("/workspace/compose.yaml")).read_text(encoding="utf-8")
-else:
-    compose = compose.read_text(encoding="utf-8")
+compose_path = root / "compose.yaml"
+if not compose_path.exists():
+    compose_path = Path("/workspace/compose.yaml")
+compose = compose_path.read_text(encoding="utf-8")
 for token in ('profiles: ["ui"]', 'profiles: ["qa"]', 'profiles: ["ai"]',
               "127.0.0.1:5173:5173", "127.0.0.1:8001:8001"):
     if token not in compose:
