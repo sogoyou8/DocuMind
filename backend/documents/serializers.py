@@ -4,6 +4,7 @@ from pathlib import Path
 import zipfile
 
 from rest_framework import serializers
+from django.db import transaction
 from .models import Document, AuditEvent
 
 MAX_BYTES = 5 * 1024 * 1024
@@ -57,6 +58,7 @@ class DocumentCreateSerializer(serializers.Serializer):
         validate_uploaded_file(upload)
         return upload
 
+    @transaction.atomic
     def create(self, validated_data):
         upload = validated_data["file"]
         hasher = hashlib.sha256()
