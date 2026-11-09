@@ -4,7 +4,7 @@
 
 D4 transforme les **lignes CSV/XLSX ou pages PDF textuelles validées par D2** en passages recherchables localement, puis permet à un utilisateur authentifié de poser des questions avec des références vérifiables. Aucun modèle, fichier ni texte de facture n'est transmis à une API IA externe.
 
-**État : code D4 disponible sur une branche isolée, recette complète avec vrais modèles Ollama à valider localement avant fusion.** D0–D3 sont déjà fusionnés et vérifiés.
+**État : D4 validé localement le 9 novembre 2026** sur Docker Desktop, avec les vrais modèles Ollama et ChromaDB, après réussite complète des tests. Fusion GitHub et vérification Render sont des étapes distinctes.
 
 ## Architecture réelle
 
@@ -61,10 +61,23 @@ Le script :
 7. indexe les documents validés puis rejoue le processus et interroge les **vrais modèles** sur une facture connue, une facture inconnue et une instruction malveillante ;
 8. vérifie que les **1 344,00 EUR** du corpus synthétique D3 restent exacts après l'indexation.
 
-La preuve finale attendue est `D4 LOCAL OK`. Il faut conserver le journal d'exécution, les états `answered` et `abstained`, et examiner le résultat local avant toute fusion de la PR D4.
+**Preuve finale obtenue : `D4 LOCAL OK`.** Le script a exécuté les 10 tests D4 dans le conteneur IA, puis testé les vrais modèles Ollama/Chroma/LangGraph. Les réponses générées restent à contrôler individuellement : les tests ne garantissent pas l'exactitude universelle du LLM.
 
 Un lancement `-SkipCoreTests` accélère une nouvelle tentative **après** validation des régressions ; il ne constitue pas une recette initiale suffisante.
 
 ## Hors D4
 
 L'interface React/TypeScript, le cockpit mono-écran et la release V1.0 de DocuMind sont prévus en **D5**. Le service RAG local expose des routes API réelles, **pas encore une interface utilisateur finale**.
+
+## Preuves de recette du 9 novembre 2026
+
+- Précontrôle `D4 STATIC OK`, migrations `documents.0001` à `0004`, absence de migration manquante.
+- Première étape sur le backend standard : `Ran 47 tests ... OK (skipped=10)` ; les dix tests D4 sont volontairement désactivés sans l'environnement IA.
+- Téléchargement réel d'Ollama 0.12.11, des modèles `nomic-embed-text` et `qwen2.5:1.5b`, puis construction et démarrage de `documind-rag`.
+- **Deuxième étape dans le service RAG : `Ran 47 tests ... OK` sans saut**, couvrant l'indexation, les permissions, l'intégrité des sources, les fausses citations, les injections et l'abstention.
+- `D4 indexed_documents=7 eligible_candidates=7` : sept documents fictifs acceptés indexés.
+- `D4 LOCAL VERIFIED` : réponse factuelle sourcée sur `DM-2026-001` (120 EUR), abstention pour `ZXZ-9999` absent, refus d'une injection de consignes, avec les **vrais modèles locaux**.
+- `D3 SQL VERIFIED` : 15 factures fictives, 7 documents acceptés et 2 rejetés, **1 344,00 EUR TTC** conservés après indexation.
+- Fin du script : **`D4 LOCAL OK`**. Le RAG reste local ; aucun service IA public ou payant n'a été créé.
+
+**Limites de la preuve :** validation du scénario connu et des cas négatifs testés ; pas de mesure exhaustive de qualité sur des documents arbitraires. Les checks de sécurité réduisent les risques, mais ne garantissent pas l'absence de toute injection ou hallucination. Contrôle Render post-fusion à effectuer séparément.
