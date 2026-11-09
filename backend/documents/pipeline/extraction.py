@@ -4,8 +4,10 @@ This module has no Django dependencies and never sends data to a third party.
 A RawRecord represents one CSV logical record, one XLSX row, or one PDF page.
 """
 from dataclasses import dataclass
-from io import BytesIO
+from datetime import date, datetime
+from io import BytesIO, StringIO
 from typing import Any
+import csv
 
 MAX_SOURCE_BYTES = 5 * 1024 * 1024
 MAX_ROWS = 5000
@@ -45,13 +47,27 @@ def _csv_records(data: bytes) -> list[RawRecord]:
     import pandas as pd
 
     try:
-        # UTF-8 and Python CSV dialect sniffing: semicolon and comma are supported.
+        text = data.decode("utf-8-sig")
+        try:
+            dialect = csv.Sniffer().sniff(text[:4096], delimiters=",;\t")
+            delimiter = dialect.delimiter
+        except csv.Error:
+            # A single-column CSV can contain no delimiter at all.
+            delimiter = ","
+        headers = next(csv.reader(StringIO(text), delimiter=delimiter), [])
+        clean_headers = [str(h).strip().casefold() for h in headers]
+        if (not clean_headers or len(clean_headers) > MAX_COLUMNS or
+                any(not h for h in clean_headers) or
+                len(set(clean_headers)) != len(clean_headers)):
+            raise ExtractionError("INVALID_HEADER", "En-têtes CSV absents ou dupliqués.")
         table = pd.read_csv(
-            BytesIO(data), encoding="utf-8-sig", sep=None, engine="python",
+            BytesIO(data), encoding="utf-8-sig", sep=delimiter, engine="python",
             dtype=str, keep_default_na=False, nrows=MAX_ROWS + 1,
             on_bad_lines="error",
         )
-    except (UnicodeDecodeError, pd.errors.ParserError, ValueError, OSError) as exc:
+    except ExtractionError:
+        raise
+    except (UnicodeDecodeError, StopIteration, csv.Error, pd.errors.ParserError, ValueError, OSError) as exc:
         raise ExtractionError("CSV_PARSE_ERROR", "Impossible de lire le CSV UTF-8.") from exc
     if len(table) > MAX_ROWS:
         raise ExtractionError("ROW_LIMIT", "Maximum 5 000 lignes de données.")
@@ -102,8 +118,9 @@ def _xlsx_records(data: bytes) -> list[RawRecord]:
                 if len(values) > len(names) and any(v is not None for v in values[len(names):]):
                     raise ExtractionError("COLUMN_LIMIT", "Cellules hors en-têtes Excel.")
                 rows.append({
-                    key: (value.isoformat() if hasattr(value, "isoformat")
-                          else ("" if value is None else str(value)))
+                    key: (value.date().isoformat() if isinstance(value, datetime)
+                          else (value.isoformat() if isinstance(value, date)
+                          else ("" if value is None else str(value))))
                     for key, value in zip(names, values)
                 })
                 if len(rows) + len(result) > MAX_ROWS:
