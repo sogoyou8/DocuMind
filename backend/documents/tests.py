@@ -10,6 +10,17 @@ from rest_framework.test import APIClient
 from .models import Document, AuditEvent
 
 class ApiD1Tests(TestCase):
+    def test_upload_storage_aliases_are_configured(self):
+        from django.conf import settings
+        self.assertEqual(
+            settings.STORAGES["default"]["BACKEND"],
+            "django.core.files.storage.FileSystemStorage",
+        )
+        self.assertEqual(
+            settings.STORAGES["staticfiles"]["BACKEND"],
+            "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        )
+
     def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(username="operator", password="test-password-unique")
