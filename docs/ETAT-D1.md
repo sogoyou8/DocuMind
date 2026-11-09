@@ -27,3 +27,7 @@ docker compose exec api python manage.py test documents -v 2
 API locale : http://127.0.0.1:8000 ; les documents locaux exigent l'authentification et le groupe `documind_operator` pour les imports.
 
 **Attention :** l'existence des tests et de la CI ne constitue pas une validation d'exécution. Seuls leurs résultats effectifs permettront de marquer D1 « validé ».
+
+## OpenAPI : anomalie détectée et correction proposée
+
+Lors de la recette locale du 9 novembre 2026, les 9 tests Django réussissaient, mais la génération OpenAPI émettait 8 erreurs liées à deux vues non annotées (`health`, `overview`). `--validate` seul n'arrêtait pas le script. La branche D1 fournit maintenant des schémas de réponse explicites pour les deux vues, une vérification `--fail-on-warn` bloquante et un test de non-régression. **Ces corrections doivent être confirmées par une nouvelle recette locale avant fusion.** Le pipeline CI est en déclenchement manuel tant que les quotas Actions sont épuisés.
