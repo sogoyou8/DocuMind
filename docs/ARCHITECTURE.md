@@ -45,4 +45,4 @@ Metabase Open Source (profil Docker `analytics`) lit uniquement les vues `bi` vi
 
 Le mode Render Free garde son backend Django + SQLite éphémère, en lecture seule : la migration D3 vérifie la nature PostgreSQL avant de créer des vues. **Aucun Metabase public et aucune facture privée sur Render.**
 
-Voir [ETAT-D3.md](ETAT-D3.md) pour la recette et l'état de validation locale ; la présence du code ne démontre pas encore l'exécution réelle de l'instance Metabase.
+La recette complète D3 du 9 novembre 2026 a validé **36 tests Django/PostgreSQL**, l'accès SQL limité au schéma BI, les **12 questions SQL réellement exécutées par Metabase**, et la réconciliation des sommes mensuelles/fournisseurs/devises. Voir [ETAT-D3.md](ETAT-D3.md) pour les preuves et limites. Cette validation ne constitue pas encore une revue visuelle UX de Metabase ; aucun Metabase n'est déployé publiquement.
