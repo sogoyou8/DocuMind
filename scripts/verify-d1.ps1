@@ -8,6 +8,10 @@ if ($LASTEXITCODE -ne 0) { throw "Docker Compose build/start failed" }
 docker compose exec -T api python manage.py check
 if ($LASTEXITCODE -ne 0) { throw "Django system check failed" }
 
+# WhiteNoise must read prebuilt static assets that are not hidden by the Windows bind mount.
+docker compose exec -T api sh -c "test -s /opt/documind-staticfiles/admin/css/base.css"
+if ($LASTEXITCODE -ne 0) { throw "Built Django static assets unavailable to WhiteNoise" }
+
 docker compose exec -T api python manage.py makemigrations --check --dry-run
 if ($LASTEXITCODE -ne 0) { throw "Migration drift detected" }
 
