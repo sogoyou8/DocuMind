@@ -26,6 +26,7 @@ services:
     volumes:
       - ./backend:/app
       - ./scripts:/workspace/scripts:ro
+      - ./frontend:/workspace/frontend:ro
       - ./compose.yaml:/workspace/compose.yaml:ro
       - ./render.yaml:/workspace/render.yaml:ro
     # Static assets were collected at image build under /opt, outside ./backend bind mount.
