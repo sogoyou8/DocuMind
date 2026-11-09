@@ -3,7 +3,7 @@ import {
   FileX2, Link2, ShieldCheck,
 } from "lucide-react";
 import type { Analytics, Overview } from "../types";
-import { money, monthName, monthlyEUR, percent } from "../format";
+import { money, monthlyEUR, percent } from "../format";
 import { EmptyState, Hint, MonthlyChart, Pane, StatCard, StatusDonut, SupplierBars } from "../components/Visuals";
 
 export default function AnalyticsView({
