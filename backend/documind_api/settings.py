@@ -61,7 +61,9 @@ TIME_ZONE = "Europe/Paris"
 USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+# In Docker, collect static assets during image build outside the /app bind mount.
+# Render (non-Docker) keeps the normal build-time staticfiles directory.
+STATIC_ROOT = Path(os.getenv("DJANGO_STATIC_ROOT", str(BASE_DIR / "staticfiles")))
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
