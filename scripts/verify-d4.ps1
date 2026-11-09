@@ -33,6 +33,23 @@ if ($LASTEXITCODE -ne 0) { throw "Cannot pause local Airflow" }
 docker compose --profile ai up -d ollama
 if ($LASTEXITCODE -ne 0) { throw "Ollama local startup failed" }
 
+$ollamaReady = $false
+for ($i = 0; $i -lt 35; $i++) {
+    try {
+        $tags = Invoke-RestMethod -Uri "http://127.0.0.1:11434/api/tags" -TimeoutSec 5
+        if ($null -ne $tags.models) {
+            $ollamaReady = $true
+            break
+        }
+    } catch {
+        # Docker started but the local Ollama HTTP listener is still booting.
+    }
+    Start-Sleep -Seconds 3
+}
+if (-not $ollamaReady) {
+    throw "Ollama local HTTP endpoint unavailable. Inspect docker compose --profile ai logs --tail=80 ollama"
+}
+
 Write-Host "Installing local embedding model (one-time download)..." -ForegroundColor Cyan
 docker compose --profile ai exec -T ollama ollama pull nomic-embed-text
 if ($LASTEXITCODE -ne 0) { throw "Embedding model nomic-embed-text unavailable" }
