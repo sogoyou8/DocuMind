@@ -1,8 +1,6 @@
 name: DocuMind D1 CI
 on:
-  push:
-    branches: [main, work/d1-render-foundation]
-  pull_request:
+  workflow_dispatch: # Quotas épuisés : lancement manuel uniquement quand disponibles
 permissions:
   contents: read
 jobs:
@@ -44,4 +42,4 @@ jobs:
       - name: Run D1 test suite on real PostgreSQL
         run: python manage.py test documents -v 2
       - name: Inspect OpenAPI generation
-        run: python manage.py spectacular --file /tmp/documind-openapi.yaml --validate
+        run: python manage.py spectacular --file /tmp/documind-openapi.yaml --validate --fail-on-warn
