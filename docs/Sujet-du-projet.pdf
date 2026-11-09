@@ -1,0 +1,188 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 4346 >>
+stream
+1 1 1 rg 0 0 595 842 re f
+0.07 0.35 0.46 rg 0 815 595 27 re f
+0.07 0.35 0.46 rg BT /F2 24 Tf 1 0 0 1 52 750 Tm (DocuMind - Sujet du projet) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 705 Tm (Cahier des charges autonome - D0 - 9 novembre 2026) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 676.3 Tm (1. Contexte) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 652.3 Tm (Une organisation fictive re\347oit des factures, bons de commande, PDF, fichiers CSV et classeurs) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 638.5999999999999 Tm (Excel. Les informations sont dispers\351es, les contr\364les sont manuels et les tableaux de bord ne) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 624.8999999999999 Tm (permettent pas toujours de remonter \340 la source d'un chiffre.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 596.1999999999998 Tm (2. Mission) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 572.1999999999998 Tm (Construire DocuMind, plateforme locale d'intelligence documentaire. Elle doit r\351ceptionner des) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 558.4999999999998 Tm (fichiers autoris\351s, extraire des donn\351es utiles, v\351rifier leur coh\351rence, historiser les) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 544.7999999999997 Tm (traitements, produire des indicateurs et r\351pondre \340 des questions avec un assistant IA local) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 531.0999999999997 Tm (citant ses sources.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 502.39999999999964 Tm (Le projet d\351montrera la compl\351mentarit\351 de Django REST, Python/Pandas, PostgreSQL, Airflow,) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 488.69999999999965 Tm (Metabase, ChromaDB, Ollama et LangGraph. Une interface React/TypeScript offrira un point d'entr\351e) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 474.99999999999966 Tm (unique. Aucune d\351pendance AWS ou API IA payante.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 450.29999999999967 Tm (3. Utilisateurs) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 426.29999999999967 Tm (-   Op\351rateur : importe, consulte l'\351tat et relance des traitements autoris\351s.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 403.5999999999997 Tm (-   Analyste : consulte les rapports et interroge les documents sans modifier la source.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 384.8999999999997 Tm (-   Administrateur : g\350re les acc\350s, param\350tres et journaux locaux.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 360.1999999999997 Tm (4. Sources) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 336.1999999999997 Tm (-   PDF textuels avec pages extractibles ;) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 313.4999999999997 Tm (-   CSV UTF-8 structur\351s ;) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 294.7999999999997 Tm (-   classeurs XLSX sans macros ;) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 276.09999999999974 Tm (-   corpus de d\351monstration enti\350rement synth\351tique ou explicitement autoris\351.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 251.39999999999975 Tm (OCR, scans, pi\350ces manuscrites et donn\351es confidentielles r\351elles sont hors p\351rim\350tre V1.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 226.69999999999976 Tm (5. Fonctionnalit\351s attendues) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 202.69999999999976 Tm (-   F01 Import : d\351poser un document ou un lot, contr\364ler type, taille et empreinte SHA-256,) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 188.99999999999977 Tm (    attribuer un ID et conserver la source dans un stockage non public.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 166.29999999999978 Tm (-   F02 Tra\347abilit\351 : enregistrer auteur, date, fichier, versions, \351tapes, erreurs et \351v\351nements) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 152.5999999999998 Tm (    d'audit.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 133.8999999999998 Tm (-   F03 \311tats : RECEIVED -> VALIDATING -> ACCEPTED -> INDEXED ; REJECTED pour un \351chec avec motif) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 120.1999999999998 Tm (    et relance autoris\351e.) Tj ET
+0.42 0.49 0.54 rg BT /F1 8 Tf 1 0 0 1 52 43 Tm (DOCUMIND - SUJET D0 - 1 / 4) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 5229 >>
+stream
+1 1 1 rg 0 0 595 842 re f
+0.07 0.35 0.46 rg 0 815 595 27 re f
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 750 Tm (-   F04 Extraction : extraire du PDF textuel et des tableaux CSV/XLSX, sans supposer que tous les) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 736.3 Tm (    documents poss\350dent les m\352mes colonnes.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 717.5999999999999 Tm (-   F05 Normalisation : identifier fournisseur, facture, date, devise, HT, TVA et TTC selon des) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 703.8999999999999 Tm (    r\350gles explicites ; conserver la page ou ligne source.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 685.1999999999998 Tm (-   F06 Contr\364les : v\351rifier champs obligatoires, formats, doublons et coh\351rence HT + TVA = TTC ;) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 671.4999999999998 Tm (    mettre en quarantaine les anomalies.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 652.7999999999997 Tm (-   F07 API : CRUD autoris\351 de documents, imports, \351tats, anomalies et agr\351gats via Django REST ;) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 639.0999999999997 Tm (    documentation OpenAPI.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 620.3999999999996 Tm (-   F08 Airflow : DAG de traitement et actualisation planifi\351e avec reprise idempotente et) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 606.6999999999996 Tm (    journal d'ex\351cution.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 587.9999999999995 Tm (-   F09 BI : exposer \340 Metabase des vues PostgreSQL valid\351es : volumes, anomalies, factures et) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 574.2999999999995 Tm (    d\351penses par fournisseur/p\351riode.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 555.5999999999995 Tm (-   F10 RAG : indexer des extraits et m\351tadonn\351es dans ChromaDB, rechercher les sources puis) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 541.8999999999994 Tm (    g\351n\351rer une explication avec Ollama et LangGraph.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 523.1999999999994 Tm (-   F11 R\351ponses \351tay\351es : citer document, page/ligne et passage ; indiquer l'absence de preuve) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 509.4999999999994 Tm (    lorsque n\351cessaire.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 490.7999999999994 Tm (-   F12 D\351mo : jeu de donn\351es reproductible et sc\351narios de succ\350s, rejet, reprise, recherche et) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 477.0999999999994 Tm (    abstention.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 452.3999999999994 Tm (6. R\350gles m\351tier) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 428.3999999999994 Tm (-   La source d'un montant m\351tier est PostgreSQL apr\350s validation, pas une valeur devin\351e par le) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 414.6999999999994 Tm (    LLM.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 391.99999999999943 Tm (-   Aucun fichier rejet\351 ne contribue aux KPI.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 373.29999999999944 Tm (-   Le rejeu d'un m\352me import/version ne cr\351e pas de doublon m\351tier.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 354.59999999999945 Tm (-   Toute donn\351e extraite reste li\351e \340 son document et \340 sa provenance.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 335.89999999999947 Tm (-   L'index vectoriel ne remplace pas la base relationnelle pour les agr\351gats.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 317.1999999999995 Tm (-   Les instructions pr\351sentes dans les documents import\351s sont des donn\351es non fiables, jamais) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 303.4999999999995 Tm (    des ordres au syst\350me.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 284.7999999999995 Tm (-   L'assistant ne peut ni lancer des commandes syst\350me, ni \351crire librement dans PostgreSQL, ni) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 271.0999999999995 Tm (    envoyer des documents \340 une API distante.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 252.39999999999952 Tm (-   Toute action sensible exige une permission c\364t\351 backend et une trace d'audit.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 227.69999999999953 Tm (7. Architecture impos\351e) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 203.69999999999953 Tm (-   Frontend : React + TypeScript.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 180.99999999999955 Tm (-   Backend : Python + Django REST Framework, OpenAPI.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 162.29999999999956 Tm (-   M\351tadonn\351es et r\351f\351rentiel : PostgreSQL.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 143.59999999999957 Tm (-   Extraction/qualit\351 : Python et Pandas.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 124.89999999999958 Tm (-   Orchestration : Apache Airflow.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 106.19999999999958 Tm (-   Tableaux de bord : Metabase sur vues SQL en lecture seule.) Tj ET
+0.42 0.49 0.54 rg BT /F1 8 Tf 1 0 0 1 52 43 Tm (DOCUMIND - SUJET D0 - 2 / 4) Tj ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 4920 >>
+stream
+1 1 1 rg 0 0 595 842 re f
+0.07 0.35 0.46 rg 0 815 595 27 re f
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 750 Tm (-   Recherche documentaire : ChromaDB.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 731.3 Tm (-   Assistant local : Ollama + LangGraph.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 712.5999999999999 Tm (-   Services reproductibles : Docker Compose, d\351marrage par profils.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 693.8999999999999 Tm (-   Tests : pytest, tests d'API, tests d'int\351gration et sc\351nario de bout en bout.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 669.1999999999998 Tm (8. Mod\350le de donn\351es minimal) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 645.1999999999998 Tm (Document \(id, fichier, format, sha256, \351tat, horodatages\), ProcessingRun \(id, document, version,) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 631.4999999999998 Tm (\351tat, erreur\), ExtractedRecord \(id, document, run, source_locator, champs\), QualityIssue \(r\350gle,) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 617.7999999999997 Tm (s\351v\351rit\351, diagnostic\), Supplier, Invoice \(date, HT, TVA, TTC, devise\), ChunkReference \(document,) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 604.0999999999997 Tm (page, index\) et AuditEvent \(acteur, action, cible, r\351sultat\).) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 575.3999999999996 Tm (Les migrations et cardinalit\351s seront pr\351cis\351es lors de D1.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 550.6999999999996 Tm (9. Contraintes non fonctionnelles) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 526.6999999999996 Tm (-   Ex\351cution locale sous Windows 11/Docker, sans service cloud payant.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 503.99999999999955 Tm (-   Services s\351parables pour limiter l'utilisation m\351moire ; l'API doit rester disponible sans) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 490.29999999999956 Tm (    LLM.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 471.59999999999957 Tm (-   Donn\351es de test fictives ; aucun secret, upload, extrait priv\351 ni base r\351elle dans Git.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 452.8999999999996 Tm (-   Refus des extensions ou structures non autoris\351es, pr\351vention des travers\351es de chemin,) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 439.1999999999996 Tm (    limitation des tailles, validation des autorisations.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 420.4999999999996 Tm (-   Logs et erreurs exploitables, tests automatis\351s, documentation claire et restauration du) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 406.7999999999996 Tm (    corpus synth\351tique.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 382.0999999999996 Tm (10. Livrables) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 358.0999999999996 Tm (-   D\351p\364t Git avec README, sources, Docker Compose, .env.example et documentation.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 335.39999999999964 Tm (-   Diagrammes UML \(composants, classes, s\351quence et \351tats\).) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 316.69999999999965 Tm (-   API OpenAPI, migrations SQL et tests.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 297.99999999999966 Tm (-   Pipelines Python/Pandas et DAG Airflow.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 279.29999999999967 Tm (-   Vues analytiques et dashboard Metabase.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 260.5999999999997 Tm (-   Assistant local RAG/Ollama/LangGraph sourc\351.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 241.8999999999997 Tm (-   Corpus synth\351tique, recette, captures authentiques et d\351monstration reproductible.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 217.1999999999997 Tm (11. Crit\350res de validation) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 193.1999999999997 Tm (-   V01 : importer les trois formats de r\351f\351rence et obtenir un \351tat et une trace par document.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 170.49999999999972 Tm (-   V02 : rejouer le traitement sans doubler les factures ni les KPI.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 151.79999999999973 Tm (-   V03 : rejeter un document invalide, enregistrer sa cause et l'exclure des agr\351gats.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 133.09999999999974 Tm (-   V04 : v\351rifier la concordance des m\351triques Metabase avec des requ\352tes SQL ind\351pendantes.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 114.39999999999974 Tm (-   V05 : r\351pondre \340 une question pr\351sente avec citation v\351rifiable ; s'abstenir sur une question) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 100.69999999999973 Tm (    absente.) Tj ET
+0.42 0.49 0.54 rg BT /F1 8 Tf 1 0 0 1 52 43 Tm (DOCUMIND - SUJET D0 - 3 / 4) Tj ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 12 0 R >>
+endobj
+12 0 obj
+<< /Length 1485 >>
+stream
+1 1 1 rg 0 0 595 842 re f
+0.07 0.35 0.46 rg 0 815 595 27 re f
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 750 Tm (-   V06 : v\351rifier permissions, validations de fichiers et non-exfiltration.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 60 731.3 Tm (-   V07 : ex\351cuter tests API/Python et sc\351nario complet, avec preuves et limites consign\351es.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 706.5999999999999 Tm (12. Hors p\351rim\350tre V1) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 682.5999999999999 Tm (OCR des scans, documents manuscrits, comptabilit\351 r\351elle, paiements, ERP, d\351cisions financi\350res) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 668.8999999999999 Tm (automatiques, LLM entra\356n\351 sur mesure, int\351grations cloud et h\351bergement public d'une API.) Tj ET
+0.09 0.42 0.51 rg BT /F2 14.8 Tf 1 0 0 1 52 640.1999999999998 Tm (13. Plan) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 616.1999999999998 Tm (D0 : cahier des charges, architecture, UML, crit\350res. D1 : API et PostgreSQL. D2 : Pandas et) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 602.4999999999998 Tm (Airflow. D3 : Metabase. D4 : RAG et IA locale. D5 : stabilisation et V1.0.) Tj ET
+0.12 0.17 0.22 rg BT /F1 10.1 Tf 1 0 0 1 52 573.7999999999997 Tm (\311tat au D0 : sp\351cifications uniquement ; aucune fonctionnalit\351 logicielle valid\351e \340 ce jour.) Tj ET
+0.42 0.49 0.54 rg BT /F1 8 Tf 1 0 0 1 52 43 Tm (DOCUMIND - SUJET D0 - 4 / 4) Tj ET
+endstream
+endobj
+xref
+0 13
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000134 00000 n 
+0000000231 00000 n 
+0000000333 00000 n 
+0000000469 00000 n 
+0000004866 00000 n 
+0000005002 00000 n 
+0000010282 00000 n 
+0000010419 00000 n 
+0000015391 00000 n 
+0000015529 00000 n 
+trailer
+<< /Size 13 /Root 1 0 R >>
+startxref
+17066
+%%EOF
