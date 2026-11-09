@@ -44,6 +44,27 @@ def validate_uploaded_file(upload):
     upload.seek(0)
     return FORMATS[suffix]
 
+
+class HealthResponseSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=["ok"])
+    service = serializers.CharField()
+
+
+class HealthUnavailableSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=["unavailable"])
+
+
+class OverviewResponseSerializer(serializers.Serializer):
+    mode = serializers.ChoiceField(choices=["synthetic-demo", "local"])
+    total = serializers.IntegerField(min_value=0)
+    received = serializers.IntegerField(min_value=0)
+    rejected = serializers.IntegerField(min_value=0)
+    processed = serializers.IntegerField(min_value=0)
+    airflow_enabled = serializers.BooleanField()
+    ai_enabled = serializers.BooleanField()
+    note = serializers.CharField()
+
+
 class DocumentReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
