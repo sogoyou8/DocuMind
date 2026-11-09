@@ -46,3 +46,11 @@ Metabase Open Source (profil Docker `analytics`) lit uniquement les vues `bi` vi
 Le mode Render Free garde son backend Django + SQLite éphémère, en lecture seule : la migration D3 vérifie la nature PostgreSQL avant de créer des vues. **Aucun Metabase public et aucune facture privée sur Render.**
 
 La recette complète D3 du 9 novembre 2026 a validé **36 tests Django/PostgreSQL**, l'accès SQL limité au schéma BI, les **12 questions SQL réellement exécutées par Metabase**, et la réconciliation des sommes mensuelles/fournisseurs/devises. Voir [ETAT-D3.md](ETAT-D3.md) pour les preuves et limites. Cette validation ne constitue pas encore une revue visuelle UX de Metabase ; aucun Metabase n'est déployé publiquement.
+
+## D4 — Assistant RAG local, barrières de confiance
+
+- `rag` est un second service Django local (profil Docker `ai`), derrière `127.0.0.1:8001`, distinct du backend standard et de Render Free. `Ollama` est accessible uniquement en local sur le réseau Docker et sur `127.0.0.1:11434` pour l'hôte. Aucune dépendance Ollama, ChromaDB ou LangGraph n'est installée sur le backend Render.
+- Les documents acceptés par D2 sont découpés en passages bornés. Les embeddings Ollama sont enregistrés en ChromaDB persistant et privé. Les pointeurs `ChunkReference` SQL vérifient document, traitement validé, source (PDF/CSV/XLSX), version, modèle et SHA-256.
+- Le graphe LangGraph suit un chemin fixe **rechercher → générer → valider**, avec bifurcation vers l'abstention si la preuve manque. Il n'a ni outil shell, ni accès SQL arbitraire, ni accès IA cloud ; aucune instruction rencontrée dans les documents n'est exécutée. La provenance et les chiffres sont vérifiés contre les passages réels.
+- Les tests d'injection et d'hallucination utilisent de faux modèles déterministes ; la recette complète `verify-d4.ps1` doit également prouver l'exécution du **vrai** modèle Ollama et de Chroma. Le traitement des données et la BI D1–D3 doivent rester inchangés.
+- Voir [ETAT-D4.md](ETAT-D4.md) pour les contraintes et preuves attendues. Le service RAG est **en recette**, pas encore validé sur Docker Desktop.
