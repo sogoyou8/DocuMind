@@ -64,6 +64,8 @@ def process_document(document_id, *, force=False, actor=None):
     try:
         with document.blob.storage.open(document.blob.name, "rb") as source:
             source_bytes = source.read(MAX_SOURCE_BYTES + 1)
+        if len(source_bytes) != document.size_bytes:
+            raise ExtractionError("SOURCE_SIZE_MISMATCH", "Taille modifiée depuis l'import.")
         if hashlib.sha256(source_bytes).hexdigest() != document.sha256:
             raise ExtractionError("SOURCE_HASH_MISMATCH", "Empreinte SHA-256 modifiée depuis l'import.")
         extracted = extract_records(source_bytes, document.file_type)
