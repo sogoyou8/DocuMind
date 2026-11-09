@@ -6,6 +6,7 @@ from uuid import UUID
 from documents.models import ChunkReference, Document, ProcessingRun
 from . import INDEX_VERSION
 from .security import hostile_instruction, safe_excerpt
+from .sources import digest
 
 MAX_DISTANCE = 0.65
 STOPWORDS = {
@@ -76,6 +77,7 @@ def search(question, *, store=None, model=None, limit=4, max_distance=MAX_DISTAN
             and ref.index_version == INDEX_VERSION
             and ref.embedding_model == model.embed_model
             and ref.content_sha256 == meta.get("content_sha256")
+            and digest(passage) == ref.content_sha256
             and doc.sha256 == meta.get("document_sha256")
             and str(doc.id) == meta.get("document_id")
             and str(run.id) == meta.get("run_id")
