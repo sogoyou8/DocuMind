@@ -21,6 +21,18 @@ class ApiD1Tests(TestCase):
             "whitenoise.storage.CompressedManifestStaticFilesStorage",
         )
 
+    def test_container_static_assets_are_stable(self):
+        import os
+        from django.conf import settings
+        from pathlib import Path
+
+        container_static_root = os.environ.get("DJANGO_STATIC_ROOT")
+        if not container_static_root:
+            self.skipTest("No Docker static root configured (Render or CI).")
+        self.assertEqual(settings.STATIC_ROOT, Path(container_static_root))
+        self.assertNotEqual(settings.STATIC_ROOT, settings.BASE_DIR / "staticfiles")
+        self.assertTrue((settings.STATIC_ROOT / "admin/css/base.css").is_file())
+
     def test_openapi_health_and_overview_have_explicit_schema(self):
         from io import StringIO
         from django.core.management import call_command
