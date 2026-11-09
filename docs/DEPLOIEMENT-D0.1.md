@@ -46,3 +46,14 @@ Pour activer le **véritable backend PostgreSQL dans la démo Render** :
 5. Redéployer et vérifier les migrations, le healthcheck, les fiches synthétiques, le réveil à froid et l'absence d'accès en écriture.
 
 Par défaut, le Blueprint fonctionne **sans Neon** en SQLite jetable pour ne pas bloquer la première démonstration. L'option Neon est un choix explicite d'hébergement PostgreSQL, non activé automatiquement.
+
+## Mise en ligne effective du socle D1 (9 novembre 2026)
+
+- Blueprint `exs-dbp0l8mgekts73a9pd40`, déploiement approuvé le 9 novembre 2026.
+- Service `documind-d1-api-htpg`, service ID `srv-dbp0mkugekts73a9t7q0`, région Francfort, **plan Render Free**.
+- Adresse publique : https://documind-d1-api-htpg.onrender.com
+- Validation Render : build réussi, migrations SQLite réalisées, `seed_demo` effectué, serveur Gunicorn démarré et healthcheck HTTP 200, état `live`.
+- Aucune base Render PostgreSQL créée. Les données publiques restent des exemples synthétiques non persistants.
+- **Point de vigilance** : Render peut mettre en veille les instances gratuites ; une première requête peut être lente. Un test HTTP externe complet GET/POST est fourni dans `scripts/verify-d1-render.ps1`, et doit être exécuté pour ajouter une preuve indépendante des seuls healthchecks Render.
+
+Le backend public **n'est pas l'application métier V1 complète**. Son interface React, les traitements Airflow/Metabase et le RAG restent prévus dans les étapes suivantes.
