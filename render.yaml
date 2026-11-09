@@ -1,0 +1,22 @@
+# Render Blueprint: only ONE free web service, NO Render Postgres.
+# Render free PostgreSQL expires after 30 days. The hosted demo is read-only
+# and reseeds its disposable SQLite database on every cold start.
+services:
+  - type: web
+    name: documind-d1-api
+    runtime: python
+    plan: free
+    region: frankfurt
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: sh ./start_render.sh
+    healthCheckPath: /api/v1/health/
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DOCUMIND_DEMO_READONLY
+        value: "1"
+      - key: PYTHON_VERSION
+        value: 3.12.8
