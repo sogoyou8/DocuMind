@@ -127,6 +127,29 @@ class ApiD1Tests(TestCase):
         self.assertEqual(ov.json()["processed"], 0)
         self.assertFalse(ov.json()["ai_enabled"])
 
+    @override_settings(DEMO_READONLY=True)
+    def test_demo_filters_unexpected_private_upload_rows(self):
+        # Defense in depth if a private upload is accidentally present in
+        # the disposable demo DB: anonymous users see DEMO metadata only.
+        call_command("seed_demo", verbosity=0)
+        unexpected = Document.objects.create(
+            original_name="PRIVATE-facture.pdf",
+            file_type="PDF", size_bytes=10, sha256="f" * 64,
+            source=Document.Source.UPLOAD,
+        )
+        docs = self.client.get("/api/v1/documents/")
+        self.assertEqual(docs.status_code, 200)
+        self.assertEqual(docs.data["count"], 3)
+        self.assertTrue(all(
+            row["source"] == "DEMO" for row in docs.data["results"]
+        ))
+        self.assertEqual(
+            self.client.get(f"/api/v1/documents/{unexpected.id}/").status_code,
+            404,
+        )
+        overview = self.client.get("/api/v1/overview/")
+        self.assertEqual(overview.data["total"], 3)
+
     @override_settings(DEMO_READONLY=False)
     def test_seed_denied_in_local_mode(self):
         from django.core.management.base import CommandError
