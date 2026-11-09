@@ -102,3 +102,65 @@ class DocumentCreateSerializer(serializers.Serializer):
         AuditEvent.objects.create(document=doc, actor=self.context["request"].user,
                                   action="DOCUMENT_RECEIVED")
         return doc
+
+
+# D2 processing read contracts. Never include private blob paths or direct download URLs.
+from .models import ProcessingRun, ExtractedRecord, QualityIssue, Invoice
+
+
+class ProcessOptionsSerializer(serializers.Serializer):
+    force = serializers.BooleanField(required=False, default=False)
+
+
+class ProcessResultSerializer(serializers.Serializer):
+    run_id = serializers.UUIDField()
+    status = serializers.CharField()
+    attempt_number = serializers.IntegerField()
+    skipped = serializers.BooleanField()
+    records_count = serializers.IntegerField()
+    issues_count = serializers.IntegerField()
+    invoices_count = serializers.IntegerField()
+
+
+class ProcessingRunSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProcessingRun
+        fields = [
+            "id", "document", "pipeline_version", "status", "attempt_number",
+            "error_summary", "started_at", "finished_at",
+        ]
+        read_only_fields = fields
+
+
+class ExtractedRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExtractedRecord
+        fields = [
+            "id", "document", "run", "source_locator",
+            "raw_fields", "normalized_fields",
+        ]
+        read_only_fields = fields
+
+
+class QualityIssueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QualityIssue
+        fields = [
+            "id", "run", "record", "source_locator",
+            "code", "severity", "field_name", "message", "created_at",
+        ]
+        read_only_fields = fields
+
+
+class InvoiceSerializer(serializers.ModelSerializer):
+    supplier_name = serializers.CharField(source="supplier.name", read_only=True)
+    source_locator = serializers.CharField(source="record.source_locator", read_only=True)
+
+    class Meta:
+        model = Invoice
+        fields = [
+            "id", "document", "run", "record", "source_locator", "supplier_name",
+            "invoice_number", "issued_on", "currency",
+            "subtotal", "tax", "total",
+        ]
+        read_only_fields = fields
