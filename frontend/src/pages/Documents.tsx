@@ -57,9 +57,13 @@ export function DocumentsView({
       return;
     }
     setFileError(null);
-    await onUpload(file);
-    setFile(null);
-    if (ref.current) ref.current.value = "";
+    try {
+      await onUpload(file);
+      setFile(null);
+      if (ref.current) ref.current.value = "";
+    } catch (error) {
+      setFileError(error instanceof Error ? error.message : "L'import a échoué.");
+    }
   };
 
   return <div className="page-stack">
