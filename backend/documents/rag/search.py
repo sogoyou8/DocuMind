@@ -38,7 +38,7 @@ def search(question, *, store=None, model=None, limit=4, max_distance=MAX_DISTAN
         return []
     vector = model.embed([question])[0]
     result = store.query(
-        query_embeddings=[vector], n_results=min(max(limit * 3, 4), size),
+        query_embeddings=[vector], n_results=min(max(limit * 20, 40), size),
         include=["documents", "metadatas", "distances"],
     )
     ids = (result.get("ids") or [[]])[0]
@@ -57,12 +57,22 @@ def search(question, *, store=None, model=None, limit=4, max_distance=MAX_DISTAN
         ).filter(id__in=valid_uuids)
     }
     words = _tokens(question)
+    invoice_ids = re.findall(
+        r"\b[A-Za-z]{2,}[A-Za-z0-9]*[-_]\d+[A-Za-z0-9-]*\b", question,
+    )
     found = []
     for id_, passage, meta, distance in zip(ids, texts, metadata, distances):
         ref = refs.get(str(id_))
         if not ref or not isinstance(passage, str) or not isinstance(meta, dict):
             continue
-        if not isinstance(distance, (int, float)) or not 0 <= distance <= max_distance:
+        if invoice_ids and not all(
+            token.casefold() in passage.casefold() for token in invoice_ids
+        ):
+            continue
+        # Exact invoice identifiers are stronger evidence than generic semantic
+        # proximity. Still verify source/run and SHA-256 below.
+        allowed_distance = 1.0 if invoice_ids else max_distance
+        if not isinstance(distance, (int, float)) or not 0 <= distance <= allowed_distance:
             continue
         doc, run, record = ref.document, ref.run, ref.record
         if not (
