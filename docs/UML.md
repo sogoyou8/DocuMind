@@ -115,3 +115,9 @@ stateDiagram-v2
 ~~~
 
 Les cardinalités, champs et transitions exactes seront éprouvés lors de D1.
+
+## 5. Alignement D2 avec l'implémentation
+
+À D2, `ProcessingRun`, `ExtractedRecord`, `QualityIssue`, `Supplier` et `Invoice` sont des modèles SQL réels. `Document` et `AuditEvent` proviennent de D1. La transition `ACCEPTED -> INDEXED` et `ChunkReference` restent réservés à D4 (indexation vectorielle) et ne sont pas exécutés en D2. Les états des runs sont `RUNNING / SUCCEEDED / REJECTED / FAILED`, distincts des états des documents.
+
+**Limite de la preuve :** ces changements sont implémentés sur la branche D2 ; leur validation PostgreSQL/Airflow est en attente de recette. Le diagramme D0 représente l'architecture cible de la V1 et non une copie exacte de l'état courant.
