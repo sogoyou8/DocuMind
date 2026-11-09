@@ -1,10 +1,10 @@
 # DocuMind
 
-**DOC 01 — Plateforme d'intelligence documentaire | D1 et D2 valides localement ; Render Free en lecture seule**
+**DOC 01 — Plateforme d'intelligence documentaire | D1-D2 validés · D3 SQL / Metabase en cours de recette**
 
 DocuMind est un projet d'apprentissage professionnel **en cours de développement**. Son ambition est de traiter des documents d'entreprise fictifs (PDF textuels, CSV et XLSX), de structurer les informations dans PostgreSQL, d'orchestrer les traitements avec Airflow et d'offrir une analyse BI et un assistant documentaire IA local.
 
-> **État réel :** D0 documenté et D1 fusionné dans `main` après recette locale du 9 novembre 2026 : 11 tests Django réussis sur PostgreSQL, migrations cohérentes, contrôles OpenAPI stricts et healthcheck OK. Déploiement Render gratuit **Live** le 9 novembre 2026 : migrations et initialisation de 3 exemples synthétiques réussies, service Gunicorn en ligne et healthcheck HTTP 200. L'API reste en lecture seule sur Render ; pas de base PostgreSQL hébergée ni de frais engagés. **D2 valide localement le 9 novembre 2026 : 30/30 tests reussis sur PostgreSQL, 3 factures fictives acceptees / 1 document rejete, 240 EUR TTC, rejeu sans doublons et execution du DAG Airflow reussie.** Metabase et IA ne sont pas encore implémentés.
+> **État réel :** D0 documenté et D1 fusionné dans `main` après recette locale du 9 novembre 2026 : 11 tests Django réussis sur PostgreSQL, migrations cohérentes, contrôles OpenAPI stricts et healthcheck OK. Déploiement Render gratuit **Live** le 9 novembre 2026 : migrations et initialisation de 3 exemples synthétiques réussies, service Gunicorn en ligne et healthcheck HTTP 200. L'API reste en lecture seule sur Render ; pas de base PostgreSQL hébergée ni de frais engagés. **D2 valide localement le 9 novembre 2026 : 30/30 tests reussis sur PostgreSQL, 3 factures fictives acceptees / 1 document rejete, 240 EUR TTC, rejeu sans doublons et execution du DAG Airflow reussie.** **D3 est implémenté sur branche isolée : vues SQL PostgreSQL gouvernées, corpus fictif multi-mois, Metabase local et compte en lecture seule ; la recette Docker reste à exécuter.** L'IA n'est pas encore implémentée.
 
 ## Périmètre technique envisagé
 
@@ -39,7 +39,7 @@ DocuMind est un projet d'apprentissage professionnel **en cours de développemen
 
 ## Démonstration
 
-Une **prévisualisation publique du socle backend D1** existe sur Render, mais aucune démonstration de l'application Full Stack complète à ce stade. Le lien de code renvoie au présent dépôt et la fiche Abyss Showcase montre toujours les **intentions et l'architecture D0**. Le backend D1 et le pipeline D2 sont valides localement. La demo Render Free reste volontairement limitee aux metadonnees fictives et a la lecture seule. D3-D5 restent a developper.
+Une **prévisualisation publique du socle backend D1** existe sur Render, mais aucune démonstration de l'application Full Stack complète à ce stade. Le lien de code renvoie au présent dépôt et la fiche Abyss Showcase montre toujours les **intentions et l'architecture D0**. Le backend D1 et le pipeline D2 sont valides localement. La demo Render Free reste volontairement limitee aux metadonnees fictives et a la lecture seule. D3 est développé sur `work/d3-sql-metabase`, en attente de validation ; D4-D5 restent à développer.
 
 Licence et politique de contribution : à préciser avant publication de la V1.
 
@@ -81,3 +81,25 @@ Le pipeline D2 utilise **Pandas, openpyxl et pypdf** en local. Il extrait les ta
 - Documentation : [État et recette D2](docs/ETAT-D2.md).
 
 **Recette du 9 novembre 2026 :** `Ran 30 tests ... OK`, `D2 LOCAL VERIFIED` et `D2 LOCAL OK`, avec DAG Airflow termine en etat `success`. La tache Airflow n'a pas traite de nouveau document, puisque la file de traitement etait deja vide. Le service public Render Free reste une demo D1 en lecture seule, sans Airflow heberge.
+
+## D3 — SQL analytique et Metabase local (recette en attente)
+
+Les indicateurs D3 proviennent exclusivement des tables de factures déjà **acceptées et validées** dans PostgreSQL. Le schéma gouverné `bi` fournit neuf vues : factures, qualité documentaire, anomalies, dépenses mensuelles, fournisseurs, formats, devises et états. Un rôle SQL indépendant `documind_bi` n'a droit qu'à lire ces vues ; pas d'accès aux fichiers bruts ou aux tables privées.
+
+Le profil local `analytics` lance **Metabase Open Source v0.64.1** sur [http://127.0.0.1:3033](http://127.0.0.1:3033), avec une configuration persistante dans un volume Docker. Le script de provisionnement API crée **12 questions SQL réelles** dans un tableau de bord à deux onglets : Synthèse (KPI, courbe mensuelle, dépenses fournisseurs, anomalies) et Traçabilité (factures, documents, sources, totaux par devise).
+
+Le corpus fictif étend D2 à cinq mois : **15 factures acceptées pour 1 344,00 EUR TTC**, **7 documents acceptés et 2 rejetés**. Ce sont des valeurs *attendues d'après les fichiers synthétiques versionnés*, pas encore un résultat validé dans Metabase. Les montants de devises différentes ne sont jamais additionnés.
+
+**Recette complète sur la branche D3, avec Docker Desktop démarré :**
+
+```powershell
+.\scripts\verify-d3.ps1
+```
+
+Le script vérifie les régressions D1/D2, les KPI SQL, les permissions effectives du lecteur, puis installe et exécute le tableau de bord Metabase et ses requêtes. Les mots de passe sont générés dans `data/local/d3-metabase-secrets.json`, ignoré par Git ; ne pas les partager. La démo publique Render reste **D1 en lecture seule**, sans Metabase hébergé et sans abonnement.
+
+- [Contrat, preuves et recette D3](docs/ETAT-D3.md)
+- Migration PostgreSQL : `backend/documents/migrations/0003_bi_views.py` ; SQL : `backend/documents/bi/views_v1.sql`
+- Configuration Metabase : `scripts/provision_metabase.py` ; recette : `scripts/verify-d3.ps1`
+
+**Statut : D3 développé mais non déclaré validé sans exécution réelle PostgreSQL + Metabase sur Docker Desktop.**
