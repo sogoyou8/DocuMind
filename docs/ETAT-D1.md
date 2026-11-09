@@ -31,3 +31,9 @@ API locale : http://127.0.0.1:8000 ; les documents locaux exigent l'authentifica
 ## OpenAPI : anomalie détectée et correction proposée
 
 Lors de la recette locale du 9 novembre 2026, les 9 tests Django réussissaient, mais la génération OpenAPI émettait 8 erreurs liées à deux vues non annotées (`health`, `overview`). `--validate` seul n'arrêtait pas le script. La branche D1 fournit maintenant des schémas de réponse explicites pour les deux vues, une vérification `--fail-on-warn` bloquante et un test de non-régression. **Ces corrections doivent être confirmées par une nouvelle recette locale avant fusion.** Le pipeline CI est en déclenchement manuel tant que les quotas Actions sont épuisés.
+
+## Correctif WhiteNoise / Docker (9 novembre 2026)
+
+La recette locale a exposé une course entre la régénération des fichiers statiques au démarrage du conteneur et le scan de WhiteNoise pendant les tests, aggravée par le bind mount `./backend:/app`. Deux tests ont échoué avec `FileNotFoundError` dans `/app/staticfiles/admin/`.
+
+L'image Docker construit désormais les fichiers statiques dans `/opt/documind-staticfiles`, hors du répertoire source monté. Le conteneur ne relance plus `collectstatic` au démarrage. Le script de recette vérifie explicitement la présence des assets stables. **La correction doit être validée avec une nouvelle exécution locale avant fusion.**
