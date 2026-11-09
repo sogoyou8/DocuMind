@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: documind
+      POSTGRES_USER: documind
+      POSTGRES_PASSWORD: documind_local_only
+    ports:
+      - "127.0.0.1:15434:5432"
+    volumes:
+      - documind_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U documind -d documind"]
+      interval: 5s
+      retries: 15
+  api:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://documind:documind_local_only@postgres:5432/documind
+      DJANGO_SECRET_KEY: local-dev-only-unsafe-change-before-public-use
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      DJANGO_DEBUG: "1"
+      DOCUMIND_DEMO_READONLY: "0"
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./backend:/app
+    command: sh -c "python manage.py migrate --noinput && gunicorn documind_api.wsgi:application --bind 0.0.0.0:8000 --workers 2"
+    depends_on:
+      postgres:
+        condition: service_healthy
+volumes:
+  documind_pg:
