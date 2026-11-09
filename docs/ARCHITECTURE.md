@@ -54,3 +54,13 @@ La recette complète D3 du 9 novembre 2026 a validé **36 tests Django/PostgreSQ
 - Le graphe LangGraph suit un chemin fixe **rechercher → générer → valider**, avec bifurcation vers l'abstention si la preuve manque. Il n'a ni outil shell, ni accès SQL arbitraire, ni accès IA cloud ; aucune instruction rencontrée dans les documents n'est exécutée. La provenance et les chiffres sont vérifiés contre les passages réels.
 - Les tests d'injection et d'hallucination utilisent des modèles simulés ; la recette locale du 9 novembre 2026 a aussi exécuté **les vrais modèles Ollama/Chroma/LangGraph** avec 47 tests réussis dans `rag`, une réponse sourcée à 120 €, une abstention et le maintien des KPI D3. Cela ne garantit pas la précision sur toutes les questions.
 - Voir [ETAT-D4.md](ETAT-D4.md) pour les contraintes et preuves attendues. Le service RAG est **validé localement sur Docker Desktop** ; il n'est pas déployé publiquement.
+
+## D5 — Interface utilisateur et frontières du mode public
+
+D5 implémente le frontend dans `frontend/` : React, TypeScript strict, Vite, composants de cockpit monocadre et cinq espaces métier. Le service Docker local `web` est relié à Django `rag` à travers un proxy same-origin sur `127.0.0.1:5173`. Les mutations utilisent une session Django/CSRF et les permissions opérateur ; le frontend n'accède jamais directement au stockage des documents.
+
+Les vues `analytics` et `audit` ont des contrats JSON explicites : en local, l'agrégation se fait par les vues `bi` de PostgreSQL ; en démo Render, elles renvoient des états `available=false` ou vides et **aucun chiffre inventé**. Les extraits et les réponses IA D4 ne sont consultables que sur l'instance locale authentifiée.
+
+La chaîne de recette V1 ajoute des tests backend D5 (session, CSRF, isolation Render, données SQL et audit), Vitest (formatage/HTTP), Playwright Chromium (démo grand écran/mobile et vrai parcours local) et des captures. L'image navigateur d'acceptation est distincte du service web et non publiée.
+
+La configuration `frontend/vercel.json` prépare un **éventuel frontend public statique**, mais le déploiement réel Vercel n'est ni effectué ni considéré comme validé. Voir [ETAT-D5.md](ETAT-D5.md) : D5 est en recette, la release V1.0 est conditionnée aux résultats locaux et à la revue visuelle.
