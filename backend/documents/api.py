@@ -9,11 +9,20 @@ from rest_framework.response import Response
 
 from .models import Document
 from .permissions import DocumentPermission
-from .serializers import DocumentReadSerializer, DocumentCreateSerializer
+from drf_spectacular.utils import extend_schema
+from .serializers import (
+    DocumentReadSerializer, DocumentCreateSerializer,
+    HealthResponseSerializer, HealthUnavailableSerializer, OverviewResponseSerializer,
+)
 
 def home(request):
     return render(request, "index.html", {"demo": settings.DEMO_READONLY})
 
+@extend_schema(
+    request=None,
+    responses={200: HealthResponseSerializer, 503: HealthUnavailableSerializer},
+    description="Vérifie la disponibilité de la base sans révéler les paramètres internes.",
+)
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def health(request):
@@ -25,6 +34,11 @@ def health(request):
         return Response({"status": "unavailable"}, status=503)
     return Response({"status": "ok", "service": "documind-d1"})
 
+@extend_schema(
+    request=None,
+    responses={200: OverviewResponseSerializer},
+    description="Compteurs D1 sur les métadonnées ; pas de pipeline ou IA exécutés.",
+)
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def overview(request):
