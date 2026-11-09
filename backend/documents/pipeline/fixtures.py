@@ -1,6 +1,7 @@
 """Reproducible, explicitly fictional D2 source corpus (no real invoices)."""
 from io import BytesIO
 from datetime import datetime
+import re
 from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
 from openpyxl import Workbook
 
@@ -70,7 +71,16 @@ def example_files() -> list[tuple[str, bytes]]:
                 info.compress_type = ZIP_DEFLATED
                 info.create_system = 3
                 info.external_attr = 0o600 << 16
-                target.writestr(info, source.read(filename))
+                payload = source.read(filename)
+                if filename == "docProps/core.xml":
+                    # openpyxl overwrites dcterms:modified with the wall clock
+                    # during save(), even if workbook.properties.modified is fixed.
+                    payload = re.sub(
+                        rb"(<dcterms:modified[^>]*>)[^<]+(</dcterms:modified>)",
+                        rb"\g<1>2026-11-09T00:00:00Z\g<2>",
+                        payload,
+                    )
+                target.writestr(info, payload)
 
     pdf = make_text_pdf([
         "Fournisseur: Imprimerie Fictive",
