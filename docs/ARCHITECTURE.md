@@ -28,3 +28,11 @@ Profils Compose : core (Django/PostgreSQL), pipeline (Airflow/worker), analytics
 
 ## À définir lors de D1
 Bibliothèque PDF, gestion des comptes, migration SQL, limites d'import testées, politique de rétention, format exact du corpus et mécanismes de stockage.
+
+## État réel à D2 (validé localement le 9 novembre 2026)
+
+Le stockage PostgreSQL et le backend D1 sont déjà validés localement ; le backend D1 Render Free est Live. Le moteur `documents.pipeline` implémente extraction PDF/CSV/XLSX, normalisation déterministe et contrôles transactionnels en local. Le document verrouillé en base garantit l'idempotence des versions sur PostgreSQL. Les enregistrements bruts, positions sources et anomalies sont historisés dans les tables dédiées. Les factures d'un fichier rejeté ne sont jamais insérées.
+
+La base et l'API tournent avec le Compose principal. Airflow 3.4 est isolé derrière `--profile pipeline`, utilise un volume de métadonnées propre et partage l'accès **en lecture seule** aux imports locaux du backend. Son DAG planifié toutes les six heures utilise la même commande `process_pending` que la recette : pas de duplication des règles métier.
+
+**À ne pas confondre** : le composant Render Free est uniquement la démo D1 en lecture seule avec SQLite jetable. Les traitements D2 ne sont pas exécutés en ligne. La recette `scripts/verify-d2.ps1` a reussi avec 30 tests PostgreSQL et un DagRun Airflow en etat `success`. Le DagRun validait le worker sans document en attente, le corpus ayant deja ete entierement traite. Render conserve la demonstration D1 en lecture seule.

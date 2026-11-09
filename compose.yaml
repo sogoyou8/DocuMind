@@ -31,5 +31,35 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+  airflow:
+    profiles: ["pipeline"]
+    build:
+      context: .
+      dockerfile: airflow/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://documind:documind_local_only@postgres:5432/documind
+      DJANGO_SECRET_KEY: local-dev-only-unsafe-change-before-any-public-use
+      DJANGO_DEBUG: "0"
+      DOCUMIND_DEMO_READONLY: "0"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      AIRFLOW_HOME: /opt/airflow/state
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "False"
+      PYTHONPATH: /opt/documind/backend
+    ports:
+      - "127.0.0.1:8088:8080"
+    volumes:
+      - ./backend:/opt/documind/backend:ro
+      - ./airflow/dags:/opt/airflow/dags:ro
+      - documind_airflow_state:/opt/airflow/state
+    command: standalone
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_started
+
 volumes:
   documind_pg:
+  documind_airflow_state:
