@@ -136,7 +136,6 @@ services:
     working_dir: /app
     environment:
       DOCUMIND_PROXY_TARGET: http://rag:8001
-      NODE_ENV: development
     ports:
       - "127.0.0.1:5173:5173"
     volumes:
