@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DocuMind — D1</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,system-ui,Segoe UI,sans-serif}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 82% 7%,#174353,#081824 52%,#050d14);color:#edf6f9}
+main{max-width:1080px;margin:auto;padding:60px 24px}.overline{color:#77e4d4;font-size:12px;letter-spacing:.19em;font-weight:800}h1{font-size:clamp(52px,9vw,98px);line-height:1;margin:20px 0}
+p{max-width:700px;color:#bfd2dd;font-size:19px;line-height:1.6}nav{display:flex;flex-wrap:wrap;gap:12px;margin:40px 0}
+a{color:#e8fcf7;background:#183e4e;border:1px solid #4d8492;border-radius:12px;padding:13px 17px;text-decoration:none}
+a:hover,a:focus-visible{outline:2px solid #80e9d5;outline-offset:2px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+article{padding:26px;border:1px solid #356072;background:#0d2636a8;border-radius:19px;min-height:150px}
+article strong{display:block;font-size:26px;margin:15px 0}small{color:#aec7d0}.note{margin-top:40px;padding:18px 22px;border-left:3px solid #85ded1;background:#18354088;color:#cde5e6}
+</style></head><body><main>
+<div class="overline">DOCUMIND / DOC 01 / BACKEND D1</div>
+<h1>DocuMind.</h1><p>Socle Django REST pour la traçabilité des documents. Une vraie API, des validations et un modèle de données. Les pipelines Data et l'assistant IA sont prévus dans les étapes suivantes.</p>
+<nav><a href="/api/v1/health/">Santé API</a><a href="/api/v1/documents/">Documents</a><a href="/api/v1/overview/">Indicateurs D1</a><a href="/api/v1/docs/">OpenAPI</a></nav>
+<section class="cards">
+<article><small>01 / DOCUMENTS</small><strong>PDF · CSV · XLSX</strong><small>Entrées autorisées et métadonnées tracées</small></article>
+<article><small>02 / BACKEND</small><strong>Django REST</strong><small>Modèles, permissions et contrôle d'imports</small></article>
+<article><small>03 / PROGRESSION</small><strong>D1</strong><small>Extraction Pandas et orchestration Airflow à venir en D2</small></article>
+</section>
+<div class="note"><strong>Démonstration transparente :</strong> {% if demo %}les trois entrées publiques sont des exemples synthétiques sans fichier ni traitement réel. L'écriture est désactivée.{% else %}les documents locaux sont privés, les imports nécessitent un compte opérateur.{% endif %} Les fonctions Metabase, RAG et Ollama ne sont pas encore implémentées.</div>
+</main></body></html>

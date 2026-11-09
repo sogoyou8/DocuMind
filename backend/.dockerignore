@@ -1,0 +1,14 @@
+# Never copy local secrets, collected assets or user uploads into Docker images.
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+staticfiles/
+private_uploads/
+demo.sqlite3
+*.sqlite3
+.coverage
