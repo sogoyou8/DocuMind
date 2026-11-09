@@ -17,6 +17,8 @@ from .serializers import (
     ProcessOptionsSerializer, ProcessResultSerializer,
     ProcessingRunSerializer, ExtractedRecordSerializer,
     QualityIssueSerializer, InvoiceSerializer,
+    AskDocumentSerializer, AssistantAnswerSerializer,
+    AssistantStatusSerializer, IndexResultSerializer,
 )
 
 def home(request):
@@ -58,8 +60,8 @@ def overview(request):
             Document.State.ACCEPTED, Document.State.INDEXED
         ]).count(),
         "airflow_enabled": False,
-        "ai_enabled": False,
-        "note": "D1 metadata only; no actual PDF extraction or AI.",
+        "ai_enabled": bool(settings.DOCUMIND_AI_ENABLED),
+        "note": "Render: fictional D1 metadata only. Local D2/D3 and optional D4 service.",
     })
 
 class DocumentViewSet(viewsets.ModelViewSet):
@@ -92,6 +94,28 @@ class DocumentViewSet(viewsets.ModelViewSet):
         description="D2 local : traitement idempotent d'un document déjà importé. "
                     "Un rejeu volontaire exige force=true. Interdit sur la démo Render.",
     )
+
+    @extend_schema(
+        request=None,
+        responses={200: IndexResultSerializer},
+        description="D4 local uniquement : indexe un document D2 valide vers Chroma/Ollama. "
+                    "Requiert rôle opérateur/admin, interdit sur Render.",
+    )
+    @action(detail=True, methods=["post"], url_path="index")
+    def index(self, request, pk=None):
+        from .rag.security import require_d4
+        require_d4()
+        document = self.get_object()
+        from .rag.indexer import index_document, IndexNotAllowed
+        from .rag.ollama import LocalModelUnavailable
+        try:
+            result = index_document(document.id)
+        except IndexNotAllowed as exc:
+            raise ValidationError({"document": str(exc)}) from exc
+        except LocalModelUnavailable as exc:
+            return Response({"detail": str(exc)}, status=503)
+        return Response(result)
+
     @action(detail=True, methods=["post"], url_path="process")
     def process(self, request, pk=None):
         from .pipeline.runner import process_document, ProcessingNotAllowed
