@@ -91,7 +91,7 @@ export default function App() {
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const mainRef = useRef<HTMLMainElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
   const demo = session?.mode === "synthetic-demo";
   const canLoad = Boolean(session && (demo || session.authenticated));
   const aiEnabled = Boolean(session?.ai_enabled && !demo);
