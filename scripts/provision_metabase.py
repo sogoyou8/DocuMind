@@ -102,7 +102,6 @@ def database(session):
                 "host": "postgres", "port": 5432, "dbname": "documind",
                 "user": "documind_bi", "password": BI_PASSWORD, "ssl": False,
             },
-            "is_full_sync": True, "is_on_demand": False,
         }, session=session)
     value = result.get("id")
     if not isinstance(value, int):
