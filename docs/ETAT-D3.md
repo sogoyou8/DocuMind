@@ -71,15 +71,29 @@ Le premier lancement télécharge l'image Metabase et peut consommer davantage d
 
 ## Critères de sortie D3
 
-- [ ] Tous les tests D1/D2/D3 réussissent et aucune migration manquante.
-- [ ] `verify_d3` confirme le corpus, les sommes et les grains sans double comptage.
-- [ ] Le rôle `documind_bi` peut lire les vues mais pas les tables d'origine.
-- [ ] Metabase démarre réellement, avec les 12 questions et les deux onglets.
-- [ ] Les graphiques et KPI concordent avec les contrôles SQL indépendants.
-- [ ] Aucun service payant, aucune exposition de données brutes ni régression Render.
+- [x] Tous les tests D1/D2/D3 réussissent et aucune migration manquante.
+- [x] `verify_d3` confirme le corpus, les sommes et les grains sans double comptage.
+- [x] Le rôle `documind_bi` peut lire les vues mais pas les tables d'origine.
+- [x] Metabase démarre réellement, avec les 12 questions et les deux onglets.
+- [x] Les graphiques et KPI concordent avec les contrôles SQL indépendants.
+- [ ] Aucun service payant ni exposition de données brutes : conception locale vérifiée ; contrôle de non-régression Render **à confirmer après la fusion GitHub**.
 
-**Statut au dépôt de la branche : code implémenté, validation locale Docker/Metabase encore nécessaire.** Les quotas GitHub Actions sont épuisés ; la recette PowerShell constitue la preuve d'intégration. La PR D3 reste hors de `main` tant qu'elle n'est pas réussie.
+**Statut final de la recette : validée localement le 9 novembre 2026.** Les quotas GitHub Actions sont épuisés ; les preuves proviennent de PowerShell et Docker Desktop. Les captures visuelles de Metabase et la non-régression Render post-fusion restent des contrôles distincts.
 
 ## Hors D3
 
 D4 : ChromaDB, Ollama, LangGraph et réponses sourcées. D5 : interface React, expérience complète, QA et V1.0. Le tableau de bord Metabase n'est pas l'interface utilisateur finale.
+
+## Preuves observées — recette locale du 9 novembre 2026
+
+Le journal transmis depuis le PC confirme, dans cet ordre :
+
+- `Applying documents.0003_bi_views... OK`, `No changes detected` et `Ran 36 tests in 5.345s` puis `OK` (tests D1+D2+D3 et migrations PostgreSQL, OpenAPI et santé inclus).
+- Deux passages de `seed_d3 --process` : quatre CSV mensuels acceptés, un fichier avec erreur rejeté ; au second passage, `skipped=True` sans doublons.
+- `D3 SQL VERIFIED` : 15 factures fictives acceptées, 7 documents acceptés, 2 rejetés, 1 344,00 EUR TTC, 5 périodes, fournisseurs/devises/anomalies réconciliés.
+- `D3 SQL ROLE VERIFIED` : compte `documind_bi` autorisé uniquement en lecture des vues BI, sans accès SQL aux tables métier brutes.
+- Metabase `v0.64.1` démarré et `Metabase API health OK` ; administrateur local authentifié, base BI connectée, **12 questions SQL créées et réellement exécutées**, tableau de bord `/dashboard/1` sauvegardé avec deux onglets.
+- `D3 METABASE OK` : `accepted_invoices=15`, `EUR_TTC=1344.0`, `rejected_documents=2`, `quality_issues=2` ; sommes mensuelles, fournisseurs et devises recoupées.
+- Ligne finale : **`D3 LOCAL OK: SQL views, fiscal metrics, read-only account and Metabase dashboard`**.
+
+**Limites de portée :** toutes ces valeurs concernent un corpus fictif et ne décrivent aucune entreprise réelle. Le journal confirme les API, les cartes et les calculs, **pas la disposition visuelle sur écran**. Airflow n'a pas été relancé lors de cette recette (option `-SkipAirflow`) : sa validation propre est déjà documentée au jalon D2. Metabase fonctionne uniquement en local à `127.0.0.1:3033`. Le service Render Free doit rester une démonstration D1 en lecture seule après fusion.
