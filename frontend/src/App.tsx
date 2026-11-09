@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  Activity, ArrowRight, BarChart3, BellDot, BookOpen, BrainCircuit,
-  Check, ChevronLeft, ChevronRight, CircleAlert, Command, Database,
-  FileText, Files, Fingerprint, LayoutDashboard, LockKeyhole, LogOut,
-  Menu, RefreshCcw, ShieldCheck, Sparkles, UploadCloud, X,
+  Activity, ArrowRight, BarChart3, BrainCircuit,
+  Check, ChevronRight, CircleAlert, Database,
+  Files, Fingerprint, LayoutDashboard, LockKeyhole, LogOut,
+  Menu, RefreshCcw, ShieldCheck, X,
 } from "lucide-react";
 import { api } from "./api";
 import type {
