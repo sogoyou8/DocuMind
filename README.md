@@ -32,6 +32,11 @@ DocuMind est un projet d'apprentissage professionnel **en cours de conception**.
 - Le RAG cite document, page et extrait source, ou signale l'absence de preuve.
 - Les traitements lourds restent modulaires ; aucun service n'est supposé opérationnel avant validation.
 
+## Abyss Showcase
+
+- [Fiche DocuMind](https://abyss-public-showcase.vercel.app/projects/documind) — état D0, schémas de conception, boutons **Code source** et **Document**.
+- Il n'existe **aucune démo** de l'application à ce stade. Ne pas confondre les schémas pédagogiques avec des captures d'un service exécuté.
+
 ## Démonstration
 
 Pas de démonstration publique à D0. Le lien de code renvoie au présent dépôt et la fiche Abyss Showcase présente uniquement les **intentions et l'architecture**. D1–D5 seront développés et validés séparément.
