@@ -43,7 +43,7 @@ if "if hostile_instruction(passage)" not in source:
 compose = (root / "compose.yaml").read_text(encoding="utf-8")
 if not all(v in compose for v in (
     'profiles: ["ai"]', '127.0.0.1:8001:8001',
-    '127.0.0.1:11434:11434', "documind_chroma_state:",
+    '127.0.0.1:11435:11434', "documind_chroma_state:",
 )):
     raise SystemExit("D4 Compose must stay on private opt-in localhost ports.")
 render = (root / "render.yaml").read_text(encoding="utf-8")
