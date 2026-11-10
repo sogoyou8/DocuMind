@@ -334,3 +334,15 @@
   .activity-page .timeline-entry { padding-left: 18px; }
   .record-fields div { grid-template-columns: minmax(105px, 42%) minmax(0,1fr); }
 }
+
+/* Two-column analytics cannot be forced into the compact single-row desktop height. */
+@media (min-width: 1160px) and (max-width: 1320px) and (min-height: 790px) {
+  .analytics-page { display: flex; height: auto; overflow: visible; }
+  .analytics-page .analytics-grid, .analytics-page .analytics-bottom-grid { flex: 0 0 auto; }
+  .analytics-page .analytics-grid .pane, .analytics-page .analytics-bottom-grid .pane { overflow: visible; }
+  .workspace-content > .analytics-page { flex: 0 0 auto; min-height: auto; }
+}
+@media (min-width: 875px) and (max-height: 789px) {
+  .assistant-page { height: auto; min-height: 625px; }
+  .workspace-content.is-assistant { overflow-y: auto; }
+}
