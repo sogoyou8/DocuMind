@@ -113,3 +113,11 @@ Nouvelle recette locale Windows au commit `4d37906` : build/TypeScript réussis,
 Journal PowerShell/Docker transmis après `git pull` de `4d37906` vers `163f7a7` : **58/58 Django**, D3 réconcilié (15 factures, 7 documents acceptés, 2 rejetés, 1 344 EUR TTC, cinq périodes), D4 vrai Ollama/Chroma vérifié (réponse citée 120 EUR, abstention et refus d'injection), build Vite/TypeScript, **13/13 Vitest**, **4/4 Playwright Chromium** en 56,0 s, y compris le scénario qui échouait sur le composeur Assistant à **1320×742** et le nouveau contrôle de la hauteur du workspace. Fins de recette explicites : `D5 LOCAL OK` puis `D5.1 LOCAL OK`.
 
 **Conclusion technique : tous les critères D5.1 passent sur cette version.** Les captures automatiques se trouvent dans `frontend/test-results/` sur le PC local. Avant la fusion, inspecter au minimum la capture de l'Assistant à 1320×742 générée sur ce commit (pied de composeur, notification absente) et, idéalement, les quatre autres vues sur la même résolution. Ne pas fusionner ou publier avant cette dernière revue esthétique.
+
+## Revue visuelle finale après correction de la grille — VALIDÉE (10 novembre 2026)
+
+Capture utilisateur `d51-assistant-1320x742(1).png`, après recette locale sur `163f7a7`, examinée : **l'intégralité du champ de saisie, le bouton d'envoi et la ligne d'aide du composeur sont visibles**, avec marge inférieure et sans dépassement apparent du viewport. La colonne technique reste alignée, les notifications ne masquent pas les panneaux, les textes et suggestions sont lisibles. Les quatre autres vues avaient déjà été examinées en 1320×742 ; leurs listes longues utilisent un scroll interne, leurs KPI et graphiques tiennent dans la fenêtre.
+
+La dernière recette, sur le même code frontend, a donné **58/58 Django, 13/13 Vitest, 4/4 Playwright**, avec `D5 LOCAL OK` et `D5.1 LOCAL OK`. La preuve visuelle qui manquait est maintenant reçue : **tous les critères D5.1 sont satisfaits**. Aucun correctif frontend supplémentaire n'est requis pour la V1.0.
+
+Décision : **D5.1 approuvé pour fusion squash dans `main`**, puis gel de la V1.0 sur la révision fusionnée. Conserver la démo distante Render D1 en lecture seule ; ne déployer ni le frontend complet ni les composants lourds publiquement. Les données et secrets locaux ne doivent jamais être committés.
