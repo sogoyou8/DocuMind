@@ -231,7 +231,7 @@
 .activity-contract { padding: 10px 13px; }
 
 /* Desktop mono-screen sizing: view-specific scroll regions, not clipping. */
-@media (min-width: 1160px) and (min-height: 790px) {
+@media (min-width: 1360px) and (min-height: 850px) {
   .workspace-content { display: flex; flex-direction: column; padding-top: 17px; padding-bottom: 12px; }
   .workspace-content > .page-stack { flex: 1 1 auto; min-height: 0; }
   .workspace-footer { margin-top: 6px; padding-top: 5px; min-height: 19px; flex: 0 0 auto; }
