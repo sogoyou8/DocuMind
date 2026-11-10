@@ -121,3 +121,9 @@ Nouvelle recette locale Windows au commit `4d37906` : build/TypeScript réussis,
 ## D5.1 — Réussite de la recette après correction du workspace parent (10 novembre 2026)
 
 Exécution utilisateur sur `163f7a7` : **58/58 tests Django, D3 SQL 1 344 EUR TTC, D4 Ollama/Chroma/RAG cité, build TypeScript/Vite, 13/13 Vitest, 4/4 scénarios Playwright Chromium (56,0 s)**. Le test d'absence de dépassement de la grille parent et celui de visibilité intégrale du composeur de l'assistant à 1320×742 passent. Sorties explicites `D5 LOCAL OK` et `D5.1 LOCAL OK`. **Il n'y a plus de blocage technique de recette ; validation de la dernière capture de l'Assistant encore distincte avant fusion et gel V1.0.**
+
+## Clôture de la validation D5.1 — V1.0 prête (10 novembre 2026)
+
+La dernière capture Assistant à 1320×742 est **validée visuellement**, y compris le texte sous le composeur auparavant coupé. Les captures des cinq vues ont été revues et les défauts UX ciblés corrigés. Tests sur le dernier code : **58/58 Django**, `D3 SQL VERIFIED` (1 344 EUR TTC), `D4 LOCAL VERIFIED` (RAG local avec citation, abstention et rejet d'injection), **13/13 Vitest**, **4/4 Playwright**, `D5.1 LOCAL OK`.
+
+**Décision de gel V1.0 :** livrable local complet conforme, prêt à être fusionné dans `main` et figé à son commit de fusion ; aucune publication du frontend complet ni exposition du RAG/Chroma/Ollama/Metabase ; la démo Render Free D1 existante reste distincte et en lecture seule. Les futurs changements devront passer par de nouvelles branches/versions, pas par une modification silencieuse de la V1.0.
