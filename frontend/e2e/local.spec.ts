@@ -148,15 +148,40 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
           `${key} at ${viewport.width}x${viewport.height} — outer vertical scroll remains`)
           .toBeLessThanOrEqual(dimensions.mainHeight + 2);
       }
-      if (key === "assistant" && viewport.width >= 1100 && viewport.height >= 650 && viewport.height <= 800) {
-        // The 1320x742 screenshot previously clipped the line below the composer.
-        await expect(page.locator(".compose-footer")).toBeInViewport({ ratio: 0.99 });
-        await expect(page.getByRole("button", { name: "Envoyer la question" })).toBeInViewport();
-      }
+      // Always capture before layout assertions: on failure the precise
+      // problematic viewport remains inspectable without rerunning Ollama.
       await page.screenshot({
         path: testInfo.outputPath(`d51-${key}-${viewport.width}x${viewport.height}.png`),
         fullPage: false,
       });
+      if (key === "assistant" && viewport.width >= 1100 && viewport.height >= 650 && viewport.height <= 800) {
+        // A real bottom-of-screen check, not just a scrollWidth assertion.
+        const geometry = await page.evaluate(() => {
+          const rect = (selector: string) => {
+            const element = document.querySelector<HTMLElement>(selector);
+            if (!element) return null;
+            const bounds = element.getBoundingClientRect();
+            return { top: Math.round(bounds.top), bottom: Math.round(bounds.bottom),
+              height: Math.round(bounds.height), scrollHeight: element.scrollHeight,
+              clientHeight: element.clientHeight };
+          };
+          return {
+            viewport: window.innerHeight,
+            workspace: rect(".workspace-content.is-assistant"),
+            page: rect(".assistant-page"),
+            grid: rect(".assistant-grid"),
+            main: rect(".assistant-main"),
+            composer: rect(".assistant-compose"),
+            composeFooter: rect(".compose-footer"),
+          };
+        });
+        expect(geometry.composeFooter, `Composer missing at ${viewport.width}x${viewport.height}`).not.toBeNull();
+        expect(geometry.composeFooter!.bottom,
+          `Assistant composer clipped at ${viewport.width}x${viewport.height}: ${JSON.stringify(geometry)}`)
+          .toBeLessThanOrEqual(geometry.viewport - 2);
+        await expect(page.locator(".compose-footer")).toBeInViewport({ ratio: 0.99 });
+        await expect(page.getByRole("button", { name: "Envoyer la question" })).toBeInViewport();
+      }
     }
   }
   await page.setViewportSize({ width: 1649, height: 928 });
