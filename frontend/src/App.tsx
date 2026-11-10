@@ -315,7 +315,7 @@ export default function App() {
         </div>
       </header>
 
-      <main ref={mainRef} className="workspace-content" id="main-content">
+      <main ref={mainRef} className={`workspace-content ${view === "assistant" ? "is-assistant" : ""}`} id="main-content">
         {view === "overview" && <OverviewView overview={overview} analytics={analytics}
           documents={docs?.results ?? []} demo={Boolean(demo)} loading={loading}
           onTab={navigate} onDocument={openDocument}/>}
