@@ -42,20 +42,30 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
 
   await page.getByRole("button", { name: "Assistant IA" }).click();
   await expect(page.getByText("Ollama local prêt")).toBeVisible();
+
+  // Check D5.1 source is actually served by Vite, not a stale D5 process.
+  // Verify the help shortcut and guide before the slower real Ollama request.
+  await expect(page.getByRole("button", { name: "Découvrir DocuMind" })).toBeVisible();
+  let askRequests = 0;
+  page.on("request", request => {
+    if (request.url().includes("/api/v1/assistant/ask")) askRequests += 1;
+  });
+  await page.getByRole("button", { name: "Découvrir DocuMind" }).click();
+  await expect(page.getByRole("textbox", { name: "Poser une question documentaire" }))
+    .toHaveValue("Que peux-tu faire ?");
+  await page.getByRole("button", { name: "Envoyer la question" }).click();
+  await expect(page.getByText("Guide de l'application")).toBeVisible();
+  await expect(page.getByText(/Je peux rechercher des informations dans les documents locaux/)).toBeVisible();
+  expect(askRequests, "Deterministic product help must not call Ollama/RAG").toBe(0);
+  await page.screenshot({ path: testInfo.outputPath("local-assistant-guide.png"), fullPage: true });
+
   await page.getByRole("textbox", { name: "Poser une question documentaire" })
     .fill("Quel est le montant TTC de la facture DM-2026-001 ?");
   await page.getByRole("button", { name: "Envoyer la question" }).click();
   await expect(page.getByText("Réponse sourcée")).toBeVisible({ timeout: 165000 });
   await expect(page.getByText("demo-d2-facture-valide.csv")).toBeVisible();
+  expect(askRequests, "Factual questions must still use the real RAG API").toBeGreaterThan(0);
   await page.screenshot({ path: testInfo.outputPath("local-assistant-cited.png"), fullPage: true });
-
-  // Product help must be deterministic and must not pretend to cite a document.
-  await page.getByRole("textbox", { name: "Poser une question documentaire" })
-    .fill("Que peux-tu faire ?");
-  await page.getByRole("button", { name: "Envoyer la question" }).click();
-  await expect(page.getByText("Guide de l'application")).toBeVisible();
-  await expect(page.getByText(/Je peux rechercher des informations dans les documents locaux/)).toBeVisible();
-  await page.screenshot({ path: testInfo.outputPath("local-assistant-guide.png"), fullPage: true });
 });
 
 test("D5.1 five views fit desktop and mobile and audit outcomes are not misleading", async ({ page }, testInfo) => {
