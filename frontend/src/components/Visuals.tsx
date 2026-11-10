@@ -64,8 +64,10 @@ export function EmptyState({
 export function MonthlyChart({ rows }: { rows: Monthly[] }) {
   if (!rows.length) return <EmptyState icon="chart" title="Pas de dépenses disponibles" description="Les montants apparaîtront après validation de factures dans PostgreSQL."/>;
   const numbers = rows.map(r => Math.max(0, Number(r.total) || 0));
-  const top = Math.max(1, ...numbers);
-  const left = 36, right = 620, topMargin = 16, bottom = 164;
+  const rawMax = Math.max(1, ...numbers);
+  const step = Math.max(1, Math.ceil(rawMax / 40) * 10);
+  const top = step * 4;
+  const left = 71, right = 621, topMargin = 19, bottom = 160;
   const points = numbers.map((v, i) => ({
     x: rows.length === 1 ? (left + right) / 2
       : left + (right - left) * i / (rows.length - 1),
@@ -83,18 +85,22 @@ export function MonthlyChart({ rows }: { rows: Monthly[] }) {
           <stop offset="100%" stopColor="#60f5d0" stopOpacity="0"/>
         </linearGradient>
       </defs>
-      {[0, .25, .5, .75, 1].map(t => (
-        <line key={t} x1={left} x2={right} y1={bottom - t * (bottom - topMargin)}
-          y2={bottom - t * (bottom - topMargin)} stroke="#768c9f" strokeOpacity=".16" strokeDasharray="5 7"/>
-      ))}
+      {[0, .25, .5, .75, 1].map(t => <g key={t}>
+        <line x1={left} x2={right} y1={bottom - t * (bottom - topMargin)}
+          y2={bottom - t * (bottom - topMargin)} stroke="#768c9f" strokeOpacity=".23" strokeDasharray="5 7"/>
+        <text x={left - 9} y={bottom - t * (bottom - topMargin) + 4}
+          fontSize="11" textAnchor="end" fill="#adbfca">
+          {new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 }).format(top * t)} €
+        </text>
+      </g>)}
       <path d={area} fill="url(#monthly-fill)"/>
       {points.length > 1 && <polyline fill="none" stroke="#78f3d1" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" points={poly}/>}
-      {points.map((p, i) => <g key={p.period}>
+      {points.map(p => <g key={p.period}>
         <circle cx={p.x} cy={p.y} r="5" fill="#101c25" stroke="#83f8d7" strokeWidth="2.5"/>
         <title>{`${monthName(p.period)} — ${money(p.amount)}`}</title>
         <text x={p.x} y="193" textAnchor="middle" fontSize="12" fill="#91a6b5">{monthName(p.period)}</text>
         {points.length === 1 && <text x={p.x} y={p.y - 14} textAnchor="middle" fontSize="12" fill="#a7ffe6">{money(p.amount)}</text>}
-        {i === 0 && <text x="6" y="24" fontSize="11" fill="#788c9c">{money(String(top))}</text>}
+
       </g>)}
     </svg>
     <div className="chart-foot">
