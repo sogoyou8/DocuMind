@@ -115,6 +115,8 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
       await expect(page.locator(".workspace-content .page-stack").first()).toBeVisible();
       const dimensions = await page.evaluate(() => {
         const root = document.documentElement;
+        const appShell = document.querySelector<HTMLElement>(".app-shell");
+        const workspace = document.querySelector<HTMLElement>(".workspace");
         const main = document.querySelector<HTMLElement>(".workspace-content");
         const bound = main?.getBoundingClientRect();
         const protruding = bound ? [...main!.querySelectorAll<HTMLElement>("*")]
@@ -128,6 +130,9 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
           .sort((a, b) => b.extra - a.extra).slice(0, 8) : [];
         return {
           screen: window.innerWidth,
+          viewportHeight: window.innerHeight,
+          shellBottom: appShell?.getBoundingClientRect().bottom ?? null,
+          workspaceBottom: workspace?.getBoundingClientRect().bottom ?? null,
           root: root.scrollWidth,
           mainClient: main?.clientWidth ?? 0,
           mainScroll: main?.scrollWidth ?? 0,
@@ -138,6 +143,14 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
       });
       expect(dimensions.root, `${key} at ${viewport.width} — root overflow`)
         .toBeLessThanOrEqual(dimensions.screen + 1);
+      if (viewport.width >= 1100 && viewport.height >= 650) {
+        expect(dimensions.shellBottom,
+          `${key} at ${viewport.width}x${viewport.height} — shell extends beyond viewport`)
+          .not.toBeNull();
+        expect(dimensions.workspaceBottom,
+          `${key} at ${viewport.width}x${viewport.height} — workspace extends beyond viewport (implicit CSS grid row)`)
+          .toBeLessThanOrEqual(dimensions.viewportHeight + 1);
+      }
       expect(dimensions.mainScroll, `${key} at ${viewport.width} — main overflow; protruding elements: ${JSON.stringify(dimensions.protruding)}`)
         .toBeLessThanOrEqual(dimensions.mainClient + 1);
       // On usable desktop heights, all dashboard modules should fit within
@@ -167,6 +180,8 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
           };
           return {
             viewport: window.innerHeight,
+            shell: rect(".app-shell"),
+            workspaceColumn: rect(".workspace"),
             workspace: rect(".workspace-content.is-assistant"),
             page: rect(".assistant-page"),
             grid: rect(".assistant-grid"),
