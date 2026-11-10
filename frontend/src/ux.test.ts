@@ -55,6 +55,7 @@ describe("D5.1 visual-review business contracts", () => {
     expect(applicationHelp("Quels types de documents sont accepter ?")).toContain("XLSX");
     expect(applicationHelp("Quels fichiers puis-je importer ?")).toContain("CSV");
     expect(applicationHelp("en quoi consiste cette app ?")).toContain("analyse documentaire");
+    expect(applicationHelp("on quoi consiste cette app ?")).toContain("analyse documentaire");
     expect(applicationHelp("À quoi sert cette application ?")).toContain("factures");
     expect(applicationHelp("C'est quoi DocuMind ?")).toContain("journal");
     expect(applicationHelp("Explique-moi DocuMind")).toContain("SQL");
