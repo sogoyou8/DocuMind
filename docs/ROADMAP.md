@@ -8,7 +8,7 @@
 | D3 | SQL métier + Metabase | 36/36 tests, 9 vues BI, rôle SELECT seul, 12 questions Metabase réconciliées, `D3 LOCAL OK` | Validé localement (9 nov. 2026) |
 | D4 | RAG, ChromaDB, Ollama, LangGraph | 47/47 tests, 7 documents indexés, réponse 120 € sourcée, abstention, injection refusée, total D3 inchangé, `D4 LOCAL OK` | Validé localement (9 nov. 2026) |
 | D5 | React/TypeScript, intégration, UX et QA V1.0 | 58/58 tests Django, TypeScript/Vite/Vitest, 3/3 Playwright Chromium (démo, mobile, SQL+RAG local), `D5 LOCAL OK` | Validation fonctionnelle locale réussie (10 nov. 2026), revue visuelle à effectuer |
-| D5.1 | Finition UX/UI issue de la revue des 5 vues | 58/58 Django, 13/13 Vitest, 4/4 Playwright Chromium, quatre résolutions, SQL/RAG vérifiés et `D5.1 LOCAL OK` | Recette fonctionnelle locale réussie (10 nov. 2026) ; revue des nouvelles captures et fusion en attente |
+| D5.1 | Finition UX/UI issue de la revue des 5 vues | 58/58 Django, 13/13 Vitest, 4/4 Playwright Chromium, quatre résolutions, SQL/RAG vérifiés et `D5.1 LOCAL OK` | Première recette locale réussie ; ajustements finaux mono-écran/FAQ issus des 20 captures à revalider ; fusion en attente |
 
 ## Gates
 D0->D1 : spécifications et frontières cohérentes.
