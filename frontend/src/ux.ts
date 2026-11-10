@@ -90,8 +90,15 @@ export function mismatchEvidence(record: RecordRow | undefined): string | null {
 export function applicationHelp(question: string): string | null {
   const q = question.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLocaleLowerCase("fr").replace(/[!?.,\x27’\-]/g, " ").replace(/\s+/g, " ").trim();
-  const aboutFormats = /(type(s)?|format(s)?|quel(s)?).*(document(s)?|fichier(s)?).*(accept|import|support|permi)/
-    .test(q) || /(document(s)?|fichier(s)?).*(accept|import|support|permi)/.test(q);
+  // Format help is for questions about supported file categories, not about
+  // the contents of one accepted document. Keep those for the real local RAG.
+  const supportedAction = /\b(?:accept\w*|import\w*|support\w*|permi\w*)\b/;
+  const formatCategory = /\b(?:types?|formats?)\b/;
+  const fileCategory = /\b(?:documents?|fichiers?)\b/;
+  const supportedFilesQuestion = /^(?:quels?|quelles?)\b.*\b(?:documents?|fichiers?)\b.*\b(?:accept\w*|import\w*|support\w*|permi\w*)\b/;
+  const importQuestion = /^(?:comment|puis je|peut on|est ce que)\b.*\b(?:import\w*|accept\w*|support\w*)\b.*\b(?:documents?|fichiers?|pdf|csv|xlsx)\b/;
+  const aboutFormats = (formatCategory.test(q) && fileCategory.test(q) && supportedAction.test(q))
+    || supportedFilesQuestion.test(q) || importQuestion.test(q);
   if (aboutFormats && !/factur(e|es)\s+(dm|d3|zxz)/.test(q)) {
     return "DocuMind accepte les PDF textuels (sans OCR), les CSV et les classeurs XLSX jusqu'à 5 Mio par fichier. Dans l'instance locale, le rôle opérateur permet l'import et le traitement ; seuls les documents acceptés peuvent ensuite être indexés pour l'IA. La démonstration publique reste en lecture seule.";
   }
