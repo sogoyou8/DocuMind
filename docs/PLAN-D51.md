@@ -72,3 +72,13 @@ Correctif : classification des formats restreinte aux questions explicitement or
 Journal Windows/Docker confirmé après `git pull` de `4dd0099` à `1cd90f0` : 58/58 Django, réconciliation SQL D3 (15 factures, 7 documents acceptés, 2 rejetés, 1 344 EUR TTC), vrai RAG D4 (citation 120 EUR, abstention, injection refusée), build React TypeScript/Vite, **13/13 Vitest**, **4/4 Playwright Chromium (51,8 s)**. Les scénarios parcourent les cinq vues sur desktop et mobile et vérifient le débordement horizontal ainsi que le **scroll vertical externe** pour Vue d'ensemble / Analyse & KPI sur les résolutions de bureau, avec un viewport CSS compact **1320×742**. La réponse déterministe à « on quoi consiste cette app ? » et la distinction des questions sur un document particulier ont passé la recette. Fin de script : **`D5 LOCAL OK`, `D5.1 LOCAL OK`**.
 
 Les correctifs de la FAQ et du mode compact sont donc validés techniquement. Les captures Playwright restent dans `frontend/test-results/` sur la machine locale ; leur rendu final n'a pas encore été inspecté visuellement après ce dernier changement. **Garder la PR #7 en brouillon sans fusion, gel ou publication avant revue esthétique finale.**
+
+## Revue des cinq captures 1320×742 — dernier ajustement mineur
+
+Captures réellement examinées : `d51-overview-1320x742.png`, `d51-documents-1320x742.png`, `d51-analytics-1320x742.png`, `d51-assistant-1320x742.png`, `d51-history-1320x742.png`. Toutes les zones métier essentielles sont présentes, la grille analytique tient dans la fenêtre sans débordement, et les listes de documents/journal restent consultables dans leur panneau par défilement interne. Les KPI, devises, légendes, filtres, dates et états demeurent cohérents avec D1–D4.
+
+**Deux écarts UX non bloquants mais corrigés avant gel :** (1) le pied du composeur assistant est légèrement coupé par le bord inférieur à 1320×742 ; (2) la notification persistante `Session locale ouverte.` recouvre une portion des panneaux et n'était fermée que manuellement.
+
+Correctifs complémentaires sur la même branche : compaction très ciblée du composeur et de son en-tête aux hauteurs CSS bureau 650–800 px ; fermeture automatique de la notification de succès au bout de 4,5 s, sans suppression des erreurs persistantes ; Playwright vérifie que le composeur **entier** est dans la fenêtre à 1320×742 et ferme la notification avant la capture des vues.
+
+**Statut :** revue visuelle des cinq captures effectuée, correctifs implémentés. La recette `D5.1 LOCAL OK` précédente valide le commit antérieur seulement. Une nouvelle recette `scripts/verify-d51.ps1` est requise avant fusion ; pas de tag V1.0 ni de publication.
