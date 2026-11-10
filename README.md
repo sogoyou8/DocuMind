@@ -1,6 +1,6 @@
 # DocuMind
 
-**DOC 01 — Plateforme d'intelligence documentaire | D1-D4 validés · D5 React V1 en recette · Render Free en lecture seule**
+**DOC 01 — Plateforme d'intelligence documentaire | D1-D5 validés fonctionnellement en local · Render Free en lecture seule**
 
 DocuMind est un projet d'apprentissage professionnel **en cours de développement**. Son ambition est de traiter des documents d'entreprise fictifs (PDF textuels, CSV et XLSX), de structurer les informations dans PostgreSQL, d'orchestrer les traitements avec Airflow et d'offrir une analyse BI et un assistant documentaire IA local.
 
@@ -119,7 +119,7 @@ L'index repose **uniquement sur les documents acceptés par D2** ; `ChunkReferen
 
 **État : D4 validé par `D4 LOCAL OK` après 47 tests réussis dans le service IA et vérification réelle de la réponse sourcée, de l'abstention, de l'injection testée et des KPI D3.** La qualité du LLM n'est pas garantie pour toutes les questions. Le backend Render Free reste limité à la démo D1 en lecture seule, sans Ollama ni index public. L'interface React et la release V1.0 restent prévues en D5.
 
-## D5 — Frontend React / TypeScript V1.0 (implémentation à valider)
+## D5 — Frontend React / TypeScript V1.0 (recette fonctionnelle validée)
 
 Le dossier `frontend/` contient le cockpit responsive React + Vite, avec cinq espaces opérationnels :
 
@@ -141,4 +141,4 @@ Ce script démarre les services gratuits locaux, vérifie Django et les calculs 
 
 [Spécifications D5, preuves attendues et limites](docs/ETAT-D5.md)
 
-**État vérifié : fichiers implémentés sur `work/d5-react-v1-cockpit`, mais build React et recette Playwright non encore exécutés sur Docker Desktop.** Ne pas fusionner D5, étiqueter une release V1.0 ni déployer l'interface Vercel avant ces preuves. Le service Render Free D1 n'est pas modifié.
+**Validation observée le 10 novembre 2026 : `D5 LOCAL OK`.** Le conteneur IA/PostgreSQL a réussi 58 tests Django (aucun saut) ; Django/OpenAPI et D3/D4 ont été vérifiés avec les vrais modèles ; TypeScript, build Vite et Vitest ont réussi ; les 3 tests Chromium Playwright ont validé démo bureau, navigation mobile sans débordement horizontal et parcours local connecté, KPI SQL, citation IA. **L'examen visuel des captures et le gel/tag V1.0 restent distincts** : aucun déploiement du frontend Vercel n'est annoncé ; Render Free n'héberge pas l'IA.
