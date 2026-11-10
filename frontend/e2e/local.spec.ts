@@ -102,16 +102,27 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
       const dimensions = await page.evaluate(() => {
         const root = document.documentElement;
         const main = document.querySelector<HTMLElement>(".workspace-content");
+        const bound = main?.getBoundingClientRect();
+        const protruding = bound ? [...main!.querySelectorAll<HTMLElement>("*")]
+          .map(element => {
+            const rect = element.getBoundingClientRect();
+            return { element: element.tagName.toLowerCase(), className:
+              typeof element.className === "string" ? element.className.slice(0, 75) : "",
+              extra: Math.round(rect.right - bound.right), width: Math.round(rect.width) };
+          })
+          .filter(item => item.extra > 1 && item.width > 0)
+          .sort((a, b) => b.extra - a.extra).slice(0, 8) : [];
         return {
           screen: window.innerWidth,
           root: root.scrollWidth,
           mainClient: main?.clientWidth ?? 0,
           mainScroll: main?.scrollWidth ?? 0,
+          protruding,
         };
       });
       expect(dimensions.root, `${key} at ${viewport.width} — root overflow`)
         .toBeLessThanOrEqual(dimensions.screen + 1);
-      expect(dimensions.mainScroll, `${key} at ${viewport.width} — main overflow`)
+      expect(dimensions.mainScroll, `${key} at ${viewport.width} — main overflow; protruding elements: ${JSON.stringify(dimensions.protruding)}`)
         .toBeLessThanOrEqual(dimensions.mainClient + 1);
       await page.screenshot({
         path: testInfo.outputPath(`d51-${key}-${viewport.width}x${viewport.height}.png`),
