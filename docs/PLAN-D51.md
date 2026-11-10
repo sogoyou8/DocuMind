@@ -92,3 +92,18 @@ Diagnostic CSS : la règle de réduction de marges préservait `height:100%` et 
 **Correctif supplémentaire posé :** pour les bureaux de hauteur CSS 650–800 px, la page et la grille Assistant utilisent `flex:1 1 0`, `height:auto`, `min-height:0`, avec composition à hauteur extensible plutôt qu'à hauteur en pourcentage ; la conversation conserve son défilement interne et le composeur ne rétrécit pas. Le test Playwright écrit désormais toujours la capture du viewport **avant** l'assertion, et inclut des mesures des rectangles (`workspace`, `page`, `grid`, `main`, `composer`, `composeFooter`) en cas d'échec, pour arrêter les corrections à l'aveugle.
 
 **Statut** : correctif enregistré sur la PR #7, mais **pas encore retesté en conditions réelles** ; relancer `scripts/verify-d51.ps1` avec la dernière branche. Ne pas fusionner, figer ou publier tant que le 4e scénario ne passe pas.
+
+## Recette du 10 novembre — correction ciblée de la grille parent
+
+Nouvelle recette locale Windows au commit `4d37906` : build/TypeScript réussis, **58/58 Django**, D3 à **1 344 EUR TTC**, D4 RAG vérifié, **13/13 Vitest**, **3/4 Playwright**. Le dernier scénario continue d'échouer sur le composeur Assistant à `1320×742` CSS, mais les mesures géométriques expliquent désormais **pourquoi** :
+
+- `viewport=742` ; `.workspace-content`: `top=69,bottom=769,height=700` ;
+- `.assistant-page`: `top=78,bottom=761` ; `.assistant-grid`: `top=152,bottom=761` ;
+- `.assistant-compose`: `top=668,bottom=760`, `.compose-footer`: `top=738,bottom=751`.
+- Le contenu déborde parce que **la rangée implicite de `.app-shell` grandit à la hauteur intrinsèque du workspace** (769 px) plutôt qu'à la hauteur du viewport (742 px), puis `overflow:hidden` la coupe. Les sous-composants et leurs marges ne sont plus la cause première.
+
+**Correctif parent appliqué :** `frontend/src/styles.css` fixe explicitement la rangée de la grille générale `.app-shell` à `minmax(0, 1fr)`, et `.workspace` à `min-height:0`. Les cinq vues utilisent ainsi la hauteur du viewport disponible (la topbar garde ses 69 px), sans réduire ni masquer les champs de l'assistant. La navigation mobile `display:block` demeure inchangée.
+
+**Playwright renforcé :** la boucle de toutes les vues et résolutions de bureau exige maintenant `workspaceBottom <= viewportHeight + 1`, en plus du test `compose-footer` entièrement visible à 1320×742. En cas d'échec, les coordonnées `.app-shell` et `.workspace` sont également enregistrées. La capture est conservée même lorsque l'assertion échoue.
+
+**Statut :** correctif enregistré dans la PR #7, sans fusion/publication. Nouvelle exécution de `scripts/verify-d51.ps1` requise sur ce commit. Le précédent `D5.1 LOCAL OK` n'incluait pas ce test renforcé.
