@@ -81,7 +81,10 @@ h2 { letter-spacing: -.025em; }
   width: 36px; height: 36px; border: 1px solid rgba(167, 212, 220, .12); background: rgba(128, 183, 203, .045); color: #a8bdc9; }
 .icon-button:hover:not(:disabled) { color: #e5fcfa; border-color: rgba(125, 226, 211, .32); background: rgba(113, 235, 204, .10); }
 
-.app-shell { height: 100vh; min-height: 570px; display: grid; grid-template-columns: 245px minmax(0,1fr); overflow: hidden; }
+/* The implicit auto grid row can grow taller than 100vh due to the nested
+   assistant composer, even while the shell clips the excess. Constrain the
+   desktop workspace to the viewport and let each page own its scroll area. */
+.app-shell { height: 100vh; min-height: 570px; display: grid; grid-template-columns: 245px minmax(0,1fr); grid-template-rows: minmax(0,1fr); overflow: hidden; }
 .sidebar { padding: 27px 17px 13px; border-right: 1px solid rgba(145, 201, 209, .13);
   display: flex; flex-direction: column; min-width: 0;
   background: linear-gradient(165deg, rgba(15, 28, 39, .98), rgba(9, 18, 29, .99)); }
@@ -119,7 +122,7 @@ h2 { letter-spacing: -.025em; }
   padding: 22px 8px 3px; }
 .version-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--mint); }
 .sidebar-close { display: none; }
-.workspace { display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.workspace { display: flex; flex-direction: column; overflow: hidden; min-width: 0; min-height: 0; }
 .topbar { height: 69px; min-height: 69px; display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid rgba(141, 181, 206, .10); padding: 0 30px; background: rgba(7, 15, 24, .45); }
 .topbar-left, .topbar-right { display: flex; align-items: center; gap: 15px; }
