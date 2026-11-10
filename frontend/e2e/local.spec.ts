@@ -61,7 +61,7 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
 
   // The exact product-help phrasing observed in the visual review previously abstained.
   await page.getByRole("textbox", { name: "Poser une question documentaire" })
-    .fill("en quoi consiste cette app ?");
+    .fill("on quoi consiste cette app ?");
   await page.getByRole("button", { name: "Envoyer la question" }).click();
   await expect(page.getByText(/DocuMind est une application locale d'analyse documentaire/)).toBeVisible();
   expect(askRequests, "Product description must not create an AI request").toBe(0);
