@@ -13,6 +13,10 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
   await page.getByRole("button", { name: /Accéder à DocuMind/i }).click();
 
   await expect(page.getByRole("heading", { name: /Vos documents/i })).toBeVisible();
+  // Success notices must disappear without manual interaction, unlike errors.
+  await expect(page.getByRole("button", { name: "Fermer la notification" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Fermer la notification" }))
+    .toBeHidden({ timeout: 8000 });
   await page.screenshot({ path: testInfo.outputPath("local-overview.png"), fullPage: true });
   await page.getByRole("button", { name: "Documents", exact: true }).click();
   // Local databases may contain extra user-authorized uploads; the fixture
@@ -101,6 +105,9 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
       await page.getByRole("button", { name: /Accéder à DocuMind/i }).click();
       await expect(page.getByRole("heading", { name: /Vos documents/i })).toBeVisible();
     }
+    // Screenshots must not be obstructed by the login success notice.
+    const noticeClose = page.getByRole("button", { name: "Fermer la notification" });
+    if (await noticeClose.isVisible()) await noticeClose.click();
     for (const [title, key] of pages) {
       if (viewport.width <= 875) {
         await page.getByRole("button", { name: "Ouvrir la navigation" }).click();
@@ -141,6 +148,11 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
         expect(dimensions.mainScrollHeight,
           `${key} at ${viewport.width}x${viewport.height} — outer vertical scroll remains`)
           .toBeLessThanOrEqual(dimensions.mainHeight + 2);
+      }
+      if (key === "assistant" && viewport.width >= 1100 && viewport.height >= 650 && viewport.height <= 800) {
+        // The 1320x742 screenshot previously clipped the line below the composer.
+        await expect(page.locator(".compose-footer")).toBeInViewport({ ratio: 0.99 });
+        await expect(page.getByRole("button", { name: "Envoyer la question" })).toBeInViewport();
       }
       await page.screenshot({
         path: testInfo.outputPath(`d51-${key}-${viewport.width}x${viewport.height}.png`),
