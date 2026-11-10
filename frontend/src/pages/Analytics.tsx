@@ -5,6 +5,7 @@ import {
 import type { Analytics, Overview } from "../types";
 import { money, monthlyEUR, percent } from "../format";
 import { EmptyState, Hint, MonthlyChart, Pane, StatCard, StatusDonut, SupplierBars } from "../components/Visuals";
+import { issueLabel } from "../ux";
 
 export default function AnalyticsView({
   data, overview, demo,
@@ -16,7 +17,7 @@ export default function AnalyticsView({
   const rejected = overview?.rejected ?? 0;
   const total = overview?.total ?? 0;
 
-  return <div className="page-stack">
+  return <div className="page-stack analytics-page">
     <div className="page-intro">
       <div><div className="eyebrow">ANALYSE / POSTGRESQL D3</div>
         <h1>Intelligence analytique</h1>
@@ -72,7 +73,7 @@ export default function AnalyticsView({
         <Pane title="Anomalies détectées" subtitle="Contrôles sur les sources documentaires">
           {data!.issues.length ? <div className="issue-bars">{data!.issues.slice(0, 7).map(row =>
             <div className="issue-bar-item" key={`${row.code}-${row.severity}`}>
-              <div><CircleHelp size={15}/><span>{row.code}</span></div>
+              <div><CircleHelp size={15}/><span title={row.code}>{issueLabel(row.code)}<small>{row.code}</small></span></div>
               <strong>{row.count}</strong>
             </div>)}</div> :
           <EmptyState icon="alert" title="Aucune anomalie signalée" description="Les diagnostics de D2 apparaîtront ici."/>}

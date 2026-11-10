@@ -142,3 +142,33 @@ Ce script démarre les services gratuits locaux, vérifie Django et les calculs 
 [Spécifications D5, preuves attendues et limites](docs/ETAT-D5.md)
 
 **Validation observée le 10 novembre 2026 : `D5 LOCAL OK`.** Le conteneur IA/PostgreSQL a réussi 58 tests Django (aucun saut) ; Django/OpenAPI et D3/D4 ont été vérifiés avec les vrais modèles ; TypeScript, build Vite et Vitest ont réussi ; les 3 tests Chromium Playwright ont validé démo bureau, navigation mobile sans débordement horizontal et parcours local connecté, KPI SQL, citation IA. **L'examen visuel des captures et le gel/tag V1.0 restent distincts** : aucun déploiement du frontend Vercel n'est annoncé ; Render Free n'héberge pas l'IA.
+
+## D5.1 — Finition UX/UI transversale (branche isolée)
+
+La revue visuelle des cinq écrans et de la fiche documentaire du 10 novembre 2026 a été convertie en [plan de corrections mesurables](docs/PLAN-D51.md). Le chantier corrige les débordements, compresse les cockpits sur les résolutions bureau observées, conserve les filtres et onglets durant les défilements, harmonise les événements et données extraites en français, et explicite les anomalies de validation à partir des données réelles.
+
+L'assistant sait maintenant répondre **sans appel IA ni fausse citation** aux questions générales sur les capacités et formats de DocuMind ; toute question documentaire reste soumise au RAG D4, aux citations vérifiables et à l'abstention. Une réponse EUR TTC numérique citée est formatée uniquement lorsque son contexte le justifie.
+
+Cette finition se valide par :
+
+```powershell
+.\scripts\verify-d51.ps1
+```
+
+La commande exécute intégralement D5 puis les nouveaux tests Vitest et Playwright (1920×993, 1649×928, 1440×900, 390×844). Elle produit `D5.1 LOCAL OK` **uniquement après les tests locaux réussis**. Les captures se retrouvent dans `frontend/test-results/`.
+
+**Statut D5.1 au 10 novembre 2026 : `D5.1 LOCAL OK` observé.** Recette Windows/Docker complète réussie : 58/58 tests Django, typecheck/build Vite, 13/13 Vitest, SQL D3 réconcilié, vrai RAG D4, et 4/4 scénarios Playwright Chromium (dont les cinq vues à quatre résolutions). **Revue esthétique des nouvelles captures encore nécessaire avant fusion et gel V1.0.** Aucun changement de service public ou de moteur D1–D4.
+
+### Revue visuelle finale — complément D5.1
+
+Les vingt captures manuelles confirment la cohérence du rendu et de la traçabilité, mais ont révélé des défilements externes sur certains bureaux et une formulation d'aide non reconnue (`En quoi consiste cette app ?`). Deux correctifs ciblés et des assertions Playwright supplémentaires sont ajoutés sur la branche D5.1 : mode compact pour les fenêtres CSS de 1200 px de large et 730 px de haut au minimum, défilements internes, réponses de présentation de l'application sans appel au RAG. **Nouvelle recette exécutée et réussie sur les derniers correctifs le 10 novembre 2026 : 58/58 Django, 13/13 Vitest, 4/4 Playwright, dont les contrôles de débordement horizontal et vertical à 1320×742 CSS.** La revue esthétique des captures produites après ce correctif reste distincte, avant fusion.
+
+### D5.1 — Finition des captures 1320×742
+
+Dernière revue : les cinq vues tiennent dans la fenêtre compacte, mais la notification de connexion restait affichée par-dessus les panneaux et la ligne sous le champ de l'assistant était légèrement tronquée. La notification de succès se ferme désormais automatiquement après 4,5 s (les erreurs restent lisibles jusqu'à fermeture) ; la hauteur de l'assistant est ajustée aux fenêtres de bureau courtes. Un test Playwright vérifie le composeur intégralement visible et des captures non masquées par une notification. **Recette locale sur la correction finale du workspace confirmée le 10 novembre 2026 au commit `163f7a7` : 58/58 Django, 13/13 Vitest, 4/4 Playwright, `D5 LOCAL OK`, `D5.1 LOCAL OK`.** La revue des captures issues de ce dernier commit reste à réaliser avant fusion de la PR #7.
+
+### DocuMind V1.0 — Validation finale
+
+**Validation locale D5.1 acquise le 10 novembre 2026 :** 58 tests Django, 13 tests Vitest et 4 scénarios Playwright Chromium réussis ; D3 SQL réconcilié, D4 RAG Ollama/Chroma vérifié. Le rendu des cinq vues a été inspecté ; la capture finale de l'Assistant à 1320×742 confirme que l'ensemble du composeur est visible, sans notification superposée. La V1.0 est approuvée pour fusion squash et gel.
+
+**Exploitation :** plateforme complète (PostgreSQL, pipeline Pandas, Metabase, Ollama/Chroma, React) uniquement en local ; démo publique Render D1 limitée à la lecture de métadonnées synthétiques. Ne jamais exposer de secrets, publier des fichiers privés ni supprimer les volumes Docker avec `docker compose down -v`. Les changements ultérieurs seront versionnés séparément.

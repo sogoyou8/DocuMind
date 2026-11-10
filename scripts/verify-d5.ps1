@@ -26,6 +26,15 @@ Assert-Code "Pause Airflow"
 docker compose --profile ai --profile ui up -d --build postgres api ollama rag web
 Assert-Code "Start D5 backend and local React"
 
+# D5.1: Docker 'up -d' keeps a previously running Vite process alive.
+# After switching Git branches this may serve the old frontend modules even
+# though TypeScript and Vite build the new sources successfully.
+# Only the Vite dependency cache is reset; never delete database/vector volumes.
+docker compose --profile ui exec -T web sh -c "rm -rf /app/node_modules/.vite"
+Assert-Code "Clear disposable Vite optimized-module cache"
+docker compose --profile ui restart web
+Assert-Code "Restart Vite so Chromium sees the checked-out branch"
+
 docker compose exec -T api python /workspace/scripts/check_d5_static.py
 Assert-Code "Static D5 and security preflight"
 

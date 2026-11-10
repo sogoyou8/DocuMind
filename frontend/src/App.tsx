@@ -94,6 +94,14 @@ export default function App() {
   const mainRef = useRef<HTMLElement>(null);
   const demo = session?.mode === "synthetic-demo";
   const canLoad = Boolean(session && (demo || session.authenticated));
+  // Keep success feedback visible briefly, but never cover dashboard cards forever.
+  // Errors remain persistent until the user dismisses them.
+  useEffect(() => {
+    if (!notice) return;
+    const timer = window.setTimeout(() => setNotice(null), 4500);
+    return () => window.clearTimeout(timer);
+  }, [notice]);
+
   const aiEnabled = Boolean(session?.ai_enabled && !demo);
   const operator = Boolean(session?.operator && !demo);
 
@@ -315,7 +323,7 @@ export default function App() {
         </div>
       </header>
 
-      <main ref={mainRef} className="workspace-content" id="main-content">
+      <main ref={mainRef} className={`workspace-content ${view === "assistant" ? "is-assistant" : ""}`} id="main-content">
         {view === "overview" && <OverviewView overview={overview} analytics={analytics}
           documents={docs?.results ?? []} demo={Boolean(demo)} loading={loading}
           onTab={navigate} onDocument={openDocument}/>}

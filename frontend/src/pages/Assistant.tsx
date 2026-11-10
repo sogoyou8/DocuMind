@@ -6,11 +6,13 @@ import {
 } from "lucide-react";
 import type { AssistantAnswer, AssistantStatus } from "../types";
 import { Hint, LabelPill, Pane } from "../components/Visuals";
+import { applicationHelp, displayedAnswer, sourceLabel } from "../ux";
 
 type Message = {
   id: number;
   question: string;
   response?: AssistantAnswer;
+  guide?: string;
   error?: string;
 };
 
@@ -33,6 +35,7 @@ export default function AssistantView({
   const [messages, setMessages] = useState<Message[]>([]);
   const [busy, setBusy] = useState(false);
   const bottom = useRef<HTMLDivElement>(null);
+  const messageSequence = useRef(0);
   const canAsk = enabled && !demo;
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -41,8 +44,13 @@ export default function AssistantView({
   const ask = async (value?: string) => {
     const text = (value ?? question).trim();
     if (!canAsk || busy || text.length < 4 || text.length > 500) return;
-    const id = Date.now();
+    const id = ++messageSequence.current;
     setQuestion("");
+    const guide = applicationHelp(text);
+    if (guide) {
+      setMessages(old => [...old, { id, question: text, guide }]);
+      return;
+    }
     setMessages(old => [...old, { id, question: text }]);
     setBusy(true);
     try {
@@ -76,31 +84,46 @@ export default function AssistantView({
             <p>Interrogez les documents validés. Chaque citation indique précisément le fichier et la ligne ou page d'origine.</p>
             <div className="assistant-prompts">
               {suggestions.map(s => <button key={s} type="button" disabled={!canAsk}
-                onClick={() => setQuestion(s)}><Sparkles size={14}/><span>{s}</span><ChevronRight size={15}/></button>)}
+                onClick={() => setQuestion(s)} title="Placer la question dans le champ de saisie"><Sparkles size={14}/><span>{s}</span><ChevronRight size={15}/></button>)}
+            </div>
+            <div className="assistant-guidance">
+              <span>Les suggestions remplissent le champ sans envoyer de demande.</span>
+              <button type="button" disabled={!canAsk} onClick={() => setQuestion("Que peux-tu faire ?")}>Découvrir DocuMind</button>
             </div>
           </div> :
             <div className="messages">
               {messages.map(msg => <div key={msg.id} className="message-group">
                 <div className="message user-message"><span className="message-avatar user-avatar">VO</span>
                   <p>{msg.question}</p></div>
-                {msg.response ? <div className="assistant-reply">
+                {msg.response || msg.guide ? <div className="assistant-reply">
                   <span className="message-avatar ai-avatar"><BrainCircuit size={17}/></span>
                   <div className="reply-body">
                     <div className="reply-top"><strong>DocuMind</strong>
-                      <LabelPill kind={msg.response.status === "answered" ? "good" : "neutral"}>
-                        {msg.response.status === "answered" ? "Réponse sourcée" : "Abstention"}
+                      <LabelPill kind={msg.guide ? "info" : msg.response?.status === "answered" ? "good" : "neutral"}>
+                        {msg.guide ? "Guide de l'application" : msg.response?.status === "answered" ? "Réponse sourcée" : "Abstention"}
                       </LabelPill></div>
-                    <p>{msg.response.answer}</p>
-                    {msg.response.citations.length > 0 && <div className="citation-list">
+                    <p>{msg.guide ?? displayedAnswer(msg.question, msg.response?.answer ?? "", msg.response?.citations ?? [])}</p>
+                    {msg.response && msg.response.citations.length > 0 && <div className="citation-list">
                       <span className="citation-heading"><BookOpenCheck size={14}/> Sources vérifiées</span>
-                      {msg.response.citations.map(citation => <button key={citation.id} type="button"
-                        className="citation-card" onClick={() => onCitation(citation.document_id)}>
-                        <div><FileSearch size={17}/><strong>{citation.document}</strong><span>{citation.id}</span></div>
-                        <small>{citation.source_locator}</small>
-                        <p>{citation.excerpt}</p>
-                      </button>)}
+                      {msg.response.citations.map(citation => <div className="citation-card" key={citation.id}>
+                        <button type="button" className="citation-open"
+                          aria-label={`Ouvrir la fiche source ${citation.document}`}
+                          onClick={() => onCitation(citation.document_id)}>
+                          <FileSearch size={17}/><strong>{citation.document}</strong><ChevronRight size={15}/>
+                        </button>
+                        <div className="citation-meta">
+                          <span title={citation.source_locator}>{sourceLabel(citation.source_locator)}</span>
+                          <code>{citation.id}</code>
+                        </div>
+                        <p className="citation-preview">{citation.excerpt}</p>
+                        <details className="citation-details">
+                          <summary>Consulter l'extrait complet</summary>
+                          <p>{citation.excerpt}</p>
+                          <small>Identifiant technique : {citation.source_locator}</small>
+                        </details>
+                      </div>)}
                     </div>}
-                    {msg.response.status === "abstained" && <Hint>
+                    {msg.response?.status === "abstained" && <Hint>
                       Aucun passage vérifié ne permet d'étayer cette demande. Reformule la question ou importe un document pertinent.
                     </Hint>}
                   </div>

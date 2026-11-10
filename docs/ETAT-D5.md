@@ -81,3 +81,49 @@ Le raccourci `-SkipBrowser` existe pour les relances ciblées **après** une pre
 ## Prochaines décisions après tests
 
 La recette automatique D5 est réussie. Les contrôles finaux distincts sont : vérifier Render Free après fusion, examiner les captures d'écran réelles pour la finition visuelle, puis décider séparément du gel/tag V1.0 et de la publication du frontend statique sur Vercel pour Abyss Showcase. **Ne pas annoncer de publication Vercel ni de validation esthétique exhaustive sans déploiement ou inspection observée.**
+
+## Chantier complémentaire D5.1 — suite de la revue visuelle
+
+La revue manuelle des cinq vues et de la fiche documentaire a mis en évidence des retouches de densité, des débordements, des statuts peu explicites et le besoin d'une aide intégrée. Les observations et corrections sont détaillées dans [PLAN-D51.md](PLAN-D51.md) ; elles ne remettent pas en cause la recette fonctionnelle D5 précédente.
+
+Sur `work/d51-ux-ui-final-polish` : CSS de compaction et de défilement interne, onglets sticky, schéma d'états/contextes, libellés métier, analyse sourcée du rejet, FAQ locale déterministe et présentation des citations. **La recette fonctionnelle D5.1 a réussi le 10 novembre 2026** avec `scripts/verify-d51.ps1` : 58/58 tests Django, 13/13 Vitest, 4/4 Playwright Chromium, build Vite/TypeScript, SQL D3 (15 factures, 1 344 EUR TTC), modèle local RAG D4 (120 EUR cité, abstention, injection refusée). Le test D5.1 parcourt les cinq vues à 1920×993, 1649×928, 1440×900 et 390×844 et ne détecte aucun dépassement de largeur au niveau testé. **Preuve terminale : `D5.1 LOCAL OK`.** Les captures produites par Playwright doivent encore être examinées humainement ; aucune fusion V1.0, gel visuel, tag ni publication front n'est annoncée à cette étape.
+
+
+### D5.1 — Recette finale après correctif de la FAQ et compacité (10 novembre 2026)
+
+Journal local Windows/Docker transmis après mise à jour de la branche au commit `1cd90f0` : contrôles statiques Django `D5 STATIC OK`, **58/58 tests Django**, réconciliation D3 **15 factures / 7 documents acceptés / 2 rejetés / 1 344 EUR TTC**, `D4 LOCAL VERIFIED` (Ollama/Chroma, citation facture 120 EUR, abstention et injection refusée), santé API/React, `tsc -b`, build Vite, **13/13 Vitest**, et **4/4 Playwright Chromium** (51,8 s). Les scénarios incluent la FAQ produit corrigée, les cinq vues aux quatre formats initiaux et le viewport CSS compact **1320×742**, contrôlant aussi les débordements verticaux. Le script termine explicitement sur **`D5 LOCAL OK` et `D5.1 LOCAL OK`**. Les deux blocages précédents ont disparu. **Revue visuelle des nouvelles captures encore nécessaire avant fusion ou gel de V1.0.**
+
+## Nouvelle exécution du 10 novembre — 58/58 Django, 13/13 Vitest, 3/4 Playwright
+
+La recette locale Windows a effectivement été relancée après les ajustements du composeur/notification, avec mise à jour Git de `1cd90f0` vers `1395390`. D1–D5 backend validés : `D5 STATIC OK`, 58 tests Django passés, D3 SQL réconcilié (15 factures, 7 documents acceptés, 2 rejetés, 1 344 EUR TTC), D4 RAG réel vérifié, TypeScript/build Vite réussis, 13/13 Vitest. Playwright : démo publique, mobile et parcours local avec citations réussis, mais le scénario d'intégration des cinq vues a échoué sur le contrôle **visibilité intégrale du pied du composeur** à 1320×742 CSS : `toBeInViewport({ratio: 0.99})` a reçu **0,3461538553**. Fin du script par exception, pas de `D5.1 LOCAL OK`.
+
+Diagnostic CSS : la règle de réduction de marges préservait `height:100%` et `flex:1 1 auto` sur la page de l'assistant, puis `height:100%` sur son panneau principal ; la combinaison peut allouer une hauteur qui dépasse légèrement l'espace réellement disponible. Les autres vues compactes passent.
+
+**Correctif supplémentaire posé :** pour les bureaux de hauteur CSS 650–800 px, la page et la grille Assistant utilisent `flex:1 1 0`, `height:auto`, `min-height:0`, avec composition à hauteur extensible plutôt qu'à hauteur en pourcentage ; la conversation conserve son défilement interne et le composeur ne rétrécit pas. Le test Playwright écrit désormais toujours la capture du viewport **avant** l'assertion, et inclut des mesures des rectangles (`workspace`, `page`, `grid`, `main`, `composer`, `composeFooter`) en cas d'échec, pour arrêter les corrections à l'aveugle.
+
+**Statut** : correctif enregistré sur la PR #7, mais **pas encore retesté en conditions réelles** ; relancer `scripts/verify-d51.ps1` avec la dernière branche. Ne pas fusionner, figer ou publier tant que le 4e scénario ne passe pas.
+
+## Recette du 10 novembre — correction ciblée de la grille parent
+
+Nouvelle recette locale Windows au commit `4d37906` : build/TypeScript réussis, **58/58 Django**, D3 à **1 344 EUR TTC**, D4 RAG vérifié, **13/13 Vitest**, **3/4 Playwright**. Le dernier scénario continue d'échouer sur le composeur Assistant à `1320×742` CSS, mais les mesures géométriques expliquent désormais **pourquoi** :
+
+- `viewport=742` ; `.workspace-content`: `top=69,bottom=769,height=700` ;
+- `.assistant-page`: `top=78,bottom=761` ; `.assistant-grid`: `top=152,bottom=761` ;
+- `.assistant-compose`: `top=668,bottom=760`, `.compose-footer`: `top=738,bottom=751`.
+- Le contenu déborde parce que **la rangée implicite de `.app-shell` grandit à la hauteur intrinsèque du workspace** (769 px) plutôt qu'à la hauteur du viewport (742 px), puis `overflow:hidden` la coupe. Les sous-composants et leurs marges ne sont plus la cause première.
+
+**Correctif parent appliqué :** `frontend/src/styles.css` fixe explicitement la rangée de la grille générale `.app-shell` à `minmax(0, 1fr)`, et `.workspace` à `min-height:0`. Les cinq vues utilisent ainsi la hauteur du viewport disponible (la topbar garde ses 69 px), sans réduire ni masquer les champs de l'assistant. La navigation mobile `display:block` demeure inchangée.
+
+**Playwright renforcé :** la boucle de toutes les vues et résolutions de bureau exige maintenant `workspaceBottom <= viewportHeight + 1`, en plus du test `compose-footer` entièrement visible à 1320×742. En cas d'échec, les coordonnées `.app-shell` et `.workspace` sont également enregistrées. La capture est conservée même lorsque l'assertion échoue.
+
+**Statut :** correctif enregistré dans la PR #7, sans fusion/publication. Nouvelle exécution de `scripts/verify-d51.ps1` requise sur ce commit. Le précédent `D5.1 LOCAL OK` n'incluait pas ce test renforcé.
+
+## D5.1 — Réussite de la recette après correction du workspace parent (10 novembre 2026)
+
+Exécution utilisateur sur `163f7a7` : **58/58 tests Django, D3 SQL 1 344 EUR TTC, D4 Ollama/Chroma/RAG cité, build TypeScript/Vite, 13/13 Vitest, 4/4 scénarios Playwright Chromium (56,0 s)**. Le test d'absence de dépassement de la grille parent et celui de visibilité intégrale du composeur de l'assistant à 1320×742 passent. Sorties explicites `D5 LOCAL OK` et `D5.1 LOCAL OK`. **Il n'y a plus de blocage technique de recette ; validation de la dernière capture de l'Assistant encore distincte avant fusion et gel V1.0.**
+
+## Clôture de la validation D5.1 — V1.0 prête (10 novembre 2026)
+
+La dernière capture Assistant à 1320×742 est **validée visuellement**, y compris le texte sous le composeur auparavant coupé. Les captures des cinq vues ont été revues et les défauts UX ciblés corrigés. Tests sur le dernier code : **58/58 Django**, `D3 SQL VERIFIED` (1 344 EUR TTC), `D4 LOCAL VERIFIED` (RAG local avec citation, abstention et rejet d'injection), **13/13 Vitest**, **4/4 Playwright**, `D5.1 LOCAL OK`.
+
+**Décision de gel V1.0 :** livrable local complet conforme, prêt à être fusionné dans `main` et figé à son commit de fusion ; aucune publication du frontend complet ni exposition du RAG/Chroma/Ollama/Metabase ; la démo Render Free D1 existante reste distincte et en lecture seule. Les futurs changements devront passer par de nouvelles branches/versions, pas par une modification silencieuse de la V1.0.
