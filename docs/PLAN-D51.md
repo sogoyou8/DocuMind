@@ -28,3 +28,13 @@ Statut : chantier isolé sur `work/d51-ux-ui-final-polish` ; aucune modification
 - **Responsive** : priorité cockpit bureau (dont 1920×993 et captures 1649×928), mais repli en défilement naturel sur hauteur insuffisante et mobile 390×844, sans scroll horizontal.
 - **Workflow** : commits sur branche isolée, PR en brouillon, aucune fusion ni publication sans exécution locale des contrôles et revue de captures.
 - **Tests attendus** : `npm run typecheck`, `npm run build`, `npm test`, `npm run test:e2e`, recette existante `scripts/verify-d5.ps1` et nouvelle validation des dimensions/états.
+
+## Première recette D5.1 — échec navigateur identifié et correctif
+
+La première recette Windows/Docker a confirmé **58/58 Django**, **13/13 Vitest**, build TypeScript/Vite, réconciliation **1 344 EUR TTC** et vérification D4. Playwright a obtenu **2/4** : la démo bureau et mobile sont passées ; le navigateur ne trouvait pas « Guide de l'application » après la question « Que peux-tu faire ? », et mesurait **12 px** de débordement horizontal interne sur Analyse & KPI à 1440×900.
+
+Les journaux Docker indiquaient `documind-web-1 Running` pendant la recette : le serveur Vite était réutilisé sans redémarrage après le changement de branche Git, contrairement au conteneur de test Playwright qui lisait les nouveaux scénarios. Les deux défauts correspondent aux fonctionnalités/styles ajoutés à D5.1 et étaient présents dans D5. **Hypothèse principale : Vite servait les anciens modules en cache**, à confirmer par la nouvelle recette ; une régression CSS indépendante n'est pas exclue tant qu'un nouveau test navigateur n'a pas réussi.
+
+Correctif conservateur dans `scripts/verify-d5.ps1` sur la branche D5.1 : vider uniquement le cache Vite optimisé `/app/node_modules/.vite`, puis **redémarrer le service `web`** avant les tests. Les volumes PostgreSQL/Chroma/Metabase/Ollama sont préservés. L'E2E vérifie désormais la présence du nouveau bouton « Découvrir DocuMind » dès l'arrivée sur l'assistant, puis confirme que le guide ne déclenche aucune requête RAG et qu'une facture déclenche toujours l'API source. L'aide est testée **avant** la requête longue Ollama.
+
+Ne pas annoncer `D5.1 LOCAL OK` avant une seconde recette réussie et la revue des captures. L'état GitHub reste une PR en brouillon.
