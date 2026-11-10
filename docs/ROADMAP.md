@@ -7,7 +7,7 @@
 | D2 | Python/Pandas + Airflow | 30 tests reussis, 3 acceptes/1 rejete, 240 EUR TTC, rejeu sans doublons et DagRun Airflow `success` | Valide localement (9 nov. 2026) |
 | D3 | SQL métier + Metabase | 36/36 tests, 9 vues BI, rôle SELECT seul, 12 questions Metabase réconciliées, `D3 LOCAL OK` | Validé localement (9 nov. 2026) |
 | D4 | RAG, ChromaDB, Ollama, LangGraph | 47/47 tests, 7 documents indexés, réponse 120 € sourcée, abstention, injection refusée, total D3 inchangé, `D4 LOCAL OK` | Validé localement (9 nov. 2026) |
-| D5 | React/TypeScript, intégration, UX et QA V1.0 | Cockpit 5 vues, Django session + BI/audit, suite 58 tests attendus, build Vite, Vitest, Playwright local & mobile, `D5 LOCAL OK` | Implémenté sur branche, recette locale en attente |
+| D5 | React/TypeScript, intégration, UX et QA V1.0 | 58/58 tests Django, TypeScript/Vite/Vitest, 3/3 Playwright Chromium (démo, mobile, SQL+RAG local), `D5 LOCAL OK` | Validation fonctionnelle locale réussie (10 nov. 2026), revue visuelle à effectuer |
 
 ## Gates
 D0->D1 : spécifications et frontières cohérentes.
