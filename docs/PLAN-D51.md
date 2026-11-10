@@ -1,0 +1,30 @@
+# D5.1 — Finition UX/UI transversale, issue de la revue visuelle du 10 novembre 2026
+
+Statut : chantier isolé sur `work/d51-ux-ui-final-polish` ; aucune modification des modèles Django, pipelines D2, vues SQL D3, RAG D4, secrets ni déploiement public. Les cinq vues et le panneau documentaire ont été examinés sur captures réelles. La qualité fonctionnelle D5 reste la base (58 tests Django, 3 E2E Playwright, `D5 LOCAL OK`).
+
+## Corrections à réaliser et critères de recette
+
+| ID | Emplacement | Observation étayée par les captures | Modification technique | Critère de réussite |
+|---|---|---|---|---|
+| P0-01 | Analyse & KPI | Débordement horizontal et légende du donut coupée à droite sur 1649×928 | Colonnes `minmax(0, …)`, tailles flex autorisées à rétrécir, donut/ligne de légende adaptés | Aucun scroll horizontal à 1920×993, 1649×928, 1440×900, 390×844 ; trois états visibles |
+| P0-02 | Assistant IA | Pied de page visible derrière le composeur, avertissement latéral touchant le bas | Grille à hauteur bornée, conversation scrollable, composition ancrée, pied de page exclu de cette vue | Texte d'aide, champ et avertissement sans superposition ; messages consultables |
+| P0-03 | Historique | Un événement de rejet est associé au même pictogramme vert qu'un succès | Couleurs et icônes déterminées par type d'événement, jamais par position | Un rejet est orange/rouge, une réussite verte, une initialisation neutre |
+| P1-01 | Vue d'ensemble | Hero long + bas de page hors écran | Réduction proportionnelle hero/KPI/graphiques, regroupement équilibré ; scroll de secours lorsque l'écran est trop bas | Les sept modules restent lisibles à 1920×993 ; ni découpage ni texte tronqué à 390px |
+| P1-02 | Documents | En-tête et filtres disparaissent lorsque l'utilisateur descend les 9 lignes | Catalogue à défilement interne, barre d'outils et colonnes persistantes ; lignes plus denses | Recherche, filtres, colonnes et pagination restent utilisables sur bureau |
+| P1-03 | Fiche documentaire | Onglets disparaissent au défilement ; boutons de traitement incohérents | Onglets `position: sticky`; « Déjà indexé » non cliquable, indexation absente pour rejeté, retraitement contextualisé | Actions alignées sur `RECEIVED/REJECTED/ACCEPTED/INDEXED` |
+| P1-04 | Documents, Historique | Noms techniques `subtotal/tax`, `RAG_INDEXED`, dates ISO | Libellés français maintenus via dictionnaires explicites ; date et heure locale pour audit ; conserver valeurs/codes bruts consultables | Pas de codes anglais utilisés comme titres courants ; origine technique accessible |
+| P1-05 | Document rejeté | `TOTAL_MISMATCH` a seulement un message générique | Résoudre la ligne extraite reliée à l'erreur ; HT+TVA, TTC déclaré, écart calculés à partir du record quand ces champs sont présents | 20+4=24, TTC déclaré 30, écart 6 ; jamais de valeurs calculées sans source |
+| P1-06 | Assistant IA | Les questions « Que peux-tu faire ? » et « Quels types de documents acceptes-tu ? » déclenchent une abstention RAG | Aide locale déterministe, strictement sur le logiciel, distincte des réponses documentaires, sans citation inventée | Questions d'aide traitées sans Ollama ; question sur facture inconnue conserve l'abstention |
+| P1-07 | Assistant IA | Réponse numérique « 120.00 » peu lisible ; citation longue et brute | Format montant EUR TTC seulement si la question concerne le TTC et la source l'établit ; citation résumée, détail technique consultable | 120,00 € TTC affiché pour DM-2026-001 ; lien vers fiche fonctionnel |
+| P2-01 | Vue d'ensemble, Analyse | Axe des ordonnées trop discret, une seule graduation | Quatre repères de valeurs et graphique adaptatif ; libellés/unités lisibles | 5 mois visibles, 0–max et graduations, sans valeur financière inventée |
+| P2-02 | Ensemble des vues | Textes secondaires trop discrets, cartes trop hautes | Contraste et typographie secondaire relevés ; densité mesurée sur bureau | Lisible sans perdre la hiérarchie ; responsive mobile conservé |
+| P2-03 | Historique | Liste longue avec espaces vides et recherche perdue | Timeline plus dense, zone de scroll interne, recherche sticky, vrai timestamp ; limite API 40 explicitée | Consultation des 25 événements en gardant recherche et titre |
+| P2-04 | E2E | Les trois tests D5 valident la fonction, pas les retouches multi-résolution | Ajouter assertions frontend et Playwright sur mises en page, événements et aide RAG | `typecheck`, `build`, `Vitest`, `Playwright`, D5 backend restent au vert |
+
+## Contraintes et limites explicites
+
+- **Pas de fausses données** : jamais de montant, facture, statut d'indexation, réponse IA ou action inventés. Les explications automatiques reposent sur le code et les valeurs extraites, pas sur un LLM.
+- **Sécurité** : les questions documentaires passent par le moteur local RAG inchangé, les accès et permissions passent par Django. L'aide générale sur l'application ne doit pas masquer les questions documentaires ni générer de citations factices.
+- **Responsive** : priorité cockpit bureau (dont 1920×993 et captures 1649×928), mais repli en défilement naturel sur hauteur insuffisante et mobile 390×844, sans scroll horizontal.
+- **Workflow** : commits sur branche isolée, PR en brouillon, aucune fusion ni publication sans exécution locale des contrôles et revue de captures.
+- **Tests attendus** : `npm run typecheck`, `npm run build`, `npm test`, `npm run test:e2e`, recette existante `scripts/verify-d5.ps1` et nouvelle validation des dimensions/états.
