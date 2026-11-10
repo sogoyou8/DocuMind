@@ -97,7 +97,7 @@ export function applicationHelp(question: string): string | null {
   }
   // A general question about DocuMind itself must not be confused with
   // a question about an indexed invoice or document. No LLM or citation here.
-  const aboutApplication = /^(?:en quoi consiste|c est quoi|qu est ce que|a quoi sert|comment fonctionne)\s+(?:(?:cette|une|l|la|ton|votre|le)\s+)?(?:app|application|logiciel|outil|documind)(?:\s|$)/
+  const aboutApplication = /^(?:(?:en|on) quoi consiste|c est quoi|qu est ce que|a quoi sert|comment fonctionne)\s+(?:(?:cette|une|l|la|ton|votre|le)\s+)?(?:app|application|logiciel|outil|documind)(?:\s|$)/
     .test(q) || /^(?:presente|explique|decris)\s+(?:moi\s+)?(?:documind|cette app|cette application)(?:\s|$)/.test(q);
   if (aboutApplication) {
     return "DocuMind est une application locale d'analyse documentaire. Elle importe des PDF textuels, CSV et XLSX, conserve leur empreinte et leur provenance, extrait les factures, vérifie les montants et signale les anomalies. Les données acceptées alimentent des indicateurs SQL. L'assistant IA local répond aux questions sur les documents indexés avec une citation précise, ou s'abstient sans preuve. Le journal conserve les opérations réalisées.";
