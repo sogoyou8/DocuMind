@@ -1,6 +1,6 @@
 # DocuMind — D5 : interface React, QA de bout en bout et préparation V1.0
 
-**État du code : implémentation sur `work/d5-react-v1-cockpit`, recette Docker et tests navigateur encore à confirmer.** D0 à D4 ont déjà été validés et fusionnés. Ne pas fusionner D5 ou annoncer une V1.0 validée tant que la ligne finale `D5 LOCAL OK` et la revue des captures ne sont pas obtenues.
+**État au 10 novembre 2026 : recette fonctionnelle D5 terminée avec `D5 LOCAL OK` sur Windows/Docker Desktop.** Tests Django, API, SQL, assistant IA réel, TypeScript, build Vite, Vitest et Playwright réussis. La revue esthétique manuelle des captures (notamment 1920×993) reste distincte : ne pas présenter cette vérification visuelle comme faite, ni publier l'interface sur Vercel sans vérification.
 
 ## Mission et résultat fonctionnel
 
@@ -66,18 +66,18 @@ Le raccourci `-SkipBrowser` existe pour les relances ciblées **après** une pre
 
 ## Critères de validation V1
 
-- [ ] 58 tests Django D1–D5 réussis dans le service IA/PostgreSQL, sans test D5 ignoré.
-- [ ] API Django/OpenAPI/migrations et contrôle CSRF réussis.
-- [ ] Indicateurs D3 cohérents, factures rejetées exclues, 1 344 EUR TTC fictifs préservés.
-- [ ] Index D4 idempotent, modèle local répond avec citation à `DM-2026-001` (120 EUR) et refuse les références inconnues.
-- [ ] TypeScript strict, build Vite et tests Vitest réussis.
-- [ ] Playwright grand écran + mobile et parcours local authentifié + source IA réussis.
-- [ ] Captures examinées : lisibilité 1920×993, 1440×900 et 390×844 ; absence de superposition et de débordement.
-- [ ] Contrôles des permissions et de confidentialité, notamment sur Render, sans régression.
-- [ ] Fusion GitHub puis gel V1.0 documenté **seulement après** les preuves ci-dessus.
+- [x] 58 tests Django D1–D5 réussis dans le service IA/PostgreSQL, sans test D5 ignoré (`Ran 58 tests ... OK`).
+- [x] API Django/OpenAPI/migrations et contrôle CSRF réussis dans la recette.
+- [x] Indicateurs D3 cohérents, factures rejetées exclues, 1 344 EUR TTC fictifs préservés (`D3 SQL VERIFIED`).
+- [x] Index D4 idempotent, modèle local répond avec citation à `DM-2026-001` (120 EUR) et refuse les références inconnues (`D4 LOCAL VERIFIED`).
+- [x] TypeScript strict, build Vite et tests Vitest réussis, tous exigés avant la sortie `D5 LOCAL OK`.
+- [x] Playwright Chromium : trois scénarios réussis (`3 passed (18.9s)`), dont démo bureau, mobile sans débordement horizontal et véritable parcours local authentifié avec source IA.
+- [ ] Captures : les tests Playwright ont produit des fichiers de capture et vérifié l'absence de débordement horizontal sur mobile ; **l'examen esthétique manuel, notamment à 1920×993, reste à effectuer**.
+- [x] Tests backend de confidentialité et refus du mode démo réussis ; contrôle **live Render post-fusion** à enregistrer séparément.
+- [ ] Gel visuel et tag V1.0 : réservé à l'issue de l'examen des captures et des vérifications de production ; la fusion du code fonctionnel testé peut être effectuée sans annoncer ce gel.
 
-**Préparation actuelle :** les fichiers de code, les tests automatiques et la recette sont prêts sur la branche D5, mais aucune exécution réelle `npm build` ou Playwright sur l'ordinateur utilisateur n'a encore été reçue. Les comptes de tests et les sommes sont des attentes fondées sur les tests existants et les fichiers fictifs, pas des validations observées.
+**Preuve de recette reçue le 10 novembre 2026 :** `D5 STATIC OK`, `System check identified no issues`, `No changes detected`, `Found 58 test(s)`, `Ran 58 tests in 19.078s — OK`, `D3 SQL VERIFIED` (15 factures fictives, 7 documents acceptés, 2 rejetés, 1 344,00 EUR TTC), `D4 LOCAL VERIFIED` (facture 120 EUR sourcée, abstention et injection refusée), healthchecks Django et React (HTTP 200), puis **3/3 scénarios Playwright Chromium réussis** : démo sans KPI inventés, mobile sans débordement horizontal, vrai login/SQL/RAG local avec citation. Le script a terminé sur **`D5 LOCAL OK`** : le build TypeScript/Vite et Vitest, situés avant Playwright, ont donc également réussi. Les fichiers graphiques restent sur l'ordinateur local et n'ont pas été examinés ici. Le mot de passe de l'opérateur reste privé sous `data/local/d5-operator.json`.
 
 ## Prochaines décisions après tests
 
-Si la recette réussit, vérifier visuellement les captures d'écran et les parcours, corriger les défauts, fusionner la PR D5 dans `main`, vérifier Render Free et décider séparément de publier le frontend statique sur Vercel pour Abyss Showcase. **Ne pas annoncer la publication Vercel tant qu'aucun déploiement n'a été créé et vérifié.**
+La recette automatique D5 est réussie. Les contrôles finaux distincts sont : vérifier Render Free après fusion, examiner les captures d'écran réelles pour la finition visuelle, puis décider séparément du gel/tag V1.0 et de la publication du frontend statique sur Vercel pour Abyss Showcase. **Ne pas annoncer de publication Vercel ni de validation esthétique exhaustive sans déploiement ou inspection observée.**
