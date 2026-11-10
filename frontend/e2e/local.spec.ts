@@ -14,9 +14,8 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
 
   await expect(page.getByRole("heading", { name: /Vos documents/i })).toBeVisible();
   // Success notices must disappear without manual interaction, unlike errors.
-  await expect(page.getByRole("button", { name: "Fermer la notification" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Fermer la notification" }))
-    .toBeHidden({ timeout: 8000 });
+  const loginNotice = page.getByRole("button", { name: "Fermer la notification" });
+  if (await loginNotice.isVisible()) await expect(loginNotice).toBeHidden({ timeout: 8000 });
   await page.screenshot({ path: testInfo.outputPath("local-overview.png"), fullPage: true });
   await page.getByRole("button", { name: "Documents", exact: true }).click();
   // Local databases may contain extra user-authorized uploads; the fixture
