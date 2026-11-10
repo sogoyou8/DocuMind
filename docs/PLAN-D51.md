@@ -82,3 +82,13 @@ Captures réellement examinées : `d51-overview-1320x742.png`, `d51-documents-13
 Correctifs complémentaires sur la même branche : compaction très ciblée du composeur et de son en-tête aux hauteurs CSS bureau 650–800 px ; fermeture automatique de la notification de succès au bout de 4,5 s, sans suppression des erreurs persistantes ; Playwright vérifie que le composeur **entier** est dans la fenêtre à 1320×742 et ferme la notification avant la capture des vues.
 
 **Statut :** revue visuelle des cinq captures effectuée, correctifs implémentés. La recette `D5.1 LOCAL OK` précédente valide le commit antérieur seulement. Une nouvelle recette `scripts/verify-d51.ps1` est requise avant fusion ; pas de tag V1.0 ni de publication.
+
+## Nouvelle exécution du 10 novembre — 58/58 Django, 13/13 Vitest, 3/4 Playwright
+
+La recette locale Windows a effectivement été relancée après les ajustements du composeur/notification, avec mise à jour Git de `1cd90f0` vers `1395390`. D1–D5 backend validés : `D5 STATIC OK`, 58 tests Django passés, D3 SQL réconcilié (15 factures, 7 documents acceptés, 2 rejetés, 1 344 EUR TTC), D4 RAG réel vérifié, TypeScript/build Vite réussis, 13/13 Vitest. Playwright : démo publique, mobile et parcours local avec citations réussis, mais le scénario d'intégration des cinq vues a échoué sur le contrôle **visibilité intégrale du pied du composeur** à 1320×742 CSS : `toBeInViewport({ratio: 0.99})` a reçu **0,3461538553**. Fin du script par exception, pas de `D5.1 LOCAL OK`.
+
+Diagnostic CSS : la règle de réduction de marges préservait `height:100%` et `flex:1 1 auto` sur la page de l'assistant, puis `height:100%` sur son panneau principal ; la combinaison peut allouer une hauteur qui dépasse légèrement l'espace réellement disponible. Les autres vues compactes passent.
+
+**Correctif supplémentaire posé :** pour les bureaux de hauteur CSS 650–800 px, la page et la grille Assistant utilisent `flex:1 1 0`, `height:auto`, `min-height:0`, avec composition à hauteur extensible plutôt qu'à hauteur en pourcentage ; la conversation conserve son défilement interne et le composeur ne rétrécit pas. Le test Playwright écrit désormais toujours la capture du viewport **avant** l'assertion, et inclut des mesures des rectangles (`workspace`, `page`, `grid`, `main`, `composer`, `composeFooter`) en cas d'échec, pour arrêter les corrections à l'aveugle.
+
+**Statut** : correctif enregistré sur la PR #7, mais **pas encore retesté en conditions réelles** ; relancer `scripts/verify-d51.ps1` avec la dernière branche. Ne pas fusionner, figer ou publier tant que le 4e scénario ne passe pas.
