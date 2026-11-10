@@ -89,7 +89,7 @@ export function mismatchEvidence(record: RecordRow | undefined): string | null {
 /** Deterministic application guide; it never queries or impersonates the document RAG. */
 export function applicationHelp(question: string): string | null {
   const q = question.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("fr").replace(/[!?.,]/g, " ").replace(/\s+/g, " ").trim();
+    .toLocaleLowerCase("fr").replace(/[!?.,-]/g, " ").replace(/\s+/g, " ").trim();
   const aboutFormats = /(type(s)?|format(s)?|quel(s)?).*(document(s)?|fichier(s)?).*(accept|import|support|permi)/
     .test(q) || /(document(s)?|fichier(s)?).*(accept|import|support|permi)/.test(q);
   if (aboutFormats && !/factur(e|es)\s+(dm|d3|zxz)/.test(q)) {
