@@ -63,4 +63,4 @@ Les vues `analytics` et `audit` ont des contrats JSON explicites : en local, l'a
 
 La chaîne de recette V1 ajoute des tests backend D5 (session, CSRF, isolation Render, données SQL et audit), Vitest (formatage/HTTP), Playwright Chromium (démo grand écran/mobile et vrai parcours local) et des captures. L'image navigateur d'acceptation est distincte du service web et non publiée.
 
-La configuration `frontend/vercel.json` prépare un **éventuel frontend public statique**, mais le déploiement réel Vercel n'est ni effectué ni considéré comme validé. Voir [ETAT-D5.md](ETAT-D5.md) : D5 est en recette, la release V1.0 est conditionnée aux résultats locaux et à la revue visuelle.
+La recette complète du 10 novembre 2026 a réussi : 58/58 tests Django, contrôle des routes et permissions, intégrité D3/D4 réelle, TypeScript et build Vite/Vitest, puis 3/3 tests Playwright Chromium (bureau, mobile et trajet local authentifié avec citation). **D5 est validé fonctionnellement en local.** La revue esthétique indépendante des captures, le gel/tag V1.0 et l'éventuel déploiement public du frontend Vercel restent séparés. Voir [ETAT-D5.md](ETAT-D5.md).
