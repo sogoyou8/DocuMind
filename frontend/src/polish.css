@@ -346,3 +346,199 @@
   .assistant-page { height: auto; min-height: 625px; }
   .workspace-content.is-assistant { overflow-y: auto; }
 }
+
+/*
+ * D5.1 visual follow-up: compact mid-size laptop CSS viewports.
+ * A 1649x928 physical capture can expose a smaller CSS viewport after desktop
+ * scaling/browser zoom. Keep all headings and modules present, but scroll long
+ * document/audit lists inside their own panels.
+ * Existing large desktop (>=1360x850) and responsive mobile rules stay intact.
+ */
+@media (min-width: 1200px) and (max-width: 1359px) and (min-height: 730px),
+       (min-width: 1200px) and (min-height: 730px) and (max-height: 849px) {
+  .workspace-content {
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    padding: 12px 18px 8px;
+  }
+  .workspace-content > .page-stack {
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+  }
+  .workspace-footer {
+    flex: 0 0 auto;
+    min-height: 16px;
+    padding: 3px 2px 0;
+    margin: 4px 1px 0;
+  }
+
+  .overview-view {
+    display: grid;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    grid-template-rows: minmax(160px, .8fr) 73px minmax(165px, 1.07fr) minmax(175px, 1fr);
+    gap: 8px;
+  }
+  .overview-view .welcome-hero {
+    min-height: 0;
+    padding: 10px 20px;
+  }
+  .overview-view .hero-content {
+    align-self: center;
+  }
+  .overview-view .welcome-hero h1 {
+    font-size: clamp(22px, 1.6vw, 28px);
+    line-height: 1.08;
+    margin: 4px 0 5px;
+  }
+  .overview-view .welcome-hero p {
+    font-size: 10px;
+    line-height: 1.35;
+  }
+  .overview-view .hero-actions { margin-top: 8px; }
+  .overview-view .hero-actions .btn { padding: 7px 11px; min-height: 32px; }
+  .overview-view .hero-orbit { transform: scale(.62); }
+  .overview-view .stat-grid { min-height: 0; gap: 8px; }
+  .overview-view .stat-card { min-height: 0; padding: 8px 12px; }
+  .overview-view .stat-heading { font-size: 10px; }
+  .overview-view .stat-value { font-size: clamp(19px, 1.6vw, 25px); margin: 0; }
+  .overview-view .stat-icon { height: 24px; width: 24px; }
+  .overview-view .stat-caption { font-size: 9px; }
+  .overview-view .overview-main-grid,
+  .overview-view .overview-lower-grid { min-height: 0; gap: 8px; }
+  .overview-view .overview-main-grid > .pane,
+  .overview-view .overview-lower-grid > .pane {
+    min-height: 0;
+    overflow: hidden;
+    padding: 8px 12px;
+  }
+  .overview-view .pane-top { margin-bottom: 5px; }
+  .overview-view .pane-top h2 { font-size: 12px; }
+  .overview-view .pane-top p { font-size: 9px; margin-top: 3px; }
+  .overview-view .line-chart { height: min(110px, 14vh); }
+  .overview-view .donut-layout { min-height: 100px; gap: 7px; }
+  .overview-view .donut { width: 100px; height: 100px; padding: 10px; }
+  .overview-view .donut-core { border-width: 6px; }
+  .overview-view .donut-core strong { font-size: 20px; }
+  .overview-view .donut-legend { gap: 7px; min-width: 0; }
+  .overview-view .donut-legend > span { font-size: 9px; gap: 6px; }
+  .overview-view .subtle-divider { margin: 5px 0; }
+  .overview-view .integrity-note { font-size: 9px; }
+  .overview-view .recent-docs { min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+  .overview-view .recent-doc { padding: 4px 0; }
+  .overview-view .recent-doc .file-badge { width: 25px; height: 25px; }
+  .overview-view .recent-doc-main strong { font-size: 10px; }
+  .overview-view .recent-doc-main small { font-size: 9px; }
+  .overview-view .supplier-bars { gap: 7px; }
+  .overview-view .trust-steps { gap: 7px; }
+  .overview-view .trust-steps > div > span { height: 25px; width: 25px; }
+  .overview-view .trust-steps strong { font-size: 10px; }
+  .overview-view .trust-steps small { font-size: 9px; }
+  .overview-view .hint { padding: 5px 7px; font-size: 9px; }
+
+  .analytics-page {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 73px minmax(180px, 1.2fr) minmax(122px, .9fr) auto;
+    gap: 8px;
+  }
+  .analytics-page .page-intro { padding: 0 2px 1px; }
+  .analytics-page .page-intro h1 { font-size: 25px; margin: 5px 0; }
+  .analytics-page .stat-grid { gap: 8px; min-height: 0; }
+  .analytics-page .stat-card { min-height: 0; padding: 8px 11px; }
+  .analytics-page .stat-value { font-size: clamp(19px, 1.5vw, 24px); margin: 0; }
+  .analytics-page .stat-caption { font-size: 9px; }
+  .analytics-page .analytics-grid,
+  .analytics-page .analytics-bottom-grid { min-height: 0; gap: 8px; }
+  .analytics-page .analytics-grid {
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr) minmax(0, 1.02fr);
+  }
+  .analytics-page .analytics-grid > :last-child { grid-column: auto; }
+  .analytics-page .analytics-grid .pane,
+  .analytics-page .analytics-bottom-grid .pane {
+    min-height: 0;
+    overflow: hidden;
+    padding: 9px 11px;
+  }
+  .analytics-page .pane-top { margin-bottom: 6px; }
+  .analytics-page .pane-top h2 { font-size: 12px; }
+  .analytics-page .pane-top p { font-size: 9px; margin-top: 3px; }
+  .analytics-page .line-chart { height: min(115px, 15vh); }
+  .analytics-page .supplier-bars { gap: 9px; }
+  .analytics-page .analytics-grid .donut-layout {
+    min-height: 100px;
+    grid-template-columns: minmax(82px, .76fr) minmax(0, 1fr);
+    gap: 6px;
+  }
+  .analytics-page .analytics-grid .donut { width: 89px; height: 89px; padding: 8px; }
+  .analytics-page .analytics-grid .donut-core { border-width: 6px; }
+  .analytics-page .analytics-grid .donut-core strong { font-size: 20px; }
+  .analytics-page .analytics-grid .donut-legend { gap: 6px; }
+  .analytics-page .analytics-grid .donut-legend > span { font-size: 9px; }
+  .analytics-page .analytics-grid .subtle-divider { margin: 5px 0; }
+  .analytics-page .analytics-grid .hint { font-size: 9px; padding: 5px 7px; }
+  .analytics-page .analytics-bottom-grid .data-table th,
+  .analytics-page .analytics-bottom-grid .data-table td { padding: 6px 4px; }
+  .analytics-page .metric-contract { padding: 7px 10px; }
+
+  .documents-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    height: 100%;
+    gap: 8px;
+  }
+  .documents-page .page-intro { flex: 0 0 auto; }
+  .documents-page .upload-panel { flex: 0 0 auto; padding: 10px 15px; }
+  .documents-page .document-table-pane {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    flex: 1 1 auto;
+    padding: 11px 15px;
+  }
+  .documents-page .document-table-pane .pane-top,
+  .documents-page .document-table-pane .table-toolbar,
+  .documents-page .document-table-pane .table-bottom { flex: 0 0 auto; }
+  .documents-page .document-table-pane .table-overflow { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  .documents-page .table-toolbar { margin-bottom: 7px; }
+  .documents-page > .hint { padding: 6px 9px; }
+
+  .activity-page {
+    height: 100%;
+    overflow: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .activity-page .page-intro { flex: 0 0 auto; }
+  .activity-pane {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 1 1 auto;
+    padding: 11px 15px;
+  }
+  .activity-pane .pane-top, .activity-toolbar { flex: 0 0 auto; }
+  .activity-timeline-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+  .activity-contract { flex: 0 0 auto; padding: 8px 11px; }
+}
+
+/* Avoid trapping content on a physically short display or high browser zoom. */
+@media (min-width: 876px) and (max-height: 729px) {
+  .workspace-content { display: block; overflow-y: auto; }
+  .overview-view, .analytics-page, .documents-page, .activity-page {
+    height: auto;
+    overflow: visible;
+  }
+}
