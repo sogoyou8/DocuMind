@@ -157,4 +157,4 @@ Cette finition se valide par :
 
 La commande exécute intégralement D5 puis les nouveaux tests Vitest et Playwright (1920×993, 1649×928, 1440×900, 390×844). Elle produit `D5.1 LOCAL OK` **uniquement après les tests locaux réussis**. Les captures se retrouvent dans `frontend/test-results/`.
 
-**Statut : code D5.1 implémenté sur `work/d51-ux-ui-final-polish` ; recette locale et revue des nouvelles captures requises avant fusion et gel V1.0.** Aucun changement de service public ou de moteur D1–D4.
+**Statut D5.1 au 10 novembre 2026 : `D5.1 LOCAL OK` observé.** Recette Windows/Docker complète réussie : 58/58 tests Django, typecheck/build Vite, 13/13 Vitest, SQL D3 réconcilié, vrai RAG D4, et 4/4 scénarios Playwright Chromium (dont les cinq vues à quatre résolutions). **Revue esthétique des nouvelles captures encore nécessaire avant fusion et gel V1.0.** Aucun changement de service public ou de moteur D1–D4.
