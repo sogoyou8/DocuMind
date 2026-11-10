@@ -117,3 +117,7 @@ Nouvelle recette locale Windows au commit `4d37906` : build/TypeScript réussis,
 **Playwright renforcé :** la boucle de toutes les vues et résolutions de bureau exige maintenant `workspaceBottom <= viewportHeight + 1`, en plus du test `compose-footer` entièrement visible à 1320×742. En cas d'échec, les coordonnées `.app-shell` et `.workspace` sont également enregistrées. La capture est conservée même lorsque l'assertion échoue.
 
 **Statut :** correctif enregistré dans la PR #7, sans fusion/publication. Nouvelle exécution de `scripts/verify-d51.ps1` requise sur ce commit. Le précédent `D5.1 LOCAL OK` n'incluait pas ce test renforcé.
+
+## D5.1 — Réussite de la recette après correction du workspace parent (10 novembre 2026)
+
+Exécution utilisateur sur `163f7a7` : **58/58 tests Django, D3 SQL 1 344 EUR TTC, D4 Ollama/Chroma/RAG cité, build TypeScript/Vite, 13/13 Vitest, 4/4 scénarios Playwright Chromium (56,0 s)**. Le test d'absence de dépassement de la grille parent et celui de visibilité intégrale du composeur de l'assistant à 1320×742 passent. Sorties explicites `D5 LOCAL OK` et `D5.1 LOCAL OK`. **Il n'y a plus de blocage technique de recette ; validation de la dernière capture de l'Assistant encore distincte avant fusion et gel V1.0.**
