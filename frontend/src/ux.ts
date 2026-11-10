@@ -95,6 +95,13 @@ export function applicationHelp(question: string): string | null {
   if (aboutFormats && !/factur(e|es)\s+(dm|d3|zxz)/.test(q)) {
     return "DocuMind accepte les PDF textuels (sans OCR), les CSV et les classeurs XLSX jusqu'à 5 Mio par fichier. Dans l'instance locale, le rôle opérateur permet l'import et le traitement ; seuls les documents acceptés peuvent ensuite être indexés pour l'IA. La démonstration publique reste en lecture seule.";
   }
+  // A general question about DocuMind itself must not be confused with
+  // a question about an indexed invoice or document. No LLM or citation here.
+  const aboutApplication = /^(?:en quoi consiste|c est quoi|qu est ce que|a quoi sert|comment fonctionne)\\s+(?:(?:cette|une|l|la|ton|votre|le)\\s+)?(?:app|application|logiciel|outil|documind)(?:\\s|$)/
+    .test(q) || /^(?:presente|explique|decris)\\s+(?:moi\\s+)?(?:documind|cette app|cette application)(?:\\s|$)/.test(q);
+  if (aboutApplication) {
+    return "DocuMind est une application locale d'analyse documentaire. Elle importe des PDF textuels, CSV et XLSX, conserve leur empreinte et leur provenance, extrait les factures, vérifie les montants et signale les anomalies. Les données acceptées alimentent des indicateurs SQL. L'assistant IA local répond aux questions sur les documents indexés avec une citation précise, ou s'abstient sans preuve. Le journal conserve les opérations réalisées.";
+  }
   if (/(que (peux|peut|pouvez|sais)( tu| vous)? faire|quelles? (sont )?(tes|vos) fonctionnalites|a quoi sert documind|comment utiliser documind)/.test(q)) {
     return "Je peux rechercher des informations dans les documents locaux acceptés, répondre avec des citations vers leurs emplacements sources ou m'abstenir sans preuve. Pour importer, contrôler et indexer un fichier, utilise « Documents ». Pour les montants validés et les anomalies, ouvre « Analyse & KPI » ; pour les opérations horodatées, ouvre « Historique ». Je n'exécute aucune commande arbitraire et je n'invente pas de source.";
   }
