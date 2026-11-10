@@ -142,3 +142,19 @@ Ce script démarre les services gratuits locaux, vérifie Django et les calculs 
 [Spécifications D5, preuves attendues et limites](docs/ETAT-D5.md)
 
 **Validation observée le 10 novembre 2026 : `D5 LOCAL OK`.** Le conteneur IA/PostgreSQL a réussi 58 tests Django (aucun saut) ; Django/OpenAPI et D3/D4 ont été vérifiés avec les vrais modèles ; TypeScript, build Vite et Vitest ont réussi ; les 3 tests Chromium Playwright ont validé démo bureau, navigation mobile sans débordement horizontal et parcours local connecté, KPI SQL, citation IA. **L'examen visuel des captures et le gel/tag V1.0 restent distincts** : aucun déploiement du frontend Vercel n'est annoncé ; Render Free n'héberge pas l'IA.
+
+## D5.1 — Finition UX/UI transversale (branche isolée)
+
+La revue visuelle des cinq écrans et de la fiche documentaire du 10 novembre 2026 a été convertie en [plan de corrections mesurables](docs/PLAN-D51.md). Le chantier corrige les débordements, compresse les cockpits sur les résolutions bureau observées, conserve les filtres et onglets durant les défilements, harmonise les événements et données extraites en français, et explicite les anomalies de validation à partir des données réelles.
+
+L'assistant sait maintenant répondre **sans appel IA ni fausse citation** aux questions générales sur les capacités et formats de DocuMind ; toute question documentaire reste soumise au RAG D4, aux citations vérifiables et à l'abstention. Une réponse EUR TTC numérique citée est formatée uniquement lorsque son contexte le justifie.
+
+Cette finition se valide par :
+
+```powershell
+.\scripts\verify-d51.ps1
+```
+
+La commande exécute intégralement D5 puis les nouveaux tests Vitest et Playwright (1920×993, 1649×928, 1440×900, 390×844). Elle produit `D5.1 LOCAL OK` **uniquement après les tests locaux réussis**. Les captures se retrouvent dans `frontend/test-results/`.
+
+**Statut : code D5.1 implémenté sur `work/d51-ux-ui-final-polish` ; recette locale et revue des nouvelles captures requises avant fusion et gel V1.0.** Aucun changement de service public ou de moteur D1–D4.
