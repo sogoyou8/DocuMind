@@ -48,4 +48,82 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
   await expect(page.getByText("Réponse sourcée")).toBeVisible({ timeout: 165000 });
   await expect(page.getByText("demo-d2-facture-valide.csv")).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("local-assistant-cited.png"), fullPage: true });
+
+  // Product help must be deterministic and must not pretend to cite a document.
+  await page.getByRole("textbox", { name: "Poser une question documentaire" })
+    .fill("Que peux-tu faire ?");
+  await page.getByRole("button", { name: "Envoyer la question" }).click();
+  await expect(page.getByText("Guide de l'application")).toBeVisible();
+  await expect(page.getByText(/Je peux rechercher des informations dans les documents locaux/)).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("local-assistant-guide.png"), fullPage: true });
+});
+
+test("D5.1 five views fit desktop and mobile and audit outcomes are not misleading", async ({ page }, testInfo) => {
+  test.skip(!password, "Private local account credentials not available.");
+  const nav = page.getByRole("navigation", { name: "Sections de DocuMind" });
+  const pages = [
+    ["Vue d'ensemble", "overview"],
+    ["Documents", "documents"],
+    ["Analyse & KPI", "analytics"],
+    ["Assistant IA", "assistant"],
+    ["Historique", "history"],
+  ] as const;
+  for (const viewport of [
+    { width: 1920, height: 993 },
+    { width: 1649, height: 928 },
+    { width: 1440, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    if (!page.url().endsWith("/") || !(await page.locator(".workspace").count())) {
+      await page.goto("/");
+    }
+    if (await page.getByLabel("Mot de passe local").count()) {
+      await page.getByLabel("Mot de passe local").fill(password!);
+      await page.getByRole("button", { name: /Accéder à DocuMind/i }).click();
+      await expect(page.getByRole("heading", { name: /Vos documents/i })).toBeVisible();
+    }
+    for (const [title, key] of pages) {
+      if (viewport.width <= 875) {
+        await page.getByRole("button", { name: "Ouvrir la navigation" }).click();
+      }
+      await nav.getByRole("button", { name: title, exact: true }).click();
+      await expect(page.locator(".workspace-content .page-stack").first()).toBeVisible();
+      const dimensions = await page.evaluate(() => {
+        const root = document.documentElement;
+        const main = document.querySelector<HTMLElement>(".workspace-content");
+        return {
+          screen: window.innerWidth,
+          root: root.scrollWidth,
+          mainClient: main?.clientWidth ?? 0,
+          mainScroll: main?.scrollWidth ?? 0,
+        };
+      });
+      expect(dimensions.root, `${key} at ${viewport.width} — root overflow`)
+        .toBeLessThanOrEqual(dimensions.screen + 1);
+      expect(dimensions.mainScroll, `${key} at ${viewport.width} — main overflow`)
+        .toBeLessThanOrEqual(dimensions.mainClient + 1);
+      await page.screenshot({
+        path: testInfo.outputPath(`d51-${key}-${viewport.width}x${viewport.height}.png`),
+        fullPage: false,
+      });
+    }
+  }
+  await page.setViewportSize({ width: 1649, height: 928 });
+  await nav.getByRole("button", { name: "Historique" }).click();
+  await expect(page.locator(".timeline-danger").first()).toBeVisible();
+  await expect(page.getByText("Traitement rejeté").first()).toBeVisible();
+  await expect(page.getByText("Document indexé pour l'IA").first()).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("d51-audit-color-and-time.png") });
+
+  await nav.getByRole("button", { name: "Documents", exact: true }).click();
+  await page.getByRole("button", { name: /documind-d3-anomalie.csv/ }).first().click();
+  const dialog = page.getByRole("dialog", { name: /documind-d3-anomalie.csv/ });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("button", { name: /Retraiter le document/ })).toBeVisible();
+  await expect(dialog.getByRole("button", { name: "Indexer pour l'IA" })).toHaveCount(0);
+  await dialog.getByRole("tab", { name: "Anomalies" }).click();
+  await expect(dialog.getByText(/TTC attendu/)).toBeVisible();
+  await expect(dialog.getByText("Incohérence du montant TTC")).toBeVisible();
+  await dialog.getByRole("button", { name: "Fermer" }).click();
 });
