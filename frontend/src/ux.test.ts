@@ -54,12 +54,15 @@ describe("D5.1 visual-review business contracts", () => {
     expect(applicationHelp("que peut tu faire ?")).toContain("Documents");
     expect(applicationHelp("Quels types de documents sont accepter ?")).toContain("XLSX");
     expect(applicationHelp("Quels fichiers puis-je importer ?")).toContain("CSV");
+    expect(applicationHelp("Quels documents sont acceptés ?")).toContain("PDF");
+    expect(applicationHelp("Est-ce que je peux importer un PDF ?")).toContain("XLSX");
     expect(applicationHelp("en quoi consiste cette app ?")).toContain("analyse documentaire");
     expect(applicationHelp("on quoi consiste cette app ?")).toContain("analyse documentaire");
     expect(applicationHelp("À quoi sert cette application ?")).toContain("factures");
     expect(applicationHelp("C'est quoi DocuMind ?")).toContain("journal");
     expect(applicationHelp("Explique-moi DocuMind")).toContain("SQL");
     expect(applicationHelp("En quoi consiste ce document accepté ?")).toBeNull();
+    expect(applicationHelp("Que contient ce document accepté ?")).toBeNull();
     expect(applicationHelp("Quel est le montant TTC de la facture DM-2026-001 ?")).toBeNull();
     expect(applicationHelp("Quel est le montant TTC de la facture ZXZ-9999 ?")).toBeNull();
   });
