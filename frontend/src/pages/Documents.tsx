@@ -7,6 +7,7 @@ import {
 import type { Document, Page } from "../types";
 import type { DocumentDetail } from "../types";
 import { bytes, money, shortDate, stateLabels } from "../format";
+import { displayFieldValue, eventDate, eventLabel, eventTone, fieldLabel, issueLabel, mismatchEvidence, runLabel, sourceLabel } from "../ux";
 import { EmptyState, Field, Hint, LabelPill, Pane, StatusChip } from "../components/Visuals";
 
 const filters = [
@@ -66,7 +67,7 @@ export function DocumentsView({
     }
   };
 
-  return <div className="page-stack">
+  return <div className="page-stack documents-page">
     <div className="page-intro">
       <div><div className="eyebrow">DOCUMENTS / CATALOGUE</div>
         <h1>Bibliothèque documentaire</h1>
@@ -191,13 +192,15 @@ function DocumentDrawer({
           description="Ce document n'a pas de fichier source, de facture calculée, d'extrait ni de trace d'IA sur Render."/> :
         <>
           <div className="drawer-actions">
-            {operator && <button type="button" className="btn btn-secondary" disabled={!actionAllowed || !canProcess}
+            {operator && canProcess && <button type="button" className="btn btn-secondary" disabled={!actionAllowed}
               onClick={() => void onProcess(doc, doc.state === "REJECTED")}>
-              <FileCheck size={16}/>{doc.state === "REJECTED" ? "Retraiter" : "Traiter avec D2"}
+              <FileCheck size={16}/>{doc.state === "REJECTED" ? "Retraiter le document" : "Traiter avec D2"}
             </button>}
-            {operator && <button type="button" className="btn btn-primary" disabled={!actionAllowed || !canIndex}
+            {operator && canIndex && <button type="button" className="btn btn-primary" disabled={!actionAllowed}
               onClick={() => void onIndex(doc)}><Sparkles size={15}/>Indexer pour l'IA</button>}
+            {doc.state === "INDEXED" && <span className="already-indexed"><CheckCircle2 size={16}/> Déjà indexé</span>}
           </div>
+          {doc.state === "REJECTED" && <Hint warning>Ce fichier a été rejeté. Le retraiter sans modifier sa source risque de reproduire le même rejet. Un document rejeté ne peut pas être indexé.</Hint>}
           {!operator && <Hint>Ton compte peut consulter les documents, mais le traitement et l'indexation nécessitent le rôle opérateur.</Hint>}
           {!aiEnabled && <Hint>L'index IA nécessite l'instance locale Ollama/Chroma. Les données ne sont pas envoyées à un service externe.</Hint>}
           <div className="detail-tabs" role="tablist" aria-label="Informations du document">
@@ -209,32 +212,41 @@ function DocumentDrawer({
           {!loading && detail && section === "invoices" &&
             (detail.invoices.length ? <div className="detail-list">{detail.invoices.map(inv => <article key={inv.id} className="detail-record">
               <div className="detail-record-title"><strong>{inv.invoice_number}</strong><LabelPill kind="good">Validée</LabelPill></div>
-              <div className="record-line"><span>{inv.supplier_name}</span><span>{inv.issued_on}</span></div>
+              <div className="record-line"><span>{inv.supplier_name}</span><span>{shortDate(inv.issued_on)}</span></div>
               <div className="record-line"><span>TTC {money(inv.total, inv.currency)}</span><span>HT {money(inv.subtotal, inv.currency)}</span></div>
-              <small>Origine : {inv.source_locator}</small>
+              <small title={inv.source_locator}>Origine : {sourceLabel(inv.source_locator)}</small>
             </article>)}</div> :
             <EmptyState title="Aucune facture validée" description="Le traitement doit réussir avant que des montants alimentent les tableaux SQL."/>)}
           {!loading && detail && section === "records" &&
-            (detail.records.length ? <div className="detail-list">{detail.records.map(r => <article className="detail-record" key={r.id}>
-              <strong>{r.source_locator}</strong>
-              <dl className="record-fields">{Object.entries(r.normalized_fields).map(([key, value]) =>
-                <div key={key}><dt>{key}</dt><dd>{typeof value === "object" ? JSON.stringify(value) : String(value ?? "—")}</dd></div>)}</dl>
-            </article>)}</div> : <EmptyState title="Aucun extrait" description="Le document n'a pas encore été traité, ou sa validation n'a fourni aucun extrait." />)}
+            (detail.records.length ? <div className="detail-list">
+              {doc.state === "REJECTED" && <Hint warning>Données extraites non validées. Ces valeurs ne sont pas intégrées aux indicateurs financiers.</Hint>}
+              {detail.records.map(r => <article className="detail-record" key={r.id}>
+                <strong className="source-heading" title={r.source_locator}>{sourceLabel(r.source_locator)}</strong>
+                <dl className="record-fields">{Object.entries(r.normalized_fields).map(([key, value]) =>
+                  <div key={key}><dt title={key}>{fieldLabel(key)}</dt><dd>{displayFieldValue(key, value, r)}</dd></div>)}</dl>
+              </article>)}</div> : <EmptyState title="Aucun extrait" description="Le document n'a pas encore été traité, ou sa validation n'a fourni aucun extrait." />)}
           {!loading && detail && section === "issues" &&
             (detail.issues.length ? <div className="detail-list">{detail.issues.map(issue => <article className="detail-record issue-record" key={issue.id}>
-              <span className="issue-title"><AlertTriangle size={15}/> {issue.code}</span>
-              <p>{issue.message}</p><small>{issue.source_locator || "Document"} · Champ : {issue.field_name || "—"}</small>
+              <span className="issue-title"><AlertTriangle size={15}/> {issueLabel(issue.code)}</span>
+              <p>{issue.message}</p>
+              {issue.code === "TOTAL_MISMATCH" && (() => {
+                const record = detail.records.find(r => r.id === issue.record || r.source_locator === issue.source_locator);
+                const explanation = mismatchEvidence(record);
+                return explanation ? <p className="issue-evidence">{explanation}</p> : null;
+              })()}
+              <small title={issue.source_locator}>{sourceLabel(issue.source_locator)} · Champ : {fieldLabel(issue.field_name || "—")} · Code : {issue.code}</small>
             </article>)}</div> : <EmptyState title="Aucune anomalie enregistrée" description="Les règles de qualité n'ont produit aucun diagnostic sur ce document." />)}
           {!loading && detail && section === "history" &&
             <div className="detail-list">
               {detail.runs.map(run => <article className="detail-record" key={run.id}>
-                <div className="detail-record-title"><strong>Traitement {run.pipeline_version}</strong><LabelPill kind={run.status === "SUCCEEDED" ? "good" : run.status === "REJECTED" ? "danger" : "info"}>{run.status}</LabelPill></div>
-                <p>Tentative {run.attempt_number} · {shortDate(run.started_at)}</p>
+                <div className="detail-record-title"><strong>Traitement {run.pipeline_version}</strong><LabelPill kind={run.status === "SUCCEEDED" ? "good" : run.status === "REJECTED" || run.status === "FAILED" ? "danger" : "info"}>{runLabel(run.status)}</LabelPill></div>
+                <p>Tentative {run.attempt_number} · {eventDate(run.started_at)}</p>
                 {run.error_summary && <small>{run.error_summary}</small>}
               </article>)}
-              {detail.audit.map(entry => <article className="audit-entry" key={entry.id}>
-                <CheckCircle2 size={15}/><div><strong>{entry.action}</strong>
-                  <small>{shortDate(entry.created_at)} · {entry.actor ?? "Système"}</small></div>
+              {detail.audit.map(entry => <article className={`audit-entry audit-${eventTone(entry.action)}`} key={entry.id}>
+                {eventTone(entry.action) === "danger" ? <AlertTriangle size={15}/> : <CheckCircle2 size={15}/>}
+                <div><strong title={entry.action}>{eventLabel(entry.action)}</strong>
+                  <small>{eventDate(entry.created_at)} · {entry.actor ?? "Système"}</small></div>
               </article>)}
               {!detail.runs.length && !detail.audit.length && <EmptyState icon="chart" title="Aucun événement" description="L'historique apparaîtra lors des traitements."/>}
             </div>}
