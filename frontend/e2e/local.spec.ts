@@ -59,6 +59,13 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
   expect(askRequests, "Deterministic product help must not call Ollama/RAG").toBe(0);
   await page.screenshot({ path: testInfo.outputPath("local-assistant-guide.png"), fullPage: true });
 
+  // The exact product-help phrasing observed in the visual review previously abstained.
+  await page.getByRole("textbox", { name: "Poser une question documentaire" })
+    .fill("en quoi consiste cette app ?");
+  await page.getByRole("button", { name: "Envoyer la question" }).click();
+  await expect(page.getByText(/DocuMind est une application locale d'analyse documentaire/)).toBeVisible();
+  expect(askRequests, "Product description must not create an AI request").toBe(0);
+
   await page.getByRole("textbox", { name: "Poser une question documentaire" })
     .fill("Quel est le montant TTC de la facture DM-2026-001 ?");
   await page.getByRole("button", { name: "Envoyer la question" }).click();
@@ -82,6 +89,7 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
     { width: 1920, height: 993 },
     { width: 1649, height: 928 },
     { width: 1440, height: 900 },
+    { width: 1320, height: 742 }, // scaled mid-size laptop CSS viewport
     { width: 390, height: 844 },
   ]) {
     await page.setViewportSize(viewport);
@@ -117,6 +125,8 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
           root: root.scrollWidth,
           mainClient: main?.clientWidth ?? 0,
           mainScroll: main?.scrollWidth ?? 0,
+          mainHeight: main?.clientHeight ?? 0,
+          mainScrollHeight: main?.scrollHeight ?? 0,
           protruding,
         };
       });
@@ -124,6 +134,14 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
         .toBeLessThanOrEqual(dimensions.screen + 1);
       expect(dimensions.mainScroll, `${key} at ${viewport.width} — main overflow; protruding elements: ${JSON.stringify(dimensions.protruding)}`)
         .toBeLessThanOrEqual(dimensions.mainClient + 1);
+      // On usable desktop heights, all dashboard modules should fit within
+      // the viewport; documents and long audit logs scroll inside their panes.
+      if (viewport.width >= 1200 && viewport.height >= 730 &&
+          (key === "overview" || key === "analytics")) {
+        expect(dimensions.mainScrollHeight,
+          `${key} at ${viewport.width}x${viewport.height} — outer vertical scroll remains`)
+          .toBeLessThanOrEqual(dimensions.mainHeight + 2);
+      }
       await page.screenshot({
         path: testInfo.outputPath(`d51-${key}-${viewport.width}x${viewport.height}.png`),
         fullPage: false,
