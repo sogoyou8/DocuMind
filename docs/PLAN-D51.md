@@ -38,3 +38,13 @@ Les journaux Docker indiquaient `documind-web-1 Running` pendant la recette : le
 Correctif conservateur dans `scripts/verify-d5.ps1` sur la branche D5.1 : vider uniquement le cache Vite optimisé `/app/node_modules/.vite`, puis **redémarrer le service `web`** avant les tests. Les volumes PostgreSQL/Chroma/Metabase/Ollama sont préservés. L'E2E vérifie désormais la présence du nouveau bouton « Découvrir DocuMind » dès l'arrivée sur l'assistant, puis confirme que le guide ne déclenche aucune requête RAG et qu'une facture déclenche toujours l'API source. L'aide est testée **avant** la requête longue Ollama.
 
 Ne pas annoncer `D5.1 LOCAL OK` avant une seconde recette réussie et la revue des captures. L'état GitHub reste une PR en brouillon.
+
+## Deuxième recette D5.1 — succès fonctionnel (10 novembre 2026)
+
+Le journal complet Windows/Docker reçu après redémarrage du serveur Vite constate : `D5 STATIC OK`, vérifications Django sans erreur, **58/58 tests Django OK**, `D3 SQL VERIFIED` (15 factures fictives acceptées, 7 documents acceptés, 2 rejetés, 1 344 EUR TTC et cinq périodes), `D4 LOCAL VERIFIED` (Ollama/Chroma, citation sur 120 EUR, abstention, refus d'injection), santé API/React OK, TypeScript strict, **build Vite réussi**, **13/13 tests Vitest réussis** et **4/4 scénarios Playwright Chromium réussis en 30,7 s**.
+
+Les scénarios E2E ayant réussi incluent : démo publique sans KPI inventés, navigation mobile, parcours local réel Django/PostgreSQL/SQL/RAG avec preuve et guide déterministe sans requête LLM, puis les cinq vues sur **1920×993, 1649×928, 1440×900 et 390×844** avec vérification d'absence de débordement horizontal et états de rejet/anomalie. Le script a émis **`D5 LOCAL OK` puis `D5.1 LOCAL OK`**.
+
+Cette réussite après nettoyage du cache et redémarrage Vite appuie l'hypothèse de modules obsolètes servis lors du premier essai ; elle ne permet pas d'isoler à elle seule le facteur exact. Le nouveau test vérifie explicitement le raccourci d'aide afin de détecter ce cas plus tôt.
+
+**Reste à faire :** regarder les captures produites sous `frontend/test-results/` et valider visuellement la densité/finition des cinq vues, puis fusionner cette PR après acceptation de cette dernière revue. L'exécution automatique ne prouve pas à elle seule le niveau esthétique du rendu. Aucun déploiement Vercel, tag V1.0 ou fusion n'a été réalisé.
