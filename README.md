@@ -166,3 +166,9 @@ Les vingt captures manuelles confirment la cohérence du rendu et de la traçabi
 ### D5.1 — Finition des captures 1320×742
 
 Dernière revue : les cinq vues tiennent dans la fenêtre compacte, mais la notification de connexion restait affichée par-dessus les panneaux et la ligne sous le champ de l'assistant était légèrement tronquée. La notification de succès se ferme désormais automatiquement après 4,5 s (les erreurs restent lisibles jusqu'à fermeture) ; la hauteur de l'assistant est ajustée aux fenêtres de bureau courtes. Un test Playwright vérifie le composeur intégralement visible et des captures non masquées par une notification. **Recette locale sur la correction finale du workspace confirmée le 10 novembre 2026 au commit `163f7a7` : 58/58 Django, 13/13 Vitest, 4/4 Playwright, `D5 LOCAL OK`, `D5.1 LOCAL OK`.** La revue des captures issues de ce dernier commit reste à réaliser avant fusion de la PR #7.
+
+### DocuMind V1.0 — Validation finale
+
+**Validation locale D5.1 acquise le 10 novembre 2026 :** 58 tests Django, 13 tests Vitest et 4 scénarios Playwright Chromium réussis ; D3 SQL réconcilié, D4 RAG Ollama/Chroma vérifié. Le rendu des cinq vues a été inspecté ; la capture finale de l'Assistant à 1320×742 confirme que l'ensemble du composeur est visible, sans notification superposée. La V1.0 est approuvée pour fusion squash et gel.
+
+**Exploitation :** plateforme complète (PostgreSQL, pipeline Pandas, Metabase, Ollama/Chroma, React) uniquement en local ; démo publique Render D1 limitée à la lecture de métadonnées synthétiques. Ne jamais exposer de secrets, publier des fichiers privés ni supprimer les volumes Docker avec `docker compose down -v`. Les changements ultérieurs seront versionnés séparément.
