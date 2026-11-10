@@ -158,3 +158,7 @@ Cette finition se valide par :
 La commande exécute intégralement D5 puis les nouveaux tests Vitest et Playwright (1920×993, 1649×928, 1440×900, 390×844). Elle produit `D5.1 LOCAL OK` **uniquement après les tests locaux réussis**. Les captures se retrouvent dans `frontend/test-results/`.
 
 **Statut D5.1 au 10 novembre 2026 : `D5.1 LOCAL OK` observé.** Recette Windows/Docker complète réussie : 58/58 tests Django, typecheck/build Vite, 13/13 Vitest, SQL D3 réconcilié, vrai RAG D4, et 4/4 scénarios Playwright Chromium (dont les cinq vues à quatre résolutions). **Revue esthétique des nouvelles captures encore nécessaire avant fusion et gel V1.0.** Aucun changement de service public ou de moteur D1–D4.
+
+### Revue visuelle finale — complément D5.1
+
+Les vingt captures manuelles confirment la cohérence du rendu et de la traçabilité, mais ont révélé des défilements externes sur certains bureaux et une formulation d'aide non reconnue (`En quoi consiste cette app ?`). Deux correctifs ciblés et des assertions Playwright supplémentaires sont ajoutés sur la branche D5.1 : mode compact pour les fenêtres CSS de 1200 px de large et 730 px de haut au minimum, défilements internes, réponses de présentation de l'application sans appel au RAG. **Une nouvelle exécution de `scripts/verify-d51.ps1` est nécessaire avant fusion ; le dernier résultat OK attestait la version précédente.**
