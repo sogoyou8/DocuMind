@@ -96,13 +96,6 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
 
     @extend_schema(
-        request=ProcessOptionsSerializer,
-        responses={200: ProcessResultSerializer},
-        description="D2 local : traitement idempotent d'un document déjà importé. "
-                    "Un rejeu volontaire exige force=true. Interdit sur la démo Render.",
-    )
-
-    @extend_schema(
         request=None,
         responses={200: IndexResultSerializer},
         description="D4 local uniquement : indexe un document D2 valide vers Chroma/Ollama. "
@@ -123,6 +116,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
             return Response({"detail": str(exc)}, status=503)
         return Response(result)
 
+    @extend_schema(
+        request=ProcessOptionsSerializer,
+        responses={200: ProcessResultSerializer},
+        description="D2 local : traitement idempotent d'un document importé, force=true pour rejouer.",
+    )
     @action(detail=True, methods=["post"], url_path="process")
     def process(self, request, pk=None):
         from .pipeline.runner import process_document, ProcessingNotAllowed

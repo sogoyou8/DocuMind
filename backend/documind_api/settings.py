@@ -87,6 +87,13 @@ CORS_ALLOWED_ORIGINS = [v.strip() for v in
     os.getenv("CORS_ALLOWED_ORIGINS", "").split(",") if v.strip()]
 CSRF_TRUSTED_ORIGINS = [v.strip() for v in
     os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",") if v.strip()]
+# Vite's local /api reverse proxy preserves first-party CSRF protection.
+# Do not trust local development origins in Render's read-only production.
+if DEBUG and not DEMO_READONLY:
+    CSRF_TRUSTED_ORIGINS += [
+        "http://127.0.0.1:5173", "http://localhost:5173",
+        "http://web:5173",
+    ]
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
@@ -98,12 +105,12 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {"anon": "120/hour", "user": "600/hour", "rag": "10/min"},
 }
 SPECTACULAR_SETTINGS = {
-    "TITLE": "DocuMind API D1-D4",
+    "TITLE": "DocuMind API V1",
     "DESCRIPTION": (
         "Render public: D1 synthetic read-only metadata, no pipeline running. "
         "Local: D2 PDF/CSV/XLSX ingestion, quality and provenance, with optional Airflow. "
         "D3 Metabase BI is local. D4 local-only RAG via Ollama/ChromaDB is enabled "
         "only on the separate optional AI service; Render demo stays D1 read-only."
     ),
-    "VERSION": "0.4.0",
+    "VERSION": "1.0.0",
 }

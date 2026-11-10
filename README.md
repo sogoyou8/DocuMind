@@ -1,6 +1,6 @@
 # DocuMind
 
-**DOC 01 — Plateforme d'intelligence documentaire | D1-D4 validés localement · Render Free en lecture seule**
+**DOC 01 — Plateforme d'intelligence documentaire | D1-D5 validés fonctionnellement en local · Render Free en lecture seule**
 
 DocuMind est un projet d'apprentissage professionnel **en cours de développement**. Son ambition est de traiter des documents d'entreprise fictifs (PDF textuels, CSV et XLSX), de structurer les informations dans PostgreSQL, d'orchestrer les traitements avec Airflow et d'offrir une analyse BI et un assistant documentaire IA local.
 
@@ -118,3 +118,27 @@ L'index repose **uniquement sur les documents acceptés par D2** ; `ChunkReferen
 - Voir [État, sécurité et validation D4](docs/ETAT-D4.md).
 
 **État : D4 validé par `D4 LOCAL OK` après 47 tests réussis dans le service IA et vérification réelle de la réponse sourcée, de l'abstention, de l'injection testée et des KPI D3.** La qualité du LLM n'est pas garantie pour toutes les questions. Le backend Render Free reste limité à la démo D1 en lecture seule, sans Ollama ni index public. L'interface React et la release V1.0 restent prévues en D5.
+
+## D5 — Frontend React / TypeScript V1.0 (recette fonctionnelle validée)
+
+Le dossier `frontend/` contient le cockpit responsive React + Vite, avec cinq espaces opérationnels :
+
+- **Vue d'ensemble** : documents/états, résultats SQL D3 en EUR lorsqu'ils existent, évolution mensuelle, fournisseurs et vérification des sources.
+- **Documents** : catalogue, recherche/filtres sur la page, pagination, import local authentifié, traitement D2, indexation D4 et fiche détaillée (factures, extraits, anomalies, journal).
+- **Analyse & KPI** : données réelles de PostgreSQL `bi` par devise, montants acceptés, fournisseurs et anomalies. Aucun chiffre financier fictif sur Render.
+- **Assistant IA** : questions localement routées vers Ollama/ChromaDB/LangGraph, citation cliquable du document et de la ligne, abstention en absence de preuve. Désactivé dans la démo publique.
+- **Historique** : événements SQL réels, horodatage et navigation vers le document concerné.
+
+Le backend D5 ajoute une **session Django avec CSRF**, un compte opérateur local privé, ainsi que `GET /api/v1/analytics/` et `GET /api/v1/audit/` ; les autres API D1-D4 restent inchangées. Le mode public en lecture seule protège toujours les fichiers et n'invente ni dépenses ni réponses IA.
+
+La recette complète sous Windows et Docker Desktop est :
+
+```powershell
+.\scripts\verify-d5.ps1
+```
+
+Ce script démarre les services gratuits locaux, vérifie Django et les calculs D3/D4, installe la V1 frontend, exécute TypeScript, Vite, Vitest, Chromium Playwright (démo, mobile, parcours connecté avec citation), puis valide de nouveau les KPI. Les secrets locaux sont stockés sous `data/local/d5-operator.json` (ignoré par Git) ; l'application se consulte sur **http://127.0.0.1:5173** avec `documind-local` une fois le script passé.
+
+[Spécifications D5, preuves attendues et limites](docs/ETAT-D5.md)
+
+**Validation observée le 10 novembre 2026 : `D5 LOCAL OK`.** Le conteneur IA/PostgreSQL a réussi 58 tests Django (aucun saut) ; Django/OpenAPI et D3/D4 ont été vérifiés avec les vrais modèles ; TypeScript, build Vite et Vitest ont réussi ; les 3 tests Chromium Playwright ont validé démo bureau, navigation mobile sans débordement horizontal et parcours local connecté, KPI SQL, citation IA. **L'examen visuel des captures et le gel/tag V1.0 restent distincts** : aucun déploiement du frontend Vercel n'est annoncé ; Render Free n'héberge pas l'IA.
