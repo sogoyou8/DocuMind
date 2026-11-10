@@ -81,3 +81,9 @@ Le raccourci `-SkipBrowser` existe pour les relances ciblées **après** une pre
 ## Prochaines décisions après tests
 
 La recette automatique D5 est réussie. Les contrôles finaux distincts sont : vérifier Render Free après fusion, examiner les captures d'écran réelles pour la finition visuelle, puis décider séparément du gel/tag V1.0 et de la publication du frontend statique sur Vercel pour Abyss Showcase. **Ne pas annoncer de publication Vercel ni de validation esthétique exhaustive sans déploiement ou inspection observée.**
+
+## Chantier complémentaire D5.1 — suite de la revue visuelle
+
+La revue manuelle des cinq vues et de la fiche documentaire a mis en évidence des retouches de densité, des débordements, des statuts peu explicites et le besoin d'une aide intégrée. Les observations et corrections sont détaillées dans [PLAN-D51.md](PLAN-D51.md) ; elles ne remettent pas en cause la recette fonctionnelle D5 précédente.
+
+Sur `work/d51-ux-ui-final-polish` : CSS de compaction et de défilement interne, onglets sticky, schéma d'états/contextes, libellés métier, analyse sourcée du rejet, FAQ locale déterministe et présentation des citations. **La validation D5.1 reste à exécuter** avec `scripts/verify-d51.ps1`. Les captures pré-correction restent la preuve des défauts, pas une validation des nouvelles dispositions. Aucune fusion V1.0 ou publication front n'est autorisée avant cette recette.
