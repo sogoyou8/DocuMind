@@ -89,3 +89,65 @@ test("mobile navigation remains usable with no horizontal overflow", async ({ pa
   expect(overflow).toBe(false);
   await page.screenshot({ path: testInfo.outputPath("documents-mobile.png"), fullPage: true });
 });
+
+test("discovery guide teaches real controls without performing a mutation in demo", async ({ page }, testInfo) => {
+  let mutations = 0;
+  page.on("request", request => {
+    if (request.url().includes("/api/v1/") && request.method() !== "GET") mutations += 1;
+  });
+  await page.goto("/");
+  const opener = page.locator(".topbar").getByRole("button", { name: "Découvrir DocuMind" });
+  await expect(opener).toBeVisible();
+  await opener.click();
+
+  const dialog = page.getByRole("dialog", { name: /Découvrir DocuMind/ });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator(".discovery-page-cards > button")).toHaveCount(5);
+  await expect(dialog.getByText("Le circuit d'un document")).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("discovery-home.png"), fullPage: true });
+
+  await dialog.getByRole("button", { name: /Je débute/ }).click();
+  await expect(dialog.getByText("Lire les quatre indicateurs")).toBeVisible();
+  await expect(dialog.getByText(/Vous distinguez les fichiers enregistrés/)).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("discovery-lesson.png"), fullPage: true });
+
+  await dialog.getByRole("button", { name: "Documents", exact: true }).click();
+  await expect(dialog.getByText("Choisir un fichier", { exact: true })).toBeVisible();
+  await expect(dialog.getByText(/La démonstration publique est en lecture seule/)).toBeVisible();
+  await dialog.getByRole("button", { name: "Voir dans l'application" }).click();
+
+  await expect(page.locator('[data-guide-mode="spotlight"]')).toBeVisible();
+  await expect(page.locator(".documents-upload-picker")).toBeVisible();
+  await expect(page.locator(".discovery-focus-frame")).toBeVisible();
+  await expect(page.getByText("Le nom du fichier sélectionné s'affiche avant l'envoi.")).toBeVisible();
+  await expect(page.locator(".topbar").getByRole("button", { name: "Découvrir DocuMind" })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("discovery-spotlight.png"), fullPage: true });
+
+  await page.getByRole("button", { name: "Retour au guide" }).click();
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole("button", { name: "Suivant" }).click();
+  await expect(dialog.getByText("Lancer l'import")).toBeVisible();
+  await dialog.getByRole("button", { name: "Voir dans l'application" }).click();
+  await expect(page.locator(".discovery-focus-frame")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator('[data-guide-mode="spotlight"]')).toHaveCount(0);
+  await expect(page.getByRole("dialog", { name: /Découvrir DocuMind/ })).toHaveCount(0);
+  expect(mutations, "The discovery guide must not upload, process, index or ask").toBe(0);
+});
+
+test("discovery guide is accessible on mobile, with all five pages", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.locator(".topbar").getByRole("button", { name: "Découvrir DocuMind" }).click();
+  const dialog = page.getByRole("dialog", { name: /Découvrir DocuMind/ });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator(".discovery-page-cards > button")).toHaveCount(5);
+  await dialog.locator(".discovery-page-cards > button").last().click();
+  await expect(dialog.getByText("Rechercher une opération")).toBeVisible();
+  await dialog.getByRole("button", { name: "Voir dans l'application" }).click();
+  await expect(page.locator('[data-guide-mode="spotlight"]')).toBeVisible();
+  await expect(page.locator(".activity-premium-journal")).toBeVisible();
+  await page.getByRole("button", { name: "Fermer le guide" }).click();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
+  expect(overflow).toBe(false);
+});
