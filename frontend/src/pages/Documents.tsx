@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, ChevronRight,
+  AlertTriangle, ArrowLeft, ArrowRight, BrainCircuit, CheckCircle2, ChevronRight,
   CloudUpload, FileCheck, FileClock, FileText, FileUp, Fingerprint, LockKeyhole,
   Search, ShieldCheck, Sparkles, Upload, X,
 } from "lucide-react";
-import type { Document, Overview, Page } from "../types";
+import type { Document, Overview, Page, Tab } from "../types";
 import type { DocumentDetail } from "../types";
 import { bytes, money, shortDate, stateLabels } from "../format";
 import { displayFieldValue, eventDate, eventLabel, eventTone, fieldLabel, issueLabel, mismatchEvidence, runLabel, sourceLabel } from "../ux";
@@ -31,6 +31,7 @@ type Props = {
   actionBusy: string | null;
   page: number;
   onPage: (page: number) => void;
+  onNavigate: (page: Tab) => void;
   onSelect: (doc: Document | null) => void;
   onUpload: (file: File) => Promise<void>;
   onProcess: (doc: Document, force?: boolean) => Promise<void>;
@@ -39,7 +40,7 @@ type Props = {
 
 export function DocumentsView({
   listing, overview, loading, selected, detail, detailLoading, demo, operator,
-  aiEnabled, actionBusy, page, onPage, onSelect, onUpload, onProcess, onIndex,
+  aiEnabled, actionBusy, page, onPage, onNavigate, onSelect, onUpload, onProcess, onIndex,
 }: Props) {
   const [filter, setFilter] = useState<(typeof filters)[number]["id"]>("all");
   const [search, setSearch] = useState("");
@@ -103,6 +104,10 @@ export function DocumentsView({
             <button className="btn btn-primary" type="button" disabled={!canUpload}
               onClick={() => ref.current?.click()}>
               <Upload size={17}/> Importer un document <ArrowRight size={16}/>
+            </button>
+            <button className="btn btn-ghost" type="button"
+              onClick={() => onNavigate("assistant")}>
+              <BrainCircuit size={16}/> Assistant IA
             </button>
             <span className="documents-hero-context">
               <ShieldCheck size={15}/>
