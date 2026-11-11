@@ -210,6 +210,29 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
           expect(fitted, "Assistant modules and composer must fit the workspace").toBe(true);
         }
       }
+      if (key === "history") {
+        const hero = page.locator(".activity-premium-hero");
+        const journal = page.locator(".activity-premium-journal");
+        await expect(hero.getByRole("heading", { name: "Historique des opérations" })).toBeVisible();
+        await expect(hero.locator(".activity-hero-count")).toContainText("événement(s)");
+        await expect(journal).toBeVisible();
+        await expect(journal.getByRole("searchbox", { name: "Filtrer l'historique" })).toBeVisible();
+        await expect(page.locator(".activity-premium-note")).toBeVisible();
+        if (viewport.width >= 1200 && viewport.height >= 730) {
+          const fitted = await page.evaluate(() => {
+            const pane = document.querySelector<HTMLElement>(".activity-premium-journal");
+            const timeline = document.querySelector<HTMLElement>(".activity-timeline-scroll");
+            const note = document.querySelector<HTMLElement>(".activity-premium-note");
+            if (!pane || !timeline || !note) return false;
+            const journal = pane.getBoundingClientRect();
+            const list = timeline.getBoundingClientRect();
+            const footer = note.getBoundingClientRect();
+            return list.top >= journal.top && list.bottom <= journal.bottom + 1 &&
+              journal.bottom <= footer.top + 1;
+          });
+          expect(fitted, "History timeline and footer must not overlap").toBe(true);
+        }
+      }
       const dimensions = await page.evaluate(() => {
         const root = document.documentElement;
         const appShell = document.querySelector<HTMLElement>(".app-shell");
@@ -302,6 +325,13 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
   await expect(page.getByText("Traitement rejeté").first()).toBeVisible();
   await expect(page.getByText("Document indexé pour l'IA").first()).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("d51-audit-color-and-time.png") });
+  const historySearch = page.getByRole("searchbox", { name: "Filtrer l'historique" });
+  await historySearch.fill("zz_nom_introuvable_2026");
+  await expect(page.getByText("Aucun événement correspondant")).toBeVisible();
+  await expect(page.locator(".timeline-entry")).toHaveCount(0);
+  await historySearch.clear();
+  await expect(page.getByText("Document indexé pour l'IA").first()).toBeVisible();
+
 
   await nav.getByRole("button", { name: "Documents", exact: true }).click();
   await page.getByRole("button", { name: /documind-d3-anomalie.csv/ }).first().click();
