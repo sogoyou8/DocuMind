@@ -379,9 +379,10 @@
 }
 
 @media (max-width: 1199px) {
+  .overview-view .overview-hero { min-height: 330px; }
   .overview-view .overview-hero .hero-content { max-width: 74%; flex-basis: 74%; }
   .overview-hero-illustration { right: 1%; width: 25%; }
-  .overview-hero-kpis { gap: 7px; padding: 0 11px 11px; }
+  .overview-hero-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; padding: 0 11px 11px; }
   .overview-hero-kpis .stat-card { grid-template-columns: 29px minmax(0, 1fr); gap: 2px 5px; padding: 7px; }
   .overview-hero-kpis .stat-icon { height: 29px; width: 29px; }
   .overview-hero-kpis .stat-heading > span:first-child { font-size: 10px; }
@@ -389,7 +390,7 @@
   .overview-hero-kpis .stat-caption { font-size: 8px; }
 }
 @media (max-width: 875px) {
-  .overview-view .overview-hero { min-height: 270px; }
+  .overview-view .overview-hero { min-height: 330px; }
   .overview-view .overview-hero .hero-content { max-width: 100%; flex: 1; }
   .overview-hero-illustration { display: none; }
   .overview-view .overview-hero-top { padding: 21px 19px 14px; }
