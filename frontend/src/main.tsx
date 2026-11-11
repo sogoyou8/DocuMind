@@ -6,6 +6,7 @@ import "./polish.css";
 import "./overview-premium.css";
 import "./documents-premium.css";
 import "./analytics-premium.css";
+import "./assistant-premium.css";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode><App /></React.StrictMode>
