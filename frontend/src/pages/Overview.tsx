@@ -86,8 +86,12 @@ export default function OverviewView({
     <div className="overview-main-grid">
       <Pane title="Évolution des dépenses" className="overview-chart-pane" subtitle={real ? "Montants TTC · factures validées · EUR" : "Les analyses reposent uniquement sur les factures validées"}>
         {real ? <MonthlyChart rows={monthly}/> :
-          <EmptyState title={demo ? "Analyse indisponible dans la démo" : "Aucune dépense validée"} icon="chart"
-            description={demo ? "La démo publique ne calcule aucun montant financier." : "Traitez des factures valides pour afficher les dépenses."}/>}
+          <EmptyState icon="chart"
+            title={demo ? "Analyse indisponible dans la démo" : loading ? "Chargement des analyses" : total === 0 ? "Aucune dépense validée" : "Analyses indisponibles"}
+            description={demo ? "La démo publique ne calcule aucun montant financier."
+              : loading ? "Récupération des vues SQL en cours."
+                : total === 0 ? "Traitez des factures valides pour afficher les dépenses."
+                  : "Les indicateurs SQL ne sont pas disponibles pour le moment."}/>}
       </Pane>
       <Pane title="Contrôle documentaire" className="overview-control-pane" subtitle="Répartition des états réels" aside={<Activity size={17} className="muted-icon"/>}>
         <StatusDonut accepted={accepted} received={waiting} rejected={rejected}/>
@@ -115,8 +119,12 @@ export default function OverviewView({
       <Pane title="Principaux fournisseurs" className="overview-suppliers-pane" subtitle={real ? "Montants TTC vérifiés · EUR" : "Source : vues SQL D3"}
         aside={<button type="button" className="text-button" onClick={() => onTab("analytics")}>Analyse <ArrowRight size={14}/></button>}>
         {real ? <SupplierBars rows={suppliers}/> :
-          <EmptyState icon="chart" title={demo ? "Analyse indisponible dans la démo" : "Aucun fournisseur à afficher"}
-            description={demo ? "La démo publique ne contient pas de factures validées." : "Les fournisseurs apparaîtront après validation de factures en EUR."}/>}
+          <EmptyState icon="chart"
+            title={demo ? "Analyse indisponible dans la démo" : loading ? "Chargement des fournisseurs" : total === 0 ? "Aucun fournisseur à afficher" : "Fournisseurs indisponibles"}
+            description={demo ? "La démo publique ne contient pas de factures validées."
+              : loading ? "Lecture des données financières en cours."
+                : total === 0 ? "Les fournisseurs apparaîtront après validation de factures en EUR."
+                  : "Les données fournisseurs ne sont pas disponibles pour le moment."}/>}
       </Pane>
       <Pane title="Intégrité & provenance" className="overview-integrity-pane" subtitle="Le circuit de confiance DocuMind">
         <div className="trust-steps">
