@@ -174,3 +174,7 @@ export function discoveryPage(id: Tab): GuidePage {
 
 export const discoveryRoute: readonly Tab[] =
   ["overview", "documents", "analytics", "assistant", "activity"];
+
+// First-time use starts with the first actionable workflow, not empty KPIs.
+export const beginnerRoute: readonly Tab[] =
+  ["documents", "overview", "analytics", "assistant", "activity"];
