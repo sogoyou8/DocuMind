@@ -2,11 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity, ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, CheckCheck,
   ChevronRight, CircleHelp, FileCheck2, Files, Fingerprint, LayoutDashboard,
-  MousePointerClick, SearchCheck, ShieldCheck, Sparkles, Upload, X, BarChart3,
+  MousePointerClick, ShieldCheck, Sparkles, Upload, X, BarChart3,
 } from "lucide-react";
 import type { Tab } from "./types";
 import { discoveryPage, discoveryPages, discoveryRoute } from "./discovery-data";
-import type { GuidePage } from "./discovery-data";
 
 type Mode = "home" | "lesson" | "spotlight";
 type Rectangle = { top: number; left: number; width: number; height: number };
