@@ -1,0 +1,554 @@
+/* DocuMind — Discovery: onboarding, practical lessons, real-control spotlight.
+   Loaded last; no change to established cockpit sizes or page visuals. */
+
+.discovery-layer,
+.discovery-context-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  color: #eaf9f5;
+  font-family: "DM Sans", "Segoe UI", sans-serif;
+}
+.discovery-layer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  isolation: isolate;
+}
+.discovery-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background: rgba(2, 10, 17, .76);
+  backdrop-filter: blur(9px);
+  cursor: default;
+}
+.discovery-dialog {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: min(1080px, 100%);
+  max-height: min(760px, calc(100dvh - 36px));
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid rgba(129, 244, 204, .49);
+  background:
+    radial-gradient(ellipse at 87% -9%, rgba(37, 172, 131, .23), transparent 43%),
+    radial-gradient(ellipse at 0% 88%, rgba(23, 105, 103, .16), transparent 40%),
+    linear-gradient(135deg, #142b37 0%, #0c1b2b 58%, #10292e 100%);
+  box-shadow: 0 35px 105px rgba(0, 0, 0, .68), inset 0 1px rgba(199, 255, 231, .16),
+    0 0 53px rgba(82, 243, 179, .08);
+}
+.discovery-dialog:focus { outline: none; }
+.discovery-header {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  min-width: 0;
+  padding: 24px 29px 19px;
+  border-bottom: 1px solid rgba(138, 234, 206, .14);
+}
+.discovery-header-brand { display: flex; align-items: center; gap: 17px; min-width: 0; }
+.discovery-header-brand > span {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  color: #a7ffda;
+  border: 1px solid rgba(151, 255, 217, .49);
+  background: linear-gradient(150deg, rgba(48, 160, 121, .49), rgba(16, 77, 72, .43));
+  box-shadow: 0 0 23px rgba(103, 251, 187, .10), inset 0 1px rgba(227, 255, 234, .23);
+}
+.discovery-header-copy { min-width: 0; }
+.discovery-header .eyebrow { font-size: 10px; color: #a5f7d7; }
+.discovery-header h2 {
+  margin: 5px 0 4px;
+  font-size: clamp(23px, 2.2vw, 31px);
+  font-weight: 800;
+  letter-spacing: -.055em;
+  line-height: 1.12;
+}
+.discovery-header h2 em { color: #a0f5d1; font-style: normal; }
+.discovery-header-copy p { color: #a9c7c9; font-size: 12px; line-height: 1.45; }
+.discovery-close { flex: 0 0 auto; }
+.discovery-home,
+.discovery-lesson {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(130, 231, 193, .6) rgba(11, 33, 42, .6);
+}
+.discovery-home { padding: 19px 29px 22px; }
+.discovery-home-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.discovery-choice {
+  display: grid;
+  grid-template-columns: 51px minmax(0,1fr);
+  grid-template-rows: auto auto auto;
+  grid-template-areas: "icon title" "icon description" "icon action";
+  align-content: center;
+  align-items: center;
+  gap: 6px 15px;
+  min-height: 128px;
+  padding: 19px 18px;
+  text-align: left;
+  border: 1px solid rgba(127, 222, 199, .3);
+  border-radius: 17px;
+  background: linear-gradient(123deg, rgba(36, 85, 87, .45), rgba(14, 39, 54, .88));
+  transition: background .16s ease, border-color .16s ease;
+}
+.discovery-choice-primary {
+  border-color: rgba(130, 255, 201, .63);
+  background: linear-gradient(127deg, rgba(27, 106, 83, .49), rgba(10, 49, 57, .82));
+  box-shadow: inset 0 1px rgba(195, 255, 221, .12), 0 0 26px rgba(82, 255, 180, .07);
+}
+.discovery-choice:hover, .discovery-choice:focus-visible {
+  border-color: #a1ffdb;
+  background: linear-gradient(127deg, rgba(35, 116, 94, .6), rgba(19, 57, 63, .87));
+}
+.discovery-choice-icon {
+  grid-area: icon;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 13px;
+  border: 1px solid rgba(143, 255, 211, .42);
+  color: #a1ffdc;
+  background: rgba(41, 140, 108, .19);
+}
+.discovery-choice strong { grid-area: title; font-size: 17px; font-weight: 800; color: #f1fff9; }
+.discovery-choice small {
+  grid-area: description;
+  color: #b1cbd1;
+  font-size: 11px;
+  line-height: 1.35;
+}
+.discovery-choice-action {
+  grid-area: action;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #97f6d0;
+  font-size: 11px;
+  font-weight: 800;
+}
+.discovery-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 20px 2px 11px;
+}
+.discovery-section-title > span {
+  font-size: 10px;
+  letter-spacing: .15em;
+  font-weight: 800;
+  color: #9ef6d5;
+}
+.discovery-section-title > small { color: #8faab4; font-size: 10px; }
+.discovery-page-cards {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.discovery-page-cards > button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  min-width: 0;
+  min-height: 150px;
+  padding: 13px 12px;
+  border: 1px solid rgba(118, 215, 199, .26);
+  border-radius: 15px;
+  background: linear-gradient(155deg, rgba(43, 108, 101, .25), rgba(10, 31, 46, .77));
+  text-align: left;
+}
+.discovery-page-cards > button:hover,
+.discovery-page-cards > button:focus-visible {
+  border-color: rgba(146, 255, 210, .7);
+  background: rgba(34, 102, 86, .33);
+  box-shadow: inset 0 1px rgba(157, 255, 221, .1);
+}
+.discovery-glyph {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 39px;
+  height: 39px;
+  border: 1px solid rgba(135, 238, 202, .36);
+  border-radius: 11px;
+  color: #a3f7d7;
+  background: rgba(56, 162, 129, .16);
+}
+.discovery-page-cards strong {
+  color: #f1fff8;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.discovery-page-cards > button > span:last-child {
+  color: #a5bdc4;
+  font-size: 10px;
+  line-height: 1.36;
+}
+.discovery-flow {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 2.4fr);
+  align-items: center;
+  gap: 11px 17px;
+  margin-top: 15px;
+  padding: 13px 16px;
+  border: 1px solid rgba(118, 226, 190, .29);
+  border-radius: 15px;
+  background: linear-gradient(94deg, rgba(21, 91, 73, .29), rgba(13, 37, 50, .83));
+}
+.discovery-flow-label { display: grid; gap: 4px; }
+.discovery-flow-label strong { color: #eafff5; font-size: 12px; }
+.discovery-flow-label small { color: #91adae; font-size: 10px; }
+.discovery-flow-steps { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
+.discovery-flow-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #a5f5d7;
+  white-space: nowrap;
+}
+.discovery-flow-step small { font-size: 10px; font-weight: 700; color: #cee8e0; }
+.discovery-flow-arrow { color: #77bdaa; }
+.discovery-flow-warning {
+  grid-column: 1 / -1;
+  font-size: 10px;
+  line-height: 1.45;
+  color: #e4b6a3;
+}
+.discovery-lesson { padding: 17px 27px 23px; }
+.discovery-lesson-nav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.discovery-lesson-nav button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  min-width: 0;
+  padding: 8px 5px;
+  border: 1px solid rgba(125, 197, 192, .24);
+  border-radius: 11px;
+  color: #b7d6d3;
+  background: rgba(30, 58, 67, .42);
+  font-size: 11px;
+  font-weight: 750;
+}
+.discovery-lesson-nav button.active,
+.discovery-lesson-nav button[aria-pressed="true"] {
+  border-color: rgba(125, 248, 202, .67);
+  color: #baffde;
+  background: rgba(53, 143, 111, .28);
+  box-shadow: inset 0 1px rgba(213, 255, 227, .13);
+}
+.discovery-lesson-body { display: flex; flex-direction: column; gap: 14px; }
+.discovery-lesson-intro,
+.discovery-lesson-intro > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.discovery-lesson-intro { justify-content: space-between; }
+.discovery-lesson-topic { display: grid; gap: 4px; }
+.discovery-lesson-topic strong { color: #f2fff9; font-size: 15px; font-weight: 800; }
+.discovery-lesson-topic small { color: #a4bfc4; font-size: 11px; line-height: 1.36; }
+.discovery-page-counter {
+  flex: 0 0 auto;
+  color: #96edcd;
+  font-size: 11px;
+  font-weight: 800;
+}
+.discovery-progress {
+  overflow: hidden;
+  height: 5px;
+  border-radius: 9px;
+  background: rgba(114, 172, 166, .21);
+}
+.discovery-progress > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #59d9ae, #9fffe1);
+  box-shadow: 0 0 10px rgba(97, 238, 185, .26);
+  transition: width .18s ease;
+}
+.discovery-lesson-card {
+  display: flex;
+  align-items: center;
+  gap: 23px;
+  min-height: 185px;
+  padding: 23px 25px;
+  border: 1px solid rgba(117, 232, 196, .41);
+  border-radius: 17px;
+  background:
+    radial-gradient(ellipse at 9% 50%, rgba(42, 162, 115, .28), transparent 51%),
+    linear-gradient(130deg, rgba(30, 79, 77, .38), rgba(10, 32, 48, .83));
+}
+.discovery-step-marker {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  gap: 6px;
+  height: 102px;
+  width: 106px;
+  border-radius: 15px;
+  border: 1px solid rgba(137, 250, 208, .42);
+  background: rgba(51, 139, 113, .17);
+  color: #b5ffe2;
+  box-shadow: inset 0 1px rgba(182, 255, 220, .1);
+}
+.discovery-step-marker span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #08332e;
+  font-size: 13px;
+  font-weight: 900;
+  background: #9cf8d8;
+}
+.discovery-step-copy { min-width: 0; }
+.discovery-step-copy h3 {
+  margin: 7px 0 10px;
+  color: #f4fff9;
+  font-size: clamp(20px, 2.35vw, 28px);
+  font-weight: 800;
+  line-height: 1.18;
+}
+.discovery-step-copy p {
+  color: #bddbd6;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.discovery-step-outcome {
+  display: flex;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid rgba(133, 226, 189, .29);
+  border-radius: 13px;
+  background: rgba(40, 118, 91, .16);
+}
+.discovery-step-outcome > svg { flex: 0 0 auto; color: #9cf8d8; }
+.discovery-step-outcome strong { font-size: 12px; color: #c4ffe1; }
+.discovery-step-outcome p {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #bcd7d1;
+}
+.discovery-step-note, .discovery-limitation {
+  display: flex;
+  align-items: start;
+  gap: 9px;
+  color: #e6c3a8;
+  background: rgba(135, 81, 60, .13);
+  border: 1px solid rgba(222, 164, 135, .2);
+  border-radius: 12px;
+  padding: 10px 13px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.discovery-step-note > svg, .discovery-limitation > svg { flex: 0 0 auto; }
+.discovery-limitation { color: #aaccca; background: rgba(29, 93, 98, .17); border-color: rgba(118, 200, 204, .2); }
+.discovery-footer {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 27px 17px;
+  border-top: 1px solid rgba(136, 213, 197, .15);
+  background: rgba(6, 23, 35, .48);
+}
+.discovery-footer .btn { min-height: 39px; font-size: 11px; padding: 9px 13px; }
+.discovery-step-count {
+  flex: 1 1 auto;
+  text-align: center;
+  color: #91acb4;
+  font-size: 11px;
+}
+.discovery-footer-safe {
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #9abeba;
+}
+
+/* Guided mode uses the actual element and never prevents the user from
+   activating it. The highlight is visual only (pointer-events:none). */
+.discovery-context-layer {
+  z-index: 1800;
+  pointer-events: none;
+}
+.discovery-focus-frame {
+  position: fixed;
+  z-index: 1;
+  border: 2px solid #a1ffdb;
+  border-radius: 12px;
+  background: rgba(104, 249, 184, .04);
+  box-shadow: 0 0 0 9999px rgba(0, 8, 15, .74),
+    0 0 0 5px rgba(130, 253, 199, .19),
+    0 0 29px 13px rgba(79, 252, 181, .25);
+  pointer-events: none;
+  transition: top .08s ease, left .08s ease, width .08s ease, height .08s ease;
+}
+.discovery-context-dim {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 10, 18, .73);
+  pointer-events: none;
+}
+.discovery-context-tooltip {
+  position: fixed;
+  z-index: 2;
+  width: 360px;
+  max-height: min(260px, calc(100dvh - 20px));
+  overflow-y: auto;
+  padding: 14px;
+  pointer-events: auto;
+  border-radius: 15px;
+  border: 1px solid rgba(158, 255, 216, .69);
+  background: linear-gradient(145deg, rgba(21, 57, 62, .98), rgba(8, 32, 43, .99));
+  box-shadow: 0 16px 51px rgba(0, 0, 0, .57), 0 0 26px rgba(71, 248, 171, .2);
+}
+.discovery-context-tooltip:focus { outline: none; }
+.discovery-tooltip-centered {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.discovery-context-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.discovery-context-top > span { display: flex; gap: 7px; align-items: center; font-size: 10px; font-weight: 800; color: #9ff6d5; }
+.discovery-context-top > button {
+  padding: 5px;
+  border: 1px solid rgba(159, 225, 209, .2);
+  border-radius: 8px;
+  background: rgba(53, 95, 97, .18);
+}
+.discovery-context-tooltip > strong { display: block; color: #f0fff8; font-size: 16px; margin-bottom: 6px; }
+.discovery-context-tooltip > p { color: #d0e3df; font-size: 12px; line-height: 1.5; }
+.discovery-outcome,
+.discovery-unavailable {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin-top: 9px;
+  font-size: 10px;
+  line-height: 1.4;
+  color: #a0e9ca;
+}
+.discovery-outcome svg { flex: 0 0 auto; }
+.discovery-unavailable { color: #f0b99d; }
+.discovery-context-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 10px;
+  margin-top: 11px;
+  border-top: 1px solid rgba(128, 224, 198, .19);
+}
+.discovery-context-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 1px solid rgba(127, 227, 194, .26);
+  border-radius: 9px;
+  background: rgba(28, 79, 78, .23);
+  color: #c1e4dc;
+  font-size: 11px;
+  font-weight: 800;
+}
+.discovery-context-actions .discovery-mini-next {
+  color: #062e26;
+  background: #99f9d4;
+  border-color: #b6ffe6;
+}
+
+@media (max-width: 1020px) {
+  .discovery-page-cards { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .discovery-flow { grid-template-columns: 1fr; }
+  .discovery-flow-warning { grid-column: auto; }
+  .discovery-lesson-nav { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media (max-width: 700px) {
+  .discovery-layer { padding: 10px; }
+  .discovery-dialog {
+    max-height: calc(100dvh - 20px);
+    border-radius: 17px;
+  }
+  .discovery-header { padding: 15px 16px; gap: 9px; }
+  .discovery-header-brand { gap: 9px; }
+  .discovery-header-brand > span { width: 39px; height: 39px; border-radius: 12px; }
+  .discovery-header .eyebrow { font-size: 8px; }
+  .discovery-header h2 { font-size: 21px; }
+  .discovery-header-copy p { font-size: 10px; }
+  .discovery-home, .discovery-lesson { padding: 13px 14px; }
+  .discovery-home-choices { grid-template-columns: 1fr; gap: 8px; }
+  .discovery-choice { min-height: 103px; padding: 12px; }
+  .discovery-choice strong { font-size: 14px; }
+  .discovery-page-cards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .discovery-page-cards > button { min-height: 123px; }
+  .discovery-section-title { flex-wrap: wrap; gap: 3px; }
+  .discovery-lesson-nav { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .discovery-lesson-nav button { font-size: 10px; }
+  .discovery-lesson-card { padding: 13px; gap: 11px; min-height: 160px; }
+  .discovery-step-marker { width: 65px; height: 85px; }
+  .discovery-step-copy h3 { font-size: 19px; }
+  .discovery-step-copy p { font-size: 12px; }
+  .discovery-footer { padding: 10px; flex-wrap: wrap; }
+  .discovery-footer .btn { font-size: 10px; min-height: 36px; padding: 7px 9px; }
+  .discovery-footer-safe { font-size: 9px; }
+  .discovery-step-count { order: -1; flex-basis: 100%; }
+  .discovery-context-tooltip {
+    width: min(360px, calc(100vw - 20px));
+    top: auto !important;
+    left: 10px !important;
+    bottom: 10px;
+    transform: none;
+    max-height: 42dvh;
+  }
+  .discovery-focus-frame { border-radius: 8px; }
+}
+@media (max-width: 410px) {
+  .discovery-lesson-card { align-items: flex-start; }
+  .discovery-step-marker { width: 46px; height: 66px; }
+  .discovery-step-marker > svg { width: 18px; }
+  .discovery-step-copy h3 { font-size: 17px; }
+  .discovery-header-brand > span { display: none; }
+  .discovery-lesson-nav button { gap: 3px; }
+  .discovery-flow-steps { row-gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .discovery-focus-frame, .discovery-progress > span,
+  .discovery-choice { transition: none; }
+}
