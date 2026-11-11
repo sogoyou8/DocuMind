@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   Activity, ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, CheckCheck,
   ChevronRight, CircleHelp, FileCheck2, Files, Fingerprint, LayoutDashboard,
@@ -63,6 +63,7 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
   const [beginner, setBeginner] = useState(false);
   const [frame, setFrame] = useState<Rectangle | null>(null);
   const [unavailable, setUnavailable] = useState(false);
+  const [measuredTooltipHeight, setMeasuredTooltipHeight] = useState(315);
   const dialogRef = useRef<HTMLElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const initialFocus = useRef<HTMLElement | null>(null);
@@ -163,6 +164,22 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
     }
   }, [mode, currentPage, pageId]);
 
+  // The tooltip height varies between steps and permissions. Recalculate its
+  // actual size before paint so every step stays clear of the highlighted UI.
+  useLayoutEffect(() => {
+    if (mode !== "spotlight") return;
+    const element = tooltipRef.current;
+    if (!element) return;
+    const measure = () => {
+      const height = element.offsetHeight;
+      setMeasuredTooltipHeight(old => Math.abs(old - height) < 1 ? old : height);
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    measure();
+    return () => observer.disconnect();
+  }, [mode, pageId, stepIndex, unavailable]);
+
   useEffect(() => {
     if (mode !== "spotlight") return;
     let raf = 0;
@@ -223,7 +240,7 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
     // The former fixed 212px offset let a longer tooltip obscure its own target.
     const tooltipWidth = Math.min(360, window.innerWidth - 24);
     const tooltipHeight = Math.min(
-      tooltipRef.current?.offsetHeight || 315,
+      measuredTooltipHeight,
       Math.min(340, window.innerHeight - 20),
     );
     const gap = 13;
