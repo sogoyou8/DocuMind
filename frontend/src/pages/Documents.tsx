@@ -261,7 +261,15 @@ function DocumentDrawer({
     <button className="drawer-scrim" onClick={onClose} type="button" aria-label="Fermer les détails du document"/>
     <aside className="document-drawer glass" role="dialog" aria-modal={!desktop} aria-label={`Détails de ${doc.original_name}`}>
       <div className="drawer-header">
-        <div><div className="eyebrow">FICHE DOCUMENTAIRE</div><h2>{doc.original_name}</h2></div>
+        <div className="document-header-heading">
+          <div className="eyebrow">FICHE DOCUMENTAIRE</div>
+          <h2>{doc.original_name}</h2>
+          <div className="document-header-meta">
+            <span className={`file-badge file-${doc.file_type.toLowerCase()}`}>{doc.file_type}</span>
+            <StatusChip state={doc.state}/>
+            {doc.source === "DEMO" && <LabelPill kind="info">Fictif</LabelPill>}
+          </div>
+        </div>
         <button ref={closeRef} type="button" className="icon-button" onClick={onClose} aria-label="Fermer"><X size={19}/></button>
       </div>
       <div className="drawer-scroll">
@@ -294,11 +302,6 @@ function DocumentDrawer({
                 <AlertTriangle size={20}/><span><strong>{loading ? "—" : detail?.issues.length ?? "—"}</strong><small>Anomalies détectées</small></span>
               </div>
             </div>
-        <div className="detail-summary">
-          <span className={`file-badge file-${doc.file_type.toLowerCase()}`}>{doc.file_type}</span>
-          <StatusChip state={doc.state}/>
-          {doc.source === "DEMO" && <LabelPill kind="info">Fictif</LabelPill>}
-        </div>
         <div className="detail-grid">
           <Field label="Date d'import">{shortDate(doc.created_at)}</Field>
           <Field label="Taille">{bytes(doc.size_bytes)}</Field>
