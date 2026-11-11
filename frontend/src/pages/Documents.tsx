@@ -187,7 +187,7 @@ export function DocumentsView({
         <table className="data-table">
           <thead><tr><th>Document</th><th>État</th><th>Import</th><th>Taille</th><th className="end-cell">Détails</th></tr></thead>
           <tbody>
-            {displayed.map(doc => <tr key={doc.id}>
+            {displayed.map(doc => <tr key={doc.id} className={selected?.id === doc.id ? "is-current" : ""}>
               <td><button className="table-doc" type="button" onClick={() => onSelect(doc)}>
                 <span className={`file-badge file-${doc.file_type.toLowerCase()}`}>{doc.file_type}</span>
                 <span><strong title={doc.original_name}>{doc.original_name}</strong>
@@ -201,8 +201,11 @@ export function DocumentsView({
           </tbody>
         </table>
       </div>
-      {!displayed.length && <EmptyState title={loading ? "Chargement en cours" : "Aucun document correspondant"}
-        description={loading ? "Lecture des données réelles…" : "Modifie le filtre ou la recherche pour afficher les documents."}/>}
+      {!displayed.length && <EmptyState
+        title={loading ? "Chargement en cours" : (listing?.count ?? 0) === 0 ? "Aucun document importé" : "Aucun document correspondant"}
+        description={loading ? "Lecture des données…" :
+          (listing?.count ?? 0) === 0 ? "Importez votre premier fichier depuis le panneau supérieur." :
+            "Modifiez le filtre ou la recherche pour afficher les documents de cette page."}/>}
       <div className="table-bottom">
         <span>Filtre local sur la page · {displayed.length} résultat(s) affiché(s)</span>
         <div className="pager">
@@ -212,10 +215,17 @@ export function DocumentsView({
         </div>
       </div>
     </Pane>
-    <Hint>La planification Airflow, la consommation de fichiers et la génération de réponses IA sont trois opérations différentes. L'import seul ne crée pas de facture validée.</Hint>
-    {selected && <DocumentDrawer doc={selected} detail={detail} busy={actionBusy}
-      loading={detailLoading} demo={demo} operator={operator} aiEnabled={aiEnabled}
-      onClose={() => onSelect(null)} onProcess={onProcess} onIndex={onIndex}/>}
+      {selected ? <DocumentDrawer doc={selected} detail={detail} busy={actionBusy}
+        loading={detailLoading} demo={demo} operator={operator} aiEnabled={aiEnabled}
+        desktop={desktop} onClose={closePreview} onProcess={onProcess} onIndex={onIndex}/> :
+        <section className="documents-preview-empty glass" aria-label="Fiche documentaire">
+          <div className="documents-preview-empty-icon"><FileText size={29}/></div>
+          <h2>Fiche documentaire</h2>
+          <p>Sélectionnez un document dans le catalogue pour consulter sa provenance, ses extractions, ses éventuelles anomalies et son historique.</p>
+          <span><ShieldCheck size={16}/> Sources et opérations vérifiables</span>
+        </section>}
+    </div>
+    <Hint>Importer, traiter avec D2 et indexer pour l'IA sont trois opérations distinctes. Les documents rejetés ne contribuent pas aux indicateurs validés.</Hint>
   </div>;
 }
 
