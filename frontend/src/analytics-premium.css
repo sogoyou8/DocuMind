@@ -134,3 +134,108 @@
 .analytics-premium-page .issue-bar-item>div{color:#ffb49b}
 .analytics-premium-page .issue-bar-item strong{font-variant-numeric:tabular-nums}
 .analytics-premium-page .analytics-unavailable{flex:1 1 auto;display:grid;place-items:center}
+
+/* Desktop: one cockpit, one hero plus five existing analytics panels. */
+@media (min-width:1200px) and (min-height:730px){
+  .analytics-premium-page{
+    display:grid;height:100%;min-height:0;overflow:hidden;
+    grid-template-rows:minmax(185px,31%) minmax(205px,39%) minmax(138px,1fr);
+    gap:10px}
+  .analytics-premium-page .analytics-premium-hero{min-height:0}
+  .analytics-premium-page .analytics-grid,
+  .analytics-premium-page .analytics-bottom-grid{min-height:0}
+  .analytics-premium-page .analytics-grid>.pane,
+  .analytics-premium-page .analytics-bottom-grid>.pane{min-height:0;overflow:hidden}
+  .analytics-premium-page .analytics-unavailable{grid-row:2/4}
+}
+@media (min-width:1200px) and (min-height:730px) and (max-height:849px){
+  .analytics-premium-page{
+    grid-template-rows:minmax(180px,32%) minmax(185px,39%) minmax(131px,1fr);gap:8px}
+  .analytics-premium-page .analytics-hero-top{padding:8px 17px 3px}
+  .analytics-premium-page .analytics-hero-copy h1{
+    font-size:clamp(22px,1.9vw,27px);margin:4px 0}
+  .analytics-premium-page .analytics-hero-copy p{font-size:10px}
+  .analytics-premium-page .analytics-metabase-link{min-height:33px;padding:7px 11px}
+  .analytics-premium-page .analytics-premium-kpis{gap:7px;padding:0 9px 9px}
+  .analytics-premium-page .analytics-premium-kpis .stat-card{
+    min-height:71px;padding:6px 8px;grid-template-columns:29px minmax(0,1fr);gap:1px 7px}
+  .analytics-premium-page .analytics-premium-kpis .stat-icon{width:29px;height:32px}
+  .analytics-premium-page .analytics-premium-kpis .stat-heading>span:first-child{font-size:10px}
+  .analytics-premium-page .analytics-premium-kpis .stat-value{
+    font-size:clamp(19px,1.58vw,24px)}
+  .analytics-premium-page .analytics-premium-kpis .stat-caption{font-size:8px}
+  .analytics-premium-page .analytics-grid>.pane,
+  .analytics-premium-page .analytics-bottom-grid>.pane{padding:10px 12px}
+  .analytics-premium-page .pane-top{margin-bottom:8px}
+  .analytics-premium-page .pane-top h2{font-size:12px}
+  .analytics-premium-page .pane-top p{font-size:9px;margin-top:3px}
+  .analytics-premium-page .line-chart{height:min(120px,15vh)}
+  .analytics-premium-page .supplier-bars{gap:9px}
+  .analytics-premium-page .donut-layout{
+    grid-template-columns:minmax(78px,.77fr) minmax(0,1fr);gap:5px;min-height:98px}
+  .analytics-premium-page .donut{width:92px;height:92px;padding:8px}
+  .analytics-premium-page .donut-core{border-width:6px}
+  .analytics-premium-page .donut-core strong{font-size:20px}
+  .analytics-premium-page .donut-legend{gap:6px}
+  .analytics-premium-page .donut-legend>span{font-size:9px;gap:6px}
+  .analytics-premium-page .analytics-grid .hint{padding:6px 8px;font-size:9px;margin-top:4px}
+  .analytics-premium-page .analytics-bottom-grid .data-table th,
+  .analytics-premium-page .analytics-bottom-grid .data-table td{padding:6px 5px}
+  .analytics-premium-page .issue-bar-item{padding:9px 5px}
+}
+@media (min-width:876px) and (max-width:1199px){
+  .analytics-premium-page{
+    display:flex;flex-direction:column;height:auto;overflow:visible}
+  .analytics-premium-page .analytics-grid{
+    grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+  .analytics-premium-page .analytics-grid>:last-child{grid-column:1/-1}
+  .analytics-premium-page .analytics-premium-kpis{
+    grid-template-columns:repeat(2,minmax(0,1fr))}
+  .analytics-premium-page .analytics-hero-illustration{opacity:.27}
+}
+@media (max-width:875px){
+  .analytics-premium-page{
+    display:flex;flex-direction:column;height:auto;overflow:visible;gap:12px}
+  .analytics-premium-page .analytics-premium-hero{min-height:0;border-radius:17px}
+  .analytics-premium-page .analytics-hero-top{
+    flex-wrap:wrap;align-items:flex-start;padding:20px 18px 16px}
+  .analytics-premium-page .analytics-hero-copy{flex:1 1 100%}
+  .analytics-premium-page .analytics-hero-copy h1{font-size:clamp(24px,5.5vw,31px)}
+  .analytics-premium-page .analytics-hero-illustration{opacity:.25;right:-22%}
+  .analytics-premium-page .analytics-metabase-link{min-height:35px;margin-top:5px}
+  .analytics-premium-page .analytics-premium-kpis{
+    grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:0 11px 12px}
+  .analytics-premium-page .analytics-premium-kpis .stat-card{padding:10px}
+  .analytics-premium-page .analytics-grid,
+  .analytics-premium-page .analytics-bottom-grid{
+    grid-template-columns:1fr;gap:12px}
+  .analytics-premium-page .analytics-grid>:last-child{grid-column:auto}
+  .analytics-premium-page .analytics-grid>.pane,
+  .analytics-premium-page .analytics-bottom-grid>.pane{
+    min-height:200px;overflow:visible;padding:17px}
+  .analytics-premium-page .donut-layout{
+    grid-template-columns:120px minmax(0,1fr)}
+}
+@media (max-width:500px){
+  .analytics-premium-page .analytics-hero-top{padding:20px 15px 17px}
+  .analytics-premium-page .analytics-hero-copy h1{font-size:25px}
+  .analytics-premium-page .analytics-premium-kpis .stat-card{
+    min-height:104px;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+  .analytics-premium-page .analytics-premium-kpis .stat-heading{
+    display:flex;align-items:center;justify-content:space-between;width:100%}
+  .analytics-premium-page .analytics-premium-kpis .stat-icon{
+    width:28px;height:28px}
+  .analytics-premium-page .analytics-premium-kpis .stat-heading>span:first-child{font-size:10px}
+  .analytics-premium-page .analytics-premium-kpis .stat-value{
+    font-size:clamp(20px,5vw,25px)}
+  .analytics-premium-page .analytics-premium-kpis .stat-caption{font-size:9px}
+  .analytics-premium-page .analytics-hero-illustration{display:none}
+  .analytics-premium-page .donut-layout{
+    grid-template-columns:105px minmax(0,1fr)}
+  .analytics-premium-page .donut{width:98px;height:98px;padding:9px}
+  .analytics-premium-page .donut-legend{gap:7px}
+  .analytics-premium-page .donut-legend>span{font-size:9px}
+}
+@media (prefers-reduced-motion:reduce){
+  .analytics-premium-page .analytics-metabase-link{transition:none}
+}
