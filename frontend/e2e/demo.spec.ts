@@ -44,15 +44,15 @@ test.beforeEach(async ({ page }) => {
 
 test("public demo is transparent, navigable and has no fabricated KPIs", async ({ page }, testInfo) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /Vos documents/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Gérez, vérifiez, analysez et interrogez vos documents/i })).toBeVisible();
   await expect(page.getByText("3 fiches de démonstration fictives")).toBeVisible();
-  await expect(page.getByText("Non disponible dans la démo")).toBeVisible();
+  await expect(page.getByText("Analyse indisponible dans la démo").first()).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("overview-desktop.png"), fullPage: true });
 
   await page.getByRole("button", { name: "Documents", exact: true }).click();
   await expect(page.getByText("Exemple-facture-001.pdf")).toBeVisible();
-  await expect(page.getByText("L'import est désactivé dans la démonstration publique.")).toBeVisible();
-  await expect(page.locator("input[type=file]")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /Importer un document/i })).toBeDisabled();
+  await expect(page.locator("input[type=file]")).toBeDisabled();
   await page.screenshot({ path: testInfo.outputPath("documents-desktop.png"), fullPage: true });
 
   await page.getByRole("button", { name: "Analyse & KPI" }).click();
@@ -68,7 +68,7 @@ test("public demo is transparent, navigable and has no fabricated KPIs", async (
 test("mobile navigation remains usable with no horizontal overflow", async ({ page }, testInfo) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: /Vos documents/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Gérez, vérifiez, analysez et interrogez vos documents/i })).toBeVisible();
   await page.getByRole("button", { name: "Ouvrir la navigation" }).click();
   await page.getByRole("button", { name: "Documents", exact: true }).click();
   await expect(page.getByText("Exemple-commandes-002.csv")).toBeVisible();
