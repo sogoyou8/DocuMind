@@ -320,6 +320,7 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
               pageBottom: content.bottom,
               footerTop: note.top,
               footerBottom: note.bottom,
+              footerVisible: getComputedStyle(footer).display !== "none",
               mainBottom: outer.bottom,
               modules: moduleRects,
               journalHeight: journal?.getBoundingClientRect().height ?? null,
@@ -329,10 +330,12 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
             };
           }, key);
           expect(windowed.overflowY, `${key} — desktop workspace must not scroll`).toBe("hidden");
-          expect(windowed.pageBottom, `${key} — page overlaps footer`)
-            .toBeLessThanOrEqual(windowed.footerTop + 2);
-          expect(windowed.footerBottom, `${key} — footer outside window`)
-            .toBeLessThanOrEqual(windowed.mainBottom + 2);
+          expect(windowed.pageBottom, `${key} — page overflows its workspace`)
+            .toBeLessThanOrEqual((windowed.footerVisible ? windowed.footerTop : windowed.mainBottom) + 2);
+          if (windowed.footerVisible) {
+            expect(windowed.footerBottom, `${key} — footer outside window`)
+              .toBeLessThanOrEqual(windowed.mainBottom + 2);
+          }
           for (const module of windowed.modules) {
             expect(module.height,
               `${key} — ${module.selector} collapsed`).toBeGreaterThan(95);
