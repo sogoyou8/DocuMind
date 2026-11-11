@@ -107,8 +107,8 @@ test("discovery guide teaches real controls without performing a mutation in dem
   await page.screenshot({ path: testInfo.outputPath("discovery-home.png"), fullPage: true });
 
   await dialog.getByRole("button", { name: /Je débute/ }).click();
-  await expect(dialog.getByText("Lire les quatre indicateurs")).toBeVisible();
-  await expect(dialog.getByText(/Vous distinguez les fichiers enregistrés/)).toBeVisible();
+  await expect(dialog.getByText("Choisir un fichier", { exact: true })).toBeVisible();
+  await expect(dialog.getByText(/Le nom du fichier sélectionné/)).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("discovery-lesson.png"), fullPage: true });
 
   await dialog.getByRole("button", { name: "Documents", exact: true }).click();
