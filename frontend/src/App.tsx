@@ -331,7 +331,7 @@ export default function App() {
         {view === "documents" && <DocumentsView listing={docs} overview={overview} loading={loading}
           selected={selected} detail={detail} detailLoading={detailLoading}
           demo={Boolean(demo)} operator={operator} aiEnabled={aiEnabled}
-          actionBusy={busy} page={page} onPage={setPage} onSelect={setSelected}
+          actionBusy={busy} page={page} onPage={setPage} onNavigate={navigate} onSelect={setSelected}
           onUpload={upload} onProcess={process} onIndex={index}/>}
         {view === "analytics" && <AnalyticsView data={analytics} overview={overview}
           demo={Boolean(demo)}/>}
