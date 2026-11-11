@@ -35,6 +35,7 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
   expect(found).toBe(true);
   const drawer = page.getByRole("dialog", { name: /demo-d2-facture-valide.csv/ });
   await expect(drawer).toBeVisible();
+  await drawer.getByRole("tab", { name: "Factures" }).click();
   await expect(drawer.getByText("DM-2026-001")).toBeVisible();
   await drawer.getByRole("button", { name: "Fermer" }).click();
 
@@ -135,6 +136,28 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
         }
       }
 
+      if (key === "documents") {
+        const hero = page.locator(".documents-hero");
+        await expect(hero.getByRole("heading", { name: /Bibliothèque documentaire/ })).toBeVisible();
+        await expect(hero.locator(".documents-overview-stat")).toHaveCount(4);
+        await expect(hero.getByRole("button", { name: /Importer un document/i })).toBeVisible();
+        await expect(page.locator(".documents-cockpit .document-table-pane")).toBeVisible();
+        if (viewport.width >= 1120) {
+          const inspector = page.locator(".documents-cockpit .documents-preview-layer");
+          await expect(inspector).toBeVisible();
+          const fitted = await page.evaluate(() => {
+            const host = document.querySelector<HTMLElement>(".documents-cockpit");
+            const catalogue = host?.querySelector<HTMLElement>(".document-table-pane");
+            const detail = host?.querySelector<HTMLElement>(".documents-preview-layer");
+            if (!host || !catalogue || !detail) return false;
+            const outer = host.getBoundingClientRect();
+            const left = catalogue.getBoundingClientRect();
+            const right = detail.getBoundingClientRect();
+            return left.right <= right.left + 1 && right.right <= outer.right + 1;
+          });
+          expect(fitted, "Catalogue and preview must not overlap").toBe(true);
+        }
+      }
       const dimensions = await page.evaluate(() => {
         const root = document.documentElement;
         const appShell = document.querySelector<HTMLElement>(".app-shell");
