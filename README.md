@@ -1,174 +1,372 @@
 # DocuMind
 
-**DOC 01 — Plateforme d'intelligence documentaire | D1-D5 validés fonctionnellement en local · Render Free en lecture seule**
+**Vos documents. Une vision plus claire.**
 
-DocuMind est un projet d'apprentissage professionnel **en cours de développement**. Son ambition est de traiter des documents d'entreprise fictifs (PDF textuels, CSV et XLSX), de structurer les informations dans PostgreSQL, d'orchestrer les traitements avec Airflow et d'offrir une analyse BI et un assistant documentaire IA local.
+DocuMind est une **application locale de gestion et d'intelligence documentaire**. Elle permet de recevoir des documents, d'en extraire les informations utiles, de contrôler leur cohérence, de suivre leur provenance, d'analyser les données validées et de poser des questions à un assistant IA qui cite ses sources.
 
-> **État réel :** D0 documenté et D1 fusionné dans `main` après recette locale du 9 novembre 2026 : 11 tests Django réussis sur PostgreSQL, migrations cohérentes, contrôles OpenAPI stricts et healthcheck OK. Déploiement Render gratuit **Live** le 9 novembre 2026 : migrations et initialisation de 3 exemples synthétiques réussies, service Gunicorn en ligne et healthcheck HTTP 200. L'API reste en lecture seule sur Render ; pas de base PostgreSQL hébergée ni de frais engagés. **D2 valide localement le 9 novembre 2026 : 30/30 tests reussis sur PostgreSQL, 3 factures fictives acceptees / 1 document rejete, 240 EUR TTC, rejeu sans doublons et execution du DAG Airflow reussie.** **D3 validé localement le 9 novembre 2026 : 36/36 tests réussis, 9 vues BI, 15 factures fictives acceptées pour 1 344 EUR TTC, lecteur SQL strictement en lecture seule, Metabase initialisé avec 12 vraies questions et leurs contrôles de cohérence réussis.** **D4 validé localement le 9 novembre 2026 : 47/47 tests dans le conteneur IA, 7 documents indexés, réponse 120 € sourcée, abstention et refus d'injection, 1 344 € TTC de D3 préservés.**
+**Version :** V1.0, validée localement le 10 novembre 2026.  
+**Environnement principal :** Windows, Docker Desktop et navigateur web.  
+**Hébergement :** plateforme complète en local ; démonstration publique limitée à l'API D1 en lecture seule.
 
-## Périmètre technique envisagé
+> **Pour commencer rapidement :** rendez-vous à [Installation et premier démarrage](#installation-et-premier-démarrage). Si DocuMind est déjà installé, consultez [Relancer l'application](#relancer-lapplication-après-un-redémarrage).
 
-- **Web / API :** React, TypeScript, Django REST Framework, OpenAPI.
-- **Données :** PostgreSQL, Python, Pandas ; extraction PDF textuel et tableaux CSV/XLSX.
-- **Orchestration :** Apache Airflow (DAGs, reprise, journalisation).
-- **Analytique :** Metabase, indicateurs calculés sur les données structurées.
-- **IA locale :** ChromaDB, Ollama et LangGraph pour un RAG avec citations.
-- **Qualité :** pytest, tests API, Docker Compose, diagrammes UML.
+## Sommaire
 
-## Documents de conception
+1. [Pourquoi DocuMind existe](#pourquoi-documind-existe)
+2. [Ce que fait l'application](#ce-que-fait-lapplication)
+3. [Les cinq espaces](#les-cinq-espaces)
+4. [Un exemple concret](#un-exemple-concret)
+5. [Installation et premier démarrage](#installation-et-premier-démarrage)
+6. [Premiers pas dans l'interface](#premiers-pas-dans-linterface)
+7. [Relancer, arrêter et dépanner](#relancer-lapplication-après-un-redémarrage)
+8. [Services complémentaires, architecture et tests](#services-complémentaires)
+9. [Sécurité, limites et documentation](#sécurité-et-limites)
 
-- [Sujet du projet](docs/Sujet-du-projet.md) — énoncé autonome et critères d'acceptation.
-- [Architecture](docs/ARCHITECTURE.md) — composants, responsabilités et choix techniques.
-- [Modèles UML](docs/UML.md) — diagrammes de classes, séquence et états (Mermaid).
-- [Feuille de route](docs/ROADMAP.md) — progression D0 à D5.
-- [Validation D0](docs/VALIDATION-D0.md) — décisions et limites vérifiables.
-- [Sujet du projet en PDF](docs/Sujet-du-projet.pdf) — version destinée à la lecture et à la fiche Abyss Showcase.
+## Pourquoi DocuMind existe
 
-## Conventions
+Imaginez une entreprise qui reçoit chaque jour des factures, des PDF et des tableaux Excel.
 
-- Données de démonstration **synthétiques, anonymisées ou explicitement autorisées**.
-- Aucun service cloud payant ni API LLM distante.
-- Les calculs métiers et montants ne sont pas inventés par un modèle génératif.
-- Le RAG cite document, page et extrait source, ou signale l'absence de preuve.
-- Les traitements lourds restent modulaires ; aucun service n'est supposé opérationnel avant validation.
+Au fil des semaines, les fichiers s'accumulent. Retrouver une information devient laborieux, les contrôles sont souvent manuels, certaines factures sont incohérentes et les chiffres d'un tableau de bord ne sont pas toujours reliés à leur document d'origine.
 
-## Abyss Showcase
+L'entreprise aimerait pouvoir :
 
-- [Fiche DocuMind](https://abyss-public-showcase.vercel.app/projects/documind) — état D0, schémas de conception, boutons **Code source** et **Document**.
-- Le socle backend D1 fonctionne sur Render, mais **aucune démo visuelle du produit Full Stack V1 n'existe encore**. Les schémas de la fiche restent des conceptions, pas des captures d'une application complète.
+- retrouver rapidement un fichier et les données qu'il contient ;
+- détecter les montants incohérents avant de les utiliser ;
+- comprendre ses dépenses sans additionner les factures à la main ;
+- conserver une trace des opérations et des décisions ;
+- interroger ses documents avec une IA **sans recevoir de réponse dépourvue de preuve**.
 
-## Démonstration
+**DocuMind a été conçu pour répondre à ces besoins.** Ce n'est pas seulement une bibliothèque de fichiers : c'est un parcours de transformation de documents en informations contrôlées, analysables et traçables.
 
-Une **prévisualisation publique du socle backend D1** existe sur Render, mais aucune démonstration de l'application Full Stack complète à ce stade. Le lien de code renvoie au présent dépôt et la fiche Abyss Showcase montre toujours les **intentions et l'architecture D0**. Le backend D1 et le pipeline D2 sont valides localement. La demo Render Free reste volontairement limitee aux metadonnees fictives et a la lecture seule. D3 est validé localement avec le tableau de bord Metabase ; D4-D5 restent à développer.
+## Ce que fait l'application
 
-Licence et politique de contribution : à préciser avant publication de la V1.
+Le fonctionnement général tient en cinq verbes :
 
-## D1 — Django REST / PostgreSQL
+**Importer → Contrôler → Stocker → Analyser → Interroger**
 
-Le backend et ses tests sont dans `backend/`. Pour une exécution locale, Docker Desktop doit être démarré :
-
-```powershell
-docker compose up --build -d
-docker compose exec api python manage.py check
-docker compose exec api python manage.py test documents -v 2
+```mermaid
+flowchart LR
+    A["PDF textuel, CSV ou XLSX"] --> B["Import du document"]
+    B --> C["Traitement et contrôles D2"]
+    C --> D{"Document valide ?"}
+    D -->|Non| E["Rejet et anomalies"]
+    D -->|Oui| F["Données acceptées dans PostgreSQL"]
+    F --> G["KPI SQL et Metabase"]
+    F --> H["Indexation documentaire D4"]
+    H --> I["Assistant IA local avec citations"]
+    B --> J["Historique et audit"]
+    C --> J
+    H --> J
 ```
 
-- API : http://127.0.0.1:8000/api/v1/health/ ; documentation : http://127.0.0.1:8000/api/v1/docs/
-- Imports locaux uniquement par session authentifiée et rôle `documind_operator` ou administrateur.
-- D1 vérifie la nature et la taille des fichiers, pas leur contenu métier (D2).
-- PostgreSQL Docker : port hôte `15434`, volume persistant ; ne pas arrêter avec `docker compose down -v`.
-- [Contrat de déploiement D0.1](docs/DEPLOIEMENT-D0.1.md) ; [État D1 et validation du 9 novembre](docs/ETAT-D1.md).
-- Recette officielle locale : `./scripts/verify-d1.ps1` sous PowerShell avec Docker Desktop.
+Quelques règles sont essentielles :
 
-### Render : coût 0 € et données fictives
+- **Importer ne signifie pas valider.** Un document importé doit ensuite être traité, manuellement ou par le pipeline prévu.
+- **Valider ne signifie pas indexer pour l'IA.** L'indexation est une opération distincte, réservée aux documents acceptés.
+- **Une facture rejetée n'alimente pas les indicateurs financiers.**
+- Les montants proviennent de règles métier et de PostgreSQL, **pas d'une estimation de l'IA**.
+- Les réponses de l'assistant sont liées à des passages sources vérifiables. Si la preuve manque, l'assistant peut s'abstenir.
 
-**Service actuellement déployé :** [DocuMind D1 API](https://documind-d1-api-htpg.onrender.com) (Render Web Service Free, région Francfort), via `render.yaml`. Render confirme un déploiement `Live`, les migrations Django et le healthcheck `GET /api/v1/health/` HTTP 200. Le mode public `DOCUMIND_DEMO_READONLY=1` expose trois **fiches fictives** stockées sur SQLite éphémère ; il n'autorise pas les imports publics. Le backend local, lui, utilise PostgreSQL. Le déploiement n'embarque ni Airflow, ni Metabase, ni Ollama. Il ne garantit pas la persistance des données ni la disponibilité 24/7. Les autres routes ont été couvertes par les tests Django locaux ; un smoke test HTTP public complémentaire reste disponible.
+Les documents sont conservés dans l'environnement local. Le projet utilise des exemples **entièrement fictifs** pour les démonstrations et les tests.
 
+## Les cinq espaces
 
-### Recette HTTP de la démo Render
+| Espace | Ce que vous voyez | À quoi il sert |
+| --- | --- | --- |
+| **01 — Vue d'ensemble** | Documents suivis, documents acceptés/rejetés, montants vérifiés, courbe et fournisseurs | Comprendre la situation en un regard et accéder aux autres espaces |
+| **02 — Documents** | Catalogue, import, recherche, filtres, états et fiches détaillées | Ajouter des fichiers, examiner les factures et leurs sources, traiter et indexer les documents autorisés |
+| **03 — Analyse & KPI** | Factures acceptées, dépenses mensuelles, fournisseurs, anomalies et réconciliation par devise | Analyser les données réellement validées dans PostgreSQL |
+| **04 — Assistant IA** | Questions suggérées, champ de conversation, réponses et citations | Retrouver une information dans les documents indexés, ou constater qu'aucune preuve suffisante n'existe |
+| **05 — Historique** | Journal chronologique des imports, validations, rejets et indexations | Savoir ce qui s'est passé, quand et sur quel document |
 
-En PowerShell : `./scripts/verify-d1-render.ps1`. Ce script contrôle les routes publiques, les trois exemples synthétiques et l'interdiction d'écriture via un POST non authentifié. Un éventuel sommeil de l'instance Render Free peut ralentir la première requête. **La preuve d'exécution de ce script depuis l'extérieur n'est pas encore enregistrée dans le dépôt.**
+### Comprendre les statuts des documents
 
-## D2 — Traitement documentaire deterministe (recette locale reussie)
+| Statut affiché | Signification |
+| --- | --- |
+| **Reçu** | Fichier enregistré, en attente d'un traitement métier |
+| **Accepté** | Contrôles réussis ; les données éligibles peuvent alimenter les analyses |
+| **Indexé** | Document accepté également préparé pour la recherche de l'assistant IA |
+| **Rejeté** | Contrôle échoué ; le motif est consultable et les valeurs ne contribuent pas aux KPI validés |
 
-Le pipeline D2 utilise **Pandas, openpyxl et pypdf** en local. Il extrait les tables CSV/XLSX ou les pages d'un PDF textuel, normalise les champs requis des factures (fournisseur, numéro, date, devise, HT, TVA, TTC), conserve la provenance et les anomalies, puis produit uniquement les factures acceptées. Les documents incohérents sont mis en quarantaine sans contribuer aux indicateurs. La reprise est idempotente par document/version.
+Le traitement et l'indexation sont accessibles depuis la **fiche du document**, selon son statut et les permissions de l'opérateur. Les onglets de cette fiche permettent de consulter **Factures**, **Extraits**, **Anomalies** et **Historique**.
 
-- Commandes : `python manage.py seed_d2 --process`, `process_pending`, `verify_d2`.
-- API locale : `POST /api/v1/documents/{id}/process/`, `GET /api/v1/invoices/`, `/processing-runs/`, `/records/`, `/quality-issues/`.
-- Airflow local facultatif au quotidien, **obligatoire à la recette D2 complète**, via `docker compose --profile pipeline up -d airflow`. Interface Airflow sur http://127.0.0.1:8088.
-- Recette complète PowerShell : `.\scripts\verify-d2.ps1`, en conservant les volumes PostgreSQL. Le script inclut les tests existants et une exécution du vrai DAG Airflow.
-- Corpus entièrement fictif et reproductible : 3 factures acceptées, 1 document rejeté ; montant validé attendu 240,00 EUR TTC (aucun montant inventé).
-- Documentation : [État et recette D2](docs/ETAT-D2.md).
+## Un exemple concret
 
-**Recette du 9 novembre 2026 :** `Ran 30 tests ... OK`, `D2 LOCAL VERIFIED` et `D2 LOCAL OK`, avec DAG Airflow termine en etat `success`. La tache Airflow n'a pas traite de nouveau document, puisque la file de traitement etait deja vide. Le service public Render Free reste une demo D1 en lecture seule, sans Airflow heberge.
+Prenons une facture fictive de **120 € TTC** :
 
-## D3 — SQL analytique et Metabase local (recette validée)
+1. Dans **Documents**, vous sélectionnez un fichier et cliquez sur **Importer**.
+2. Vous ouvrez sa fiche et lancez **Traiter avec D2** lorsque l'action est disponible.
+3. DocuMind extrait les champs, conserve la ligne ou la page d'origine et contrôle, notamment, que **HT + TVA = TTC**.
+4. Si les contrôles réussissent, les données de la facture peuvent apparaître dans **Analyse & KPI**.
+5. Vous pouvez ensuite lancer **Indexer pour l'IA** sur ce document accepté.
+6. Dans **Assistant IA**, vous demandez son montant : la réponse doit s'appuyer sur une citation consultable.
+7. Dans **Historique**, vous retrouvez les traitements et indexations associés.
 
-Les indicateurs D3 proviennent exclusivement des tables de factures déjà **acceptées et validées** dans PostgreSQL. Le schéma gouverné `bi` fournit neuf vues : factures, qualité documentaire, anomalies, dépenses mensuelles, fournisseurs, formats, devises et états. Un rôle SQL indépendant `documind_bi` n'a droit qu'à lire ces vues ; pas d'accès aux fichiers bruts ou aux tables privées.
+**Et si les montants sont incohérents ?** Le document est rejeté, l'anomalie explique l'écart et ses chiffres ne sont pas ajoutés aux indicateurs validés.
 
-Le profil local `analytics` lance **Metabase Open Source v0.64.1** sur [http://127.0.0.1:3033](http://127.0.0.1:3033), avec une configuration persistante dans un volume Docker. Le script de provisionnement API crée **12 questions SQL réelles** dans un tableau de bord à deux onglets : Synthèse (KPI, courbe mensuelle, dépenses fournisseurs, anomalies) et Traçabilité (factures, documents, sources, totaux par devise).
+Le jeu de démonstration utilisé pendant la recette V1.0 comprend **9 documents (7 acceptés ou indexés, 2 rejetés)** et **15 factures acceptées totalisant 1 344,00 € TTC** dans le corpus EUR. Ces chiffres correspondent aux données synthétiques de référence : ils peuvent évoluer si vous importez d'autres documents.
 
-Le corpus fictif étend D2 à cinq mois : **15 factures acceptées pour 1 344,00 EUR TTC**, **7 documents acceptés et 2 rejetés**. Ce sont des valeurs *fictives* issues des fichiers synthétiques versionnés et vérifiées dans PostgreSQL puis Metabase par la recette du 9 novembre 2026. Les montants de devises différentes ne sont jamais additionnés.
+---
 
-**Recette complète vérifiée sous Windows / Docker Desktop :**
+## Installation et premier démarrage
 
-```powershell
-.\scripts\verify-d3.ps1
-```
+Les instructions ci-dessous décrivent le **parcours Windows validé pour la V1.0**. Le fonctionnement sur macOS ou Linux n'a pas fait l'objet de la même recette PowerShell.
 
-Le script vérifie les régressions D1/D2, les KPI SQL, les permissions effectives du lecteur, puis installe et exécute le tableau de bord Metabase et ses requêtes. Les mots de passe sont générés dans `data/local/d3-metabase-secrets.json`, ignoré par Git ; ne pas les partager. La démo publique Render reste **D1 en lecture seule**, sans Metabase hébergé et sans abonnement.
+### 1. Prérequis
 
-- [Contrat, preuves et recette D3](docs/ETAT-D3.md)
-- Migration PostgreSQL : `backend/documents/migrations/0003_bi_views.py` ; SQL : `backend/documents/bi/views_v1.sql`
-- Configuration Metabase : `scripts/provision_metabase.py` ; recette : `scripts/verify-d3.ps1`
+- **Git**, pour récupérer le dépôt.
+- **Docker Desktop**, démarré en mode **conteneurs Linux**.
+- **PowerShell** sous Windows.
+- Un navigateur moderne.
+- Une connexion Internet lors de la première installation, pour télécharger les images Docker, les dépendances et les modèles Ollama.
 
-**Statut : D3 validé localement**. La recette du 9 novembre 2026 s'achève par `D3 LOCAL OK` après `Ran 36 tests ... OK`, `D3 SQL VERIFIED`, `D3 SQL ROLE VERIFIED` et `D3 METABASE OK`. Le tableau de bord contient 12 questions réellement exécutées ; ses valeurs, devises, anomalies et totaux sont réconciliés. **Limite :** aucune capture ou inspection UX du rendu Metabase n'est encore jointe à cette validation, et aucun Metabase public n'est hébergé.
+**Node.js installé sur Windows n'est pas obligatoire** : le service Docker `web` installe et exécute Vite dans son propre conteneur. Le premier démarrage complet avec l'IA peut être gourmand en mémoire ; évitez de lancer simultanément Metabase et Airflow sur une machine limitée.
 
-## D4 — Assistant documentaire IA local (recette validée)
+### 2. Récupérer le code source
 
-Le service optionnel `rag` ajoute une API documentaire locale sur **http://127.0.0.1:8001**, avec ChromaDB (stockage privé persistant), `nomic-embed-text` (embeddings via Ollama), `qwen2.5:1.5b` (génération locale) et LangGraph (recherche, réponse, contrôle et abstention).
-
-L'index repose **uniquement sur les documents acceptés par D2** ; `ChunkReference` conserve les identifiants du document, du traitement, de la page/ligne et l'empreinte SHA-256 de chaque passage. Une citation ne peut être affichée que si PostgreSQL confirme qu'elle correspond encore à une source autorisée. Les instructions contenues dans un document ne deviennent jamais des commandes système. Le filtrage des injections réduit le risque mais ne garantit pas l'absence totale de réponses trompeuses : une citation doit toujours pouvoir être vérifiée.
-
-- `POST /api/v1/documents/{uuid}/index/` : index local réservé opérateur/admin.
-- `POST /api/v1/assistant/ask/` : réponse `answered` avec sources, ou `abstained` sans citation inventée.
-- `GET /api/v1/assistant/status/` : état de configuration du service local authentifié.
-- `python manage.py index_pending --limit 20` et `verify_d4` : commandes d'indexation et de vérification.
-- Recette PowerShell complète : `.\scripts\verify-d4.ps1` (lance et teste Ollama et Chroma en local, sans service payant).
-- Voir [État, sécurité et validation D4](docs/ETAT-D4.md).
-
-**État : D4 validé par `D4 LOCAL OK` après 47 tests réussis dans le service IA et vérification réelle de la réponse sourcée, de l'abstention, de l'injection testée et des KPI D3.** La qualité du LLM n'est pas garantie pour toutes les questions. Le backend Render Free reste limité à la démo D1 en lecture seule, sans Ollama ni index public. L'interface React et la release V1.0 restent prévues en D5.
-
-## D5 — Frontend React / TypeScript V1.0 (recette fonctionnelle validée)
-
-Le dossier `frontend/` contient le cockpit responsive React + Vite, avec cinq espaces opérationnels :
-
-- **Vue d'ensemble** : documents/états, résultats SQL D3 en EUR lorsqu'ils existent, évolution mensuelle, fournisseurs et vérification des sources.
-- **Documents** : catalogue, recherche/filtres sur la page, pagination, import local authentifié, traitement D2, indexation D4 et fiche détaillée (factures, extraits, anomalies, journal).
-- **Analyse & KPI** : données réelles de PostgreSQL `bi` par devise, montants acceptés, fournisseurs et anomalies. Aucun chiffre financier fictif sur Render.
-- **Assistant IA** : questions localement routées vers Ollama/ChromaDB/LangGraph, citation cliquable du document et de la ligne, abstention en absence de preuve. Désactivé dans la démo publique.
-- **Historique** : événements SQL réels, horodatage et navigation vers le document concerné.
-
-Le backend D5 ajoute une **session Django avec CSRF**, un compte opérateur local privé, ainsi que `GET /api/v1/analytics/` et `GET /api/v1/audit/` ; les autres API D1-D4 restent inchangées. Le mode public en lecture seule protège toujours les fichiers et n'invente ni dépenses ni réponses IA.
-
-La recette complète sous Windows et Docker Desktop est :
+Ouvrez PowerShell dans le dossier où vous souhaitez installer l'application :
 
 ```powershell
-.\scripts\verify-d5.ps1
+git clone https://github.com/sogoyou8/DocuMind.git
+cd DocuMind
 ```
 
-Ce script démarre les services gratuits locaux, vérifie Django et les calculs D3/D4, installe la V1 frontend, exécute TypeScript, Vite, Vitest, Chromium Playwright (démo, mobile, parcours connecté avec citation), puis valide de nouveau les KPI. Les secrets locaux sont stockés sous `data/local/d5-operator.json` (ignoré par Git) ; l'application se consulte sur **http://127.0.0.1:5173** avec `documind-local` une fois le script passé.
+Vous êtes maintenant à la racine du projet, au même niveau que `compose.yaml`, `frontend/`, `backend/` et `scripts/`.
 
-[Spécifications D5, preuves attendues et limites](docs/ETAT-D5.md)
+### 3. Démarrer les services locaux
 
-**Validation observée le 10 novembre 2026 : `D5 LOCAL OK`.** Le conteneur IA/PostgreSQL a réussi 58 tests Django (aucun saut) ; Django/OpenAPI et D3/D4 ont été vérifiés avec les vrais modèles ; TypeScript, build Vite et Vitest ont réussi ; les 3 tests Chromium Playwright ont validé démo bureau, navigation mobile sans débordement horizontal et parcours local connecté, KPI SQL, citation IA. **L'examen visuel des captures et le gel/tag V1.0 restent distincts** : aucun déploiement du frontend Vercel n'est annoncé ; Render Free n'héberge pas l'IA.
+Vérifiez que Docker Desktop est prêt, puis exécutez :
 
-## D5.1 — Finition UX/UI transversale (branche isolée)
+```powershell
+docker compose --profile ai --profile ui up -d --build postgres api ollama rag web
+docker compose --profile ai --profile ui ps
+```
 
-La revue visuelle des cinq écrans et de la fiche documentaire du 10 novembre 2026 a été convertie en [plan de corrections mesurables](docs/PLAN-D51.md). Le chantier corrige les débordements, compresse les cockpits sur les résolutions bureau observées, conserve les filtres et onglets durant les défilements, harmonise les événements et données extraites en français, et explicite les anomalies de validation à partir des données réelles.
+Cette commande démarre PostgreSQL, l'API Django, Ollama, le service documentaire IA et l'interface React. Les fichiers restent sur votre ordinateur ; elle ne déploie rien sur Render ou Vercel.
 
-L'assistant sait maintenant répondre **sans appel IA ni fausse citation** aux questions générales sur les capacités et formats de DocuMind ; toute question documentaire reste soumise au RAG D4, aux citations vérifiables et à l'abstention. Une réponse EUR TTC numérique citée est formatée uniquement lorsque son contexte le justifie.
+### 4. Télécharger les modèles IA locaux (première installation)
 
-Cette finition se valide par :
+```powershell
+docker compose --profile ai exec -T ollama ollama pull nomic-embed-text
+docker compose --profile ai exec -T ollama ollama pull qwen2.5:1.5b
+```
+
+Le premier modèle sert à rechercher des passages documentaires ; le second sert à formuler les réponses. Leurs fichiers sont conservés dans un volume Docker, pour éviter de les retélécharger à chaque redémarrage.
+
+### 5. Initialiser la démonstration, le compte local et vérifier la V1.0
+
+Toujours **à la racine du dépôt** :
 
 ```powershell
 .\scripts\verify-d51.ps1
 ```
 
-La commande exécute intégralement D5 puis les nouveaux tests Vitest et Playwright (1920×993, 1649×928, 1440×900, 390×844). Elle produit `D5.1 LOCAL OK` **uniquement après les tests locaux réussis**. Les captures se retrouvent dans `frontend/test-results/`.
+Cette **recette complète**, plus longue qu'un démarrage quotidien, effectue notamment :
 
-**Statut D5.1 au 10 novembre 2026 : `D5.1 LOCAL OK` observé.** Recette Windows/Docker complète réussie : 58/58 tests Django, typecheck/build Vite, 13/13 Vitest, SQL D3 réconcilié, vrai RAG D4, et 4/4 scénarios Playwright Chromium (dont les cinq vues à quatre résolutions). **Revue esthétique des nouvelles captures encore nécessaire avant fusion et gel V1.0.** Aucun changement de service public ou de moteur D1–D4.
+- les contrôles Django, permissions, migrations et API ;
+- le chargement/rejeu idempotent du corpus synthétique et la vérification des KPI SQL ;
+- l'indexation et la vérification de réponses sourcées avec l'IA locale ;
+- la création du compte opérateur privé `documind-local` ;
+- les vérifications TypeScript, le build React et les tests Vitest ;
+- les scénarios navigateur Playwright et le contrôle de mise en page.
 
-### Revue visuelle finale — complément D5.1
+La réussite est indiquée par **`D5 LOCAL OK`** puis **`D5.1 LOCAL OK`**. Les tests produisent des captures dans `frontend/test-results/`.
 
-Les vingt captures manuelles confirment la cohérence du rendu et de la traçabilité, mais ont révélé des défilements externes sur certains bureaux et une formulation d'aide non reconnue (`En quoi consiste cette app ?`). Deux correctifs ciblés et des assertions Playwright supplémentaires sont ajoutés sur la branche D5.1 : mode compact pour les fenêtres CSS de 1200 px de large et 730 px de haut au minimum, défilements internes, réponses de présentation de l'application sans appel au RAG. **Nouvelle recette exécutée et réussie sur les derniers correctifs le 10 novembre 2026 : 58/58 Django, 13/13 Vitest, 4/4 Playwright, dont les contrôles de débordement horizontal et vertical à 1320×742 CSS.** La revue esthétique des captures produites après ce correctif reste distincte, avant fusion.
+> La recette peut réinitialiser **le mot de passe du seul compte opérateur de démonstration** à partir du fichier privé local. Elle ne supprime pas les volumes PostgreSQL, ChromaDB ou Ollama. Pour les prochains démarrages, il n'est pas nécessaire de relancer tous les tests.
 
-### D5.1 — Finition des captures 1320×742
+### 6. Ouvrir DocuMind et se connecter
 
-Dernière revue : les cinq vues tiennent dans la fenêtre compacte, mais la notification de connexion restait affichée par-dessus les panneaux et la ligne sous le champ de l'assistant était légèrement tronquée. La notification de succès se ferme désormais automatiquement après 4,5 s (les erreurs restent lisibles jusqu'à fermeture) ; la hauteur de l'assistant est ajustée aux fenêtres de bureau courtes. Un test Playwright vérifie le composeur intégralement visible et des captures non masquées par une notification. **Recette locale sur la correction finale du workspace confirmée le 10 novembre 2026 au commit `163f7a7` : 58/58 Django, 13/13 Vitest, 4/4 Playwright, `D5 LOCAL OK`, `D5.1 LOCAL OK`.** La revue des captures issues de ce dernier commit reste à réaliser avant fusion de la PR #7.
+Ouvrez **http://127.0.0.1:5173**.
 
-### DocuMind V1.0 — Validation finale
+- **Identifiant :** `documind-local`
+- **Mot de passe :** généré lors de la première recette, conservé dans `data/local/d5-operator.json` (fichier ignoré par Git).
 
-**Validation locale D5.1 acquise le 10 novembre 2026 :** 58 tests Django, 13 tests Vitest et 4 scénarios Playwright Chromium réussis ; D3 SQL réconcilié, D4 RAG Ollama/Chroma vérifié. Le rendu des cinq vues a été inspecté ; la capture finale de l'Assistant à 1320×742 confirme que l'ensemble du composeur est visible, sans notification superposée. La V1.0 est approuvée pour fusion squash et gel.
+Pour copier le mot de passe **dans le presse-papiers sans l'afficher dans le terminal** :
 
-**Exploitation :** plateforme complète (PostgreSQL, pipeline Pandas, Metabase, Ollama/Chroma, React) uniquement en local ; démo publique Render D1 limitée à la lecture de métadonnées synthétiques. Ne jamais exposer de secrets, publier des fichiers privés ni supprimer les volumes Docker avec `docker compose down -v`. Les changements ultérieurs seront versionnés séparément.
+```powershell
+$compte = Get-Content ".\data\local\d5-operator.json" -Raw | ConvertFrom-Json
+$compte.password | Set-Clipboard
+```
+
+Collez-le ensuite dans le formulaire de connexion avec **Ctrl + V**. Ne partagez jamais ce fichier ni son contenu.
+
+## Premiers pas dans l'interface
+
+Si vous découvrez l'application pour la première fois, suivez ce parcours :
+
+1. **Vue d'ensemble :** observez le nombre de documents, les états et le total validé. Ils proviennent du corpus local, et non de valeurs inventées pour remplir le dashboard.
+2. **Documents :** ouvrez un des fichiers de démonstration. Consultez les onglets **Factures**, **Extraits**, **Anomalies** et **Historique**. Comparez un document accepté et un document rejeté.
+3. **Premier import :** choisissez un **PDF textuel, CSV ou XLSX** de **5 Mio maximum**. Les scans à OCR, fichiers manuscrits et macros Excel ne sont pas pris en charge par cette V1.0.
+4. **Traitement :** dans la fiche du document reçu, lancez **Traiter avec D2**. Contrôlez le résultat et le motif d'un éventuel rejet avant de recommencer.
+5. **Analyse & KPI :** voyez les montants et fournisseurs issus des données acceptées. Les calculs financiers sont séparés par devise.
+6. **Assistant IA :** sur un document accepté, utilisez **Indexer pour l'IA**, puis posez une question portant sur son contenu. Ouvrez les citations pour vérifier la source.
+7. **Historique :** retrouvez les opérations effectuées et leurs horodatages.
+
+**Conseil :** commencez par le corpus fictif déjà présent après la recette, plutôt que d'importer directement des documents personnels.
+
+## Relancer l'application après un redémarrage
+
+Une fois la première installation et la recette terminées, vous n'avez plus besoin de refaire les tests complets à chaque utilisation.
+
+Ouvrez Docker Desktop et un terminal PowerShell **dans `DocuMind`**, puis lancez :
+
+```powershell
+docker compose --profile ai --profile ui up -d postgres api ollama rag web
+```
+
+Accédez ensuite à **http://127.0.0.1:5173**.
+
+Pour voir les journaux en direct :
+
+```powershell
+docker compose --profile ui logs -f web
+```
+
+Pour consulter l'état des services :
+
+```powershell
+docker compose --profile ai --profile ui ps
+```
+
+### Arrêter proprement l'application
+
+```powershell
+docker compose --profile ai --profile ui stop web rag ollama api postgres
+```
+
+Cette commande **arrête** les conteneurs, mais ne supprime pas les données conservées dans les volumes.
+
+> **Ne jamais exécuter `docker compose down -v`** pour arrêter DocuMind : l'option `-v` supprime les volumes associés, dont les données locales PostgreSQL et les modèles/index conservés.
+
+### Problèmes courants
+
+| Symptôme | Explication et action |
+| --- | --- |
+| **`vite` n'est pas reconnu sur Windows** | Ne lancez pas `npm run dev` sur l'hôte sans installer les dépendances. Utilisez le conteneur `web` avec `docker compose --profile ui up -d web`. |
+| **La page `127.0.0.1:5173` ne s'ouvre pas** | Vérifiez Docker Desktop, puis `docker compose --profile ui logs --tail=100 web` et `docker compose --profile ai --profile ui ps`. |
+| **Connexion impossible ou mot de passe absent** | Le fichier privé est créé par `verify-d51.ps1` / `verify-d5.ps1`. Relancez la recette de provisionnement depuis la racine si elle n'a jamais réussi. |
+| **L'IA n'est pas prête** | Vérifiez `docker compose --profile ai logs --tail=100 ollama rag` et la présence des deux modèles Ollama. |
+| **Le document est importé mais absent des KPI** | Un import n'est pas une validation. Ouvrez sa fiche, traitez-le avec D2, puis vérifiez son état et ses anomalies. |
+| **L'assistant ne trouve pas la réponse** | Vérifiez que le document a été accepté **et indexé** ; une abstention peut aussi être normale si aucune preuve pertinente n'existe. |
+| **Metabase est vide au premier lancement** | Son tableau de bord doit être configuré avec la recette analytique `.\scripts\verify-d3.ps1`, pas seulement avec `docker compose up`. |
+| **La machine ralentit** | Arrêtez les services optionnels non utilisés, notamment Airflow et Metabase ; l'IA locale consomme aussi des ressources. |
+
+## Services complémentaires
+
+L'interface React fournit les cinq pages principales sans nécessiter de garder Airflow et Metabase ouverts en permanence.
+
+| Service | Adresse locale | Utilité |
+| --- | --- | --- |
+| **Interface React** | http://127.0.0.1:5173 | Application utilisée au quotidien |
+| **API Django principale** | http://127.0.0.1:8000/api/v1/health/ | Santé de l'API et backend |
+| **Documentation OpenAPI** | http://127.0.0.1:8000/api/v1/docs/ | Routes et contrats HTTP |
+| **Django avec RAG** | http://127.0.0.1:8001/api/v1/health/ | API locale utilisée par l'interface pour l'assistant |
+| **PostgreSQL** | `127.0.0.1:15434` | Base de données locale ; pas un site web |
+| **Ollama** | `127.0.0.1:11435` | Modèles IA locaux |
+| **Metabase** | http://127.0.0.1:3033 | BI avancée, profil Docker `analytics` |
+| **Airflow** | http://127.0.0.1:8088 | Orchestration, profil Docker `pipeline` |
+
+### Metabase — analyse BI avancée
+
+Metabase n'est pas la page **Analyse & KPI** de React : c'est un outil complémentaire qui lit des vues PostgreSQL gouvernées.
+
+Pour la **première configuration** (création du lecteur SQL, des questions et du dashboard) :
+
+```powershell
+.\scripts\verify-d3.ps1
+```
+
+Pour le **relancer ensuite** :
+
+```powershell
+docker compose --profile analytics up -d metabase
+```
+
+La recette D3 prépare **12 questions SQL** sur le corpus de démonstration. Sur une machine avec peu de mémoire, arrêtez les services lourds inutilisés avant de démarrer Metabase.
+
+### Airflow — planification du traitement
+
+```powershell
+docker compose --profile pipeline up -d airflow
+```
+
+Airflow peut orchestrer les traitements via un DAG local. Il n'est **pas nécessaire** pour lancer un traitement directement depuis la fiche d'un document. Pour vérifier le pipeline et les reprises de traitement avec la recette dédiée :
+
+```powershell
+.\scripts\verify-d2.ps1
+```
+
+### Architecture technique
+
+| Couche | Technologies | Responsabilités |
+| --- | --- | --- |
+| Interface | React 19, TypeScript, Vite | Navigation, fichiers, analyses et assistant |
+| API et sécurité | Python, Django REST Framework, session/CSRF | Autorisations, imports, traitements, contrats HTTP et audit |
+| Extraction et qualité | Python, Pandas, openpyxl, pypdf | Lecture, normalisation, contrôles et provenance |
+| Données | PostgreSQL 16 | Documents, factures validées, états, anomalies, événements et vues SQL |
+| Orchestration | Apache Airflow | Planification, exécution, reprise et journal des traitements |
+| BI | Metabase | Tableaux de bord sur vues SQL en lecture seule |
+| IA locale | Ollama, ChromaDB, LangGraph | Recherche de passages, génération contrôlée, citations et abstention |
+| Exécution et QA | Docker Compose, Vitest, Playwright, tests Django | Reproductibilité, contrôles métier, API et interface |
+
+### Organisation du dépôt
+
+```text
+DocuMind/
+├── backend/       # Django, modèles, API, traitement documentaire, SQL, RAG
+├── frontend/      # React / TypeScript et tests d'interface
+├── airflow/       # DAG de traitement local
+├── scripts/       # Initialisation, recettes et provisionnement
+├── docs/          # Sujet, architecture, preuves et décisions
+├── compose.yaml   # Services et profils Docker
+├── render.yaml    # Démonstration publique limitée de l'API D1
+└── data/local/    # Secrets et état locaux générés (ignorés par Git)
+```
+
+## Vérifier la V1.0
+
+La commande de référence pour la recette complète est :
+
+```powershell
+.\scripts\verify-d51.ps1
+```
+
+**Dernière validation documentée, 10 novembre 2026 :** 58/58 tests Django, 13/13 tests Vitest, 4/4 scénarios Playwright Chromium, vérification SQL D3, RAG D4 réel et contrôles du rendu compact. Ce sont les résultats de la **recette historique de la V1.0**, pas une nouvelle exécution automatiquement réalisée lors de la lecture du README.
+
+Pour des vérifications ciblées après installation :
+
+```powershell
+docker compose --profile ai exec -T rag python manage.py check
+docker compose --profile ui exec -T web npm run typecheck
+docker compose --profile ui exec -T web npm test
+docker compose --profile ui exec -T web npm run build
+```
+
+Les captures navigateur de la recette restent dans `frontend/test-results/` et les rapports Playwright dans `frontend/playwright-report/` ; ce sont des fichiers locaux, pas des captures automatiquement publiées sur Internet.
+
+## Sécurité et limites
+
+DocuMind V1.0 est une **application locale**, conçue pour apprendre, démontrer et contrôler un flux documentaire avec des données autorisées.
+
+- **Données :** le jeu fourni est fictif. N'importez pas de documents réels sensibles sans politique d'accès, de rétention et de protection adaptée.
+- **Fichiers :** PDF textuels, CSV et XLSX structurés ; pas d'OCR des scans ni de reconnaissance manuscrite en V1.0.
+- **Rôles :** l'import, les traitements et l'indexation sont soumis aux permissions de l'opérateur.
+- **Analyses :** seules les données validées alimentent les indicateurs ; aucune addition implicite entre devises.
+- **IA :** aucune API LLM payante ou externe n'est nécessaire à l'instance complète. Un modèle local peut se tromper : vérifiez toujours les citations et les extraits.
+- **Stockage :** les volumes Docker et `data/local/` restent privés ; ne publiez ni secrets, ni factures, ni sauvegardes.
+- **Publication :** le service [Render D1](https://documind-d1-api-htpg.onrender.com) est une démonstration **distincte et limitée** de l'API, en lecture seule sur métadonnées synthétiques. Il **n'héberge pas** le cockpit complet, PostgreSQL local, Airflow, Metabase ou Ollama.
+- **Abyss Showcase :** [fiche de présentation DocuMind](https://abyss-public-showcase.vercel.app/projects/documind). Cette fiche ne doit pas être confondue avec un hébergement public de l'application complète.
+
+La version complète V1.0 reste figée : la présente documentation n'annonce aucun nouveau déploiement ni changement fonctionnel.
+
+## Pour aller plus loin
+
+- [Sujet du projet — Markdown](docs/Sujet-du-projet.md) et [PDF](docs/Sujet-du-projet.pdf) : contexte, mission, exigences et critères de validation.
+- [Architecture](docs/ARCHITECTURE.md) et [diagrammes UML](docs/UML.md) : composants, données et flux.
+- [État D1](docs/ETAT-D1.md) : API, permissions et démonstration Render.
+- [État D2](docs/ETAT-D2.md) : extraction, contrôles, rejet et Airflow.
+- [État D3](docs/ETAT-D3.md) : vues SQL, réconciliation et Metabase.
+- [État D4](docs/ETAT-D4.md) : assistant IA local, index et citations.
+- [État D5](docs/ETAT-D5.md) et [plan D5.1](docs/PLAN-D51.md) : interface React, validation de bout en bout et finition UX/UI.
+
+**En une phrase :** DocuMind vous aide à passer **d'un fichier reçu à une information vérifiée, compréhensible et reliée à sa source**.
