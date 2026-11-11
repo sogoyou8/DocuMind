@@ -91,34 +91,84 @@ export function DocumentsView({
     }
   };
 
-  return <div className="page-stack documents-page">
-    <div className="page-intro">
-      <div><div className="eyebrow">DOCUMENTS / CATALOGUE</div>
-        <h1>Bibliothèque documentaire</h1>
-        <p>Chaque fichier, chaque décision et chaque provenance au même endroit.</p></div>
-      <LabelPill kind={demo ? "info" : "good"}>{demo ? "3 exemples fictifs · lecture seule" : "PostgreSQL local"}</LabelPill>
-    </div>
-    <Pane className="upload-panel">
-      <div className="upload-intro">
-        <div className="upload-icon"><FileUp size={24}/></div>
-        <div><h2>Importer un document</h2>
-          <p>PDF textuel, CSV ou Excel XLSX · 5 Mio maximum · contrôle de signature côté serveur</p></div>
+  return <div className="page-stack documents-page documents-premium-page">
+    <header className="documents-hero glass">
+      <div className="documents-hero-glow" aria-hidden="true"/>
+      <div className="documents-hero-main">
+        <div className="documents-hero-content">
+          <div className="eyebrow"><span className="signal-pulse"/> DOCUMENTS / CATALOGUE</div>
+          <h1>Bibliothèque <span>documentaire</span></h1>
+          <p>Centralisez vos fichiers, contrôlez leur cohérence, puis retrouvez chaque donnée et sa provenance.</p>
+          <div className="documents-hero-actions">
+            <button className="btn btn-primary" type="button" disabled={!canUpload}
+              onClick={() => ref.current?.click()}>
+              <Upload size={17}/> Importer un document <ArrowRight size={16}/>
+            </button>
+            <span className="documents-hero-context">
+              <ShieldCheck size={15}/>
+              {demo ? "Démonstration en lecture seule" : operator ? "Import et contrôles locaux" : "Consultation uniquement"}
+            </span>
+          </div>
+        </div>
+        <div className="documents-hero-illustration" aria-hidden="true">
+          <div className="documents-hero-arc"/>
+          <div className="documents-hero-illustration-doc ghost"/>
+          <div className="documents-hero-illustration-doc middle"/>
+          <div className="documents-hero-illustration-doc front">
+            <Fingerprint size={32}/><i/><i/><i/>
+            <span className="documents-hero-check"><FileCheck size={24}/></span>
+          </div>
+          <span className="documents-hero-floating one"><FileText size={19}/></span>
+          <span className="documents-hero-floating two"><ShieldCheck size={19}/></span>
+        </div>
       </div>
-      {canUpload ? <div className="upload-controls">
-        <label className="file-picker" htmlFor="doc-upload">
-          <Upload size={16}/><span>{file ? file.name : "Choisir un fichier"}</span>
-        </label>
-        <input ref={ref} id="doc-upload" className="sr-only" type="file" accept=".pdf,.csv,.xlsx"
-          onChange={event => {setFile(event.target.files?.[0] ?? null);setFileError(null);}}/>
-        <button className="btn btn-primary" type="button" disabled={!file || Boolean(actionBusy)}
-          onClick={() => void upload()}>
-          <FileUp size={16}/>{actionBusy === "upload" ? "Import en cours…" : "Importer"}
-        </button>
-      </div> : <div className="upload-disabled"><LockKeyhole size={15}/>
-        {demo ? "L'import est désactivé dans la démonstration publique." : "Le rôle opérateur est nécessaire pour importer des fichiers."}</div>}
-      {fileError && <div className="inline-error" role="alert">{fileError}</div>}
-    </Pane>
+      <div className="documents-hero-bottom">
+        <div className={dragOver ? "documents-upload-box is-dragging" : "documents-upload-box"}
+          onDragOver={event => { event.preventDefault(); if (canUpload) setDragOver(true); }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={event => {
+            event.preventDefault();
+            setDragOver(false);
+            if (canUpload) chooseFile(event.dataTransfer.files?.[0] ?? null);
+          }}>
+          <button type="button" className="documents-dropzone" disabled={!canUpload}
+            onClick={() => ref.current?.click()}>
+            <CloudUpload size={24}/>
+            <span><strong>{file ? file.name : "Déposez votre fichier ici"}</strong>
+              <small>PDF textuel, CSV ou XLSX · 5 Mio maximum</small></span>
+          </button>
+          <input ref={ref} id="doc-upload" className="sr-only" type="file"
+            accept=".pdf,.csv,.xlsx" aria-label="Choisir un document à importer"
+            disabled={!canUpload} onChange={event => chooseFile(event.target.files?.[0] ?? null)}/>
+          <span className="documents-upload-or">ou</span>
+          <button type="button" className="documents-upload-picker btn btn-secondary"
+            disabled={!canUpload} onClick={() => ref.current?.click()}>
+            <FileUp size={16}/> Choisir un fichier
+          </button>
+          <button type="button" className="documents-upload-submit btn btn-primary"
+            disabled={!file || !canUpload || Boolean(actionBusy)} onClick={() => void upload()}>
+            {actionBusy === "upload" ? "Import en cours…" : "Importer"}
+          </button>
+        </div>
+        <div className="documents-overview-stats" aria-label="États réels des documents">
+          <div className="documents-overview-stat">
+            <FileText size={20}/><span><strong>{totalDocuments ?? "—"}</strong><small>Documents</small></span>
+          </div>
+          <div className="documents-overview-stat is-valid">
+            <FileCheck size={20}/><span><strong>{validDocuments ?? "—"}</strong><small>Validés / indexés</small></span>
+          </div>
+          <div className="documents-overview-stat is-waiting">
+            <FileClock size={20}/><span><strong>{waitingDocuments ?? "—"}</strong><small>En attente</small></span>
+          </div>
+          <div className="documents-overview-stat is-rejected">
+            <AlertTriangle size={20}/><span><strong>{rejectedDocuments ?? "—"}</strong><small>Rejetés</small></span>
+          </div>
+        </div>
+      </div>
+      {fileError && <div className="inline-error documents-import-error" role="alert">{fileError}</div>}
+    </header>
 
+    <div className="documents-cockpit">
     <Pane className="document-table-pane" title="Catalogue" subtitle={listing
       ? `${listing.count} document(s) au total · résultats de la page ${page}`
       : "Chargement depuis l'API"} aside={<FileText className="muted-icon" size={18}/>}>
