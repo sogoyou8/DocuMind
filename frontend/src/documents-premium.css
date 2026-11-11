@@ -266,7 +266,16 @@
 .documents-overview-stat span { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .documents-overview-stat strong { font: 800 clamp(18px, 1.45vw, 24px)/1.05 Manrope,sans-serif; color: #f2ffff; }
 .documents-overview-stat small { font-size: 9px; line-height: 1.3; color: #b2d0cc; }
-.documents-import-error { margin: 0 13px 12px; width: auto; flex: 0 0 auto; }
+.documents-import-error {
+  position: absolute;
+  z-index: 8;
+  top: 10px;
+  right: 13px;
+  max-width: min(430px, 44%);
+  width: auto;
+  margin: 0;
+  box-shadow: 0 8px 27px rgba(0, 0, 0, .35);
+}
 .documents-cockpit {
   display: grid;
   grid-template-columns: minmax(0,1.55fr) minmax(370px, .92fr);
@@ -403,6 +412,22 @@
     box-shadow: 0 8px 14px rgba(9, 18, 28, .4);
   }
 }
+.documents-premium-page .document-header-heading { min-width: 0; flex: 1; }
+.documents-premium-page .document-header-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 8px;
+}
+.documents-premium-page .document-header-meta .file-badge {
+  width: 27px;
+  height: 27px;
+}
+.documents-premium-page .document-header-meta .status-chip {
+  font-size: 9px;
+  padding: 5px 7px;
+}
 .documents-premium-page .document-preview-metrics {
   display: grid;
   grid-template-columns: repeat(2,minmax(0,1fr));
@@ -507,6 +532,7 @@
 }
 @media (max-width: 620px) {
   .documents-hero { border-radius: 17px; }
+  .documents-import-error { position: static; max-width: none; margin: 0 11px 11px; }
   .documents-hero-main { padding: 20px 16px 13px; min-height: 0; }
   .documents-hero-content { flex-basis: 100%; }
   .documents-hero h1 { font-size: clamp(25px, 6.4vw, 30px); }
