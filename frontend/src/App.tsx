@@ -163,6 +163,7 @@ export default function App() {
   const refresh = () => setRefreshKey(key => key + 1);
   const navigate = (target: Tab) => {
     setView(target);
+    if (target !== "documents") setSelected(null);
     setSidebarOpen(false);
     mainRef.current?.scrollTo({top:0,behavior:"smooth"});
   };
@@ -327,7 +328,7 @@ export default function App() {
         {view === "overview" && <OverviewView overview={overview} analytics={analytics}
           documents={docs?.results ?? []} demo={Boolean(demo)} loading={loading}
           onTab={navigate} onDocument={openDocument}/>}
-        {view === "documents" && <DocumentsView listing={docs} loading={loading}
+        {view === "documents" && <DocumentsView listing={docs} overview={overview} loading={loading}
           selected={selected} detail={detail} detailLoading={detailLoading}
           demo={Boolean(demo)} operator={operator} aiEnabled={aiEnabled}
           actionBusy={busy} page={page} onPage={setPage} onSelect={setSelected}
