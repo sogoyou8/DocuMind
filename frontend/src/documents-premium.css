@@ -92,12 +92,13 @@
 .documents-hero-illustration {
   position: absolute;
   pointer-events: none;
-  top: -8%;
-  right: 2%;
-  height: 118%;
-  width: 30%;
+  top: 0;
+  right: 3%;
+  height: 100%;
+  width: 27%;
+  overflow: hidden;
   perspective: 700px;
-  opacity: .93;
+  opacity: .81;
 }
 .documents-hero-arc {
   position: absolute;
@@ -325,11 +326,17 @@
 .documents-premium-page .data-table td { padding: 8px 6px; }
 .documents-premium-page .data-table tbody tr { transition: background .15s ease; }
 .documents-premium-page .data-table tbody tr.is-current {
-  background: linear-gradient(90deg, rgba(66, 219, 164, .16), rgba(31, 103, 91, .09));
-  outline: 1px solid rgba(115, 248, 185, .50);
+  background: linear-gradient(90deg, rgba(76, 220, 174, .24), rgba(37, 131, 102, .14));
+  outline: 1px solid rgba(129, 255, 204, .78);
   outline-offset: -1px;
 }
-.documents-premium-page .data-table tbody tr.is-current .table-doc strong { color: #c5ffe5; }
+.documents-premium-page .data-table tbody tr.is-current td:first-child {
+  box-shadow: inset 3px 0 0 #91fbd0;
+}
+.documents-premium-page .data-table tbody tr.is-current .table-doc strong {
+  color: #f0fff8;
+  text-shadow: 0 0 10px rgba(133, 255, 200, .18);
+}
 .documents-premium-page .table-doc strong { max-width: min(280px, 21vw); }
 .documents-premium-page .table-bottom { flex: 0 0 auto; padding: 9px 0 1px; }
 .documents-premium-page > .hint {
@@ -471,7 +478,7 @@
 @media (min-width: 1120px) and (min-height: 730px) {
   .documents-premium-page {
     display: grid;
-    grid-template-rows: minmax(225px, .85fr) minmax(0, 1.60fr) auto;
+    grid-template-rows: minmax(215px, .80fr) minmax(0, 1.65fr) auto;
     height: 100%;
     min-height: 0;
     overflow: hidden;
@@ -482,7 +489,7 @@
 }
 @media (min-width: 1120px) and (max-height: 849px) and (min-height: 730px) {
   .documents-premium-page {
-    grid-template-rows: minmax(203px, .77fr) minmax(0, 1.63fr) auto;
+    grid-template-rows: minmax(200px, .75fr) minmax(0, 1.65fr) auto;
     gap: 8px;
   }
   .documents-premium-page .documents-hero-main { padding: 8px 17px 3px; }
@@ -504,7 +511,7 @@
 }
 @media (max-width: 1340px) {
   .documents-hero-content { flex-basis: 79%; }
-  .documents-hero-illustration { right: 0; opacity: .55; }
+  .documents-hero-illustration { right: 1%; opacity: .50; }
   .documents-hero-bottom { grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 8px; }
   .documents-upload-box { gap: 7px; }
   .documents-upload-or { display: none; }
