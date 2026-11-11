@@ -47,9 +47,10 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
   await page.getByRole("button", { name: "Assistant IA" }).click();
   await expect(page.getByText("Ollama local prêt")).toBeVisible();
 
-  // Check D5.1 source is actually served by Vite, not a stale D5 process.
-  // Verify the help shortcut and guide before the slower real Ollama request.
-  await expect(page.getByRole("button", { name: "Découvrir DocuMind" })).toBeVisible();
+  // The persistent topbar guide is available throughout the local app.
+  // The assistant shortcut opens the same genuine guide; it no longer
+  // injects a question or silently sends it to the language model.
+  await expect(page.locator(".topbar").getByRole("button", { name: "Découvrir DocuMind" })).toBeVisible();
   let askRequests = 0;
   page.on("request", request => {
     if (request.url().includes("/api/v1/assistant/ask")) askRequests += 1;
@@ -64,9 +65,20 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
   await expect(page.getByRole("textbox", { name: "Poser une question documentaire" }))
     .toBeFocused();
   expect(askRequests, "Example requests must only prefill the question").toBe(0);
-  await page.getByRole("button", { name: "Découvrir DocuMind" }).click();
-  await expect(page.getByRole("textbox", { name: "Poser une question documentaire" }))
-    .toHaveValue("Que peux-tu faire ?");
+  await page.locator(".assistant-guidance").getByRole("button", { name: "Découvrir DocuMind" }).click();
+  const discovery = page.getByRole("dialog", { name: /Découvrir DocuMind/ });
+  await expect(discovery).toBeVisible();
+  await expect(discovery.locator(".discovery-page-cards > button")).toHaveCount(5);
+  await discovery.getByRole("button", { name: /Explorer les cinq pages/ }).click();
+  await expect(discovery.getByText("Une action à la fois")).toBeVisible();
+  await discovery.getByRole("button", { name: "Voir dans l'application" }).click();
+  await expect(page.locator('[data-guide-mode="spotlight"]')).toBeVisible();
+  await expect(page.locator(".discovery-focus-frame")).toBeVisible();
+  await page.getByRole("button", { name: "Fermer le guide" }).click();
+  expect(askRequests, "Onboarding must not call Ollama/RAG").toBe(0);
+
+  await page.getByRole("textbox", { name: "Poser une question documentaire" })
+    .fill("Que peux-tu faire ?");
   await page.getByRole("button", { name: "Envoyer la question" }).click();
   await expect(page.getByText("Guide de l'application")).toBeVisible();
   await expect(page.getByText(/Je peux rechercher des informations dans les documents locaux/)).toBeVisible();
