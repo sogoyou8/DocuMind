@@ -279,7 +279,7 @@ export default function App() {
   if (!demo && !session.authenticated) return <LoginScreen
     onLogin={doLogin} busy={busy === "login"} error={error}/>;
 
-  return <div className="app-shell">
+  return <div className={`app-shell ${windowedWorkspace ? "is-windowed" : ""}`}>
     {sidebarOpen && <button className="mobile-scrim" type="button"
       aria-label="Fermer la navigation" onClick={() => setSidebarOpen(false)}/>}
     <aside className={`sidebar ${sidebarOpen ? "sidebar-open" : ""}`} aria-label="Navigation principale">
