@@ -285,7 +285,13 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
       }
       // Browser-window mode: keep the content accessible and readable even
       // after losing vertical space to Chrome tabs, toolbars or split-screen.
-      if (viewport.width >= 1200 && viewport.height <= 940) {
+      if (viewport.width >= 1200) {
+        const measuredContentHeight = await page.locator(".workspace-content").evaluate(main => main.clientHeight);
+        const expectedWindowed = measuredContentHeight < 790;
+        await expect.poll(() => page.locator(".workspace-content").evaluate(
+          main => main.classList.contains("is-windowed"),
+        ), { message: "Compact layout should follow actual available height" }).toBe(expectedWindowed);
+        if (expectedWindowed) {
         const windowed = await page.evaluate(() => {
           const main = document.querySelector<HTMLElement>(".workspace-content")!;
           const journal = document.querySelector<HTMLElement>(".activity-premium-journal");
@@ -310,6 +316,7 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
         }
         if (key === "assistant") {
           expect(windowed.assistantHeight, "Chat and examples need useful height").toBeGreaterThanOrEqual(485);
+        }
         }
       }
       // Always capture before layout assertions: on failure the precise
