@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { Tab } from "./types";
-import { discoveryPage, discoveryPages, discoveryRoute } from "./discovery-data";
+import { beginnerRoute, discoveryPage, discoveryPages, discoveryRoute } from "./discovery-data";
 
 type Mode = "home" | "lesson" | "spotlight";
 type Rectangle = { top: number; left: number; width: number; height: number };
@@ -60,6 +60,7 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
   const [mode, setMode] = useState<Mode>("home");
   const [pageId, setPageId] = useState<Tab>("overview");
   const [stepIndex, setStepIndex] = useState(0);
+  const [beginner, setBeginner] = useState(false);
   const [frame, setFrame] = useState<Rectangle | null>(null);
   const [unavailable, setUnavailable] = useState(false);
   const dialogRef = useRef<HTMLElement>(null);
@@ -67,8 +68,9 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
   const initialFocus = useRef<HTMLElement | null>(null);
   const page = useMemo(() => discoveryPage(pageId), [pageId]);
   const step = page.steps[stepIndex];
-  const currentPageIndex = discoveryRoute.indexOf(pageId);
-  const last = currentPageIndex === discoveryRoute.length - 1 &&
+  const order = beginner ? beginnerRoute : discoveryRoute;
+  const currentPageIndex = order.indexOf(pageId);
+  const last = currentPageIndex === order.length - 1 &&
     stepIndex === page.steps.length - 1;
 
   useEffect(() => {
@@ -110,33 +112,41 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
   }, [mode, onClose]);
 
   const choosePage = useCallback((id: Tab) => {
+    setBeginner(false);
     setPageId(id);
     setStepIndex(0);
     setFrame(null);
     setMode("lesson");
   }, []);
+  const startBeginner = () => {
+    setBeginner(true);
+    setPageId("documents");
+    setStepIndex(0);
+    setFrame(null);
+    setMode("lesson");
+  };
 
   const next = useCallback(() => {
     if (stepIndex < page.steps.length - 1) {
       setStepIndex(old => old + 1);
-    } else if (currentPageIndex < discoveryRoute.length - 1) {
-      setPageId(discoveryRoute[currentPageIndex + 1]);
+    } else if (currentPageIndex < order.length - 1) {
+      setPageId(order[currentPageIndex + 1]);
       setStepIndex(0);
-      if (mode === "spotlight") onNavigate(discoveryRoute[currentPageIndex + 1]);
+      if (mode === "spotlight") onNavigate(order[currentPageIndex + 1]);
     } else {
       onClose();
     }
-  }, [stepIndex, page.steps.length, currentPageIndex, mode, onNavigate, onClose]);
+  }, [stepIndex, page.steps.length, currentPageIndex, mode, order, onNavigate, onClose]);
 
   const previous = useCallback(() => {
     if (stepIndex > 0) setStepIndex(old => old - 1);
     else if (currentPageIndex > 0) {
-      const previousPage = discoveryRoute[currentPageIndex - 1];
+      const previousPage = order[currentPageIndex - 1];
       setPageId(previousPage);
       setStepIndex(discoveryPage(previousPage).steps.length - 1);
       if (mode === "spotlight") onNavigate(previousPage);
     } else setMode("home");
-  }, [stepIndex, currentPageIndex, mode, onNavigate]);
+  }, [stepIndex, currentPageIndex, mode, order, onNavigate]);
 
   const showInApp = () => {
     onNavigate(pageId);
@@ -195,8 +205,8 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
     };
   }, [mode, step.target, step.fallback, pageId, currentPage]);
 
-  const progress = discoveryRoute.reduce((sum, id) =>
-    sum + (discoveryRoute.indexOf(id) < currentPageIndex ? discoveryPage(id).steps.length : 0), 0) + stepIndex + 1;
+  const progress = order.reduce((sum, id, i) =>
+    sum + (i < currentPageIndex ? discoveryPage(id).steps.length : 0), 0) + stepIndex + 1;
   const total = discoveryPages.reduce((sum, item) => sum + item.steps.length, 0);
 
   if (mode === "spotlight") {
@@ -264,10 +274,10 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
       {mode === "home" ? <div className="discovery-home">
         <div className="discovery-home-choices">
           <button className="discovery-choice discovery-choice-primary" type="button"
-            onClick={() => choosePage("overview")}>
+            onClick={startBeginner}>
             <span className="discovery-choice-icon"><MousePointerClick size={25}/></span>
             <strong>Je débute</strong>
-            <small>Un parcours guidé depuis les premiers indicateurs jusqu'aux sources.</small>
+            <small>Commencez par importer un document, puis comprenez ses résultats et ses sources.</small>
             <span className="discovery-choice-action">Commencer <ArrowRight size={16}/></span>
           </button>
           <button className="discovery-choice" type="button"
@@ -348,7 +358,7 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
         {mode === "home" ? <>
           <span className="discovery-footer-safe"><ShieldCheck size={15}/>
             Guide uniquement : aucune action automatique sur vos documents.</span>
-          <button type="button" className="btn btn-primary" onClick={() => choosePage("overview")}>
+          <button type="button" className="btn btn-primary" onClick={startBeginner}>
             Commencer <ArrowRight size={16}/>
           </button>
         </> : <>
