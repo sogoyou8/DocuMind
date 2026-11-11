@@ -6,7 +6,7 @@ describe("DocuMind discovery is a faithful practical guide", () => {
     expect(discoveryPages.map(item => item.id)).toEqual(discoveryRoute);
     expect(discoveryRoute).toEqual(["overview", "documents", "analytics", "assistant", "activity"]);
     expect(discoveryPages.every(item => item.purpose && item.steps.length >= 2)).toBe(true);
-    expect(discoveryPages.reduce((count, item) => count + item.steps.length, 0)).toBe(16);
+    expect(discoveryPages.reduce((count, item) => count + item.steps.length, 0)).toBe(15);
   });
 
   it("gives each step a real interface target, a concrete action and an expected outcome", () => {
