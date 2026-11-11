@@ -1,6 +1,6 @@
 import {
   ArrowUpRight, BadgeCheck, BarChart3, CircleHelp, FileCheck2,
-  FileX2, Link2, ShieldCheck,
+  FileX2,
 } from "lucide-react";
 import type { Analytics, Overview } from "../types";
 import { money, monthlyEUR, percent } from "../format";
@@ -17,21 +17,26 @@ export default function AnalyticsView({
   const rejected = overview?.rejected ?? 0;
   const total = overview?.total ?? 0;
 
-  return <div className="page-stack analytics-page">
-    <div className="page-intro">
-      <div><div className="eyebrow">ANALYSE / POSTGRESQL D3</div>
-        <h1>Intelligence analytique</h1>
-        <p>Des indicateurs calculés en SQL, sans montant inventé ni addition de devises.</p>
+  return <div className="page-stack analytics-page analytics-premium-page">
+    <section className="analytics-premium-hero glass" aria-label="Intelligence analytique et indicateurs">
+      <div className="analytics-hero-top">
+        <div className="analytics-hero-copy">
+          <div className="eyebrow"><span className="signal-pulse"/> ANALYSE / POSTGRESQL D3</div>
+          <h1>Intelligence <span>analytique</span></h1>
+          <p>Des indicateurs calculés en SQL, sans montant inventé ni addition de devises.</p>
+        </div>
+        {!demo && <a className="btn btn-secondary analytics-metabase-link" href="http://127.0.0.1:3033"
+          target="_blank" rel="noreferrer"><BarChart3 size={16}/> Ouvrir Metabase <ArrowUpRight size={15}/></a>}
+        <div className="analytics-hero-illustration" aria-hidden="true">
+          <span className="analytics-hero-wave"/>
+          <div className="analytics-hero-chart analytics-hero-chart-back"/>
+          <div className="analytics-hero-chart analytics-hero-chart-mid"/>
+          <div className="analytics-hero-chart analytics-hero-chart-front">
+            <span className="analytics-hero-bars"><i/><i/><i/><i/></span>
+          </div>
+        </div>
       </div>
-      {!demo && <a className="btn btn-secondary" href="http://127.0.0.1:3033" target="_blank"
-        rel="noreferrer"><BarChart3 size={16}/> Ouvrir Metabase <ArrowUpRight size={15}/></a>}
-    </div>
-    {!ready ? <Pane><EmptyState icon="chart" title="Analyse indisponible dans cette instance"
-      description={demo
-        ? "La démonstration publique ne contient que trois métadonnées fictives. Aucune facture, dépense ni KPI D3 n'y est calculé."
-        : data?.reason ?? "Connecte-toi à PostgreSQL local pour consulter les indicateurs."}/></Pane> :
-    <>
-      <div className="stat-grid">
+      {ready && <div className="stat-grid analytics-premium-kpis">
         <StatCard label="Factures acceptées" value={data!.currencies.reduce((sum, c) => sum + c.invoice_count, 0)}
           icon={<FileCheck2 size={20}/>} detail="Toutes devises · nombre de factures" accent/>
         <StatCard label="Montant TTC · EUR" value={eur ? money(eur.total) : "—"}
@@ -40,7 +45,13 @@ export default function AnalyticsView({
           icon={<BadgeCheck size={20}/>} detail="Fournisseurs de factures EUR validées"/>
         <StatCard label="Taux de rejet" value={percent(rejected, total)}
           icon={<FileX2 size={20}/>} detail="Documents rejetés / tous les documents"/>
-      </div>
+      </div>}
+    </section>
+    {!ready ? <Pane className="analytics-unavailable"><EmptyState icon="chart" title="Analyse indisponible dans cette instance"
+      description={demo
+        ? "La démonstration publique ne contient que trois métadonnées fictives. Aucune facture, dépense ni KPI D3 n'y est calculé."
+        : data?.reason ?? "Les indicateurs PostgreSQL ne sont pas disponibles pour le moment."}/></Pane> :
+    <>
       <div className="analytics-grid">
         <Pane title="Dépenses dans le temps" subtitle="Date de facture · montant TTC · EUR">
           <MonthlyChart rows={monthly}/>
@@ -80,8 +91,5 @@ export default function AnalyticsView({
         </Pane>
       </div>
     </>}
-    <div className="metric-contract glass"><ShieldCheck size={19}/>
-      <div><strong>Contrat de confiance</strong><p>Les sommes financières proviennent de `bi.validated_invoices`, filtrées sur les documents et traitements acceptés. Les anomalies sont conservées, mais exclues des montants.</p></div>
-      <Link2 size={17}/></div>
   </div>;
 }
