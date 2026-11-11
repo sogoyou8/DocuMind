@@ -120,6 +120,13 @@ test("discovery guide teaches real controls without performing a mutation in dem
   await expect(page.locator(".documents-upload-picker")).toBeVisible();
   await expect(page.locator(".discovery-focus-frame")).toBeVisible();
   await expect(page.getByText("Le nom du fichier sélectionné s'affiche avant l'envoi.")).toBeVisible();
+  await expect.poll(async () => {
+    const control = await page.locator(".discovery-focus-frame").boundingBox();
+    const tip = await page.locator(".discovery-context-tooltip").boundingBox();
+    if (!control || !tip) return -1;
+    return Math.max(0, Math.min(control.x + control.width, tip.x + tip.width) - Math.max(control.x, tip.x))
+      * Math.max(0, Math.min(control.y + control.height, tip.y + tip.height) - Math.max(control.y, tip.y));
+  }, { message: "The contextual help must never hide the highlighted real control" }).toBe(0);
   await expect(page.locator(".topbar").getByRole("button", { name: "Découvrir DocuMind" })).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("discovery-spotlight.png"), fullPage: true });
 
