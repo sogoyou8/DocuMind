@@ -36,13 +36,14 @@ const requestExamples = [
 ] as const;
 
 export default function AssistantView({
-  enabled, demo, status, onAsk, onCitation,
+  enabled, demo, status, onAsk, onCitation, onDiscover,
 }: {
   enabled: boolean;
   demo: boolean;
   status: AssistantStatus | null;
   onAsk: (question: string) => Promise<AssistantAnswer>;
   onCitation: (documentId: string) => void;
+  onDiscover: () => void;
 }) {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -119,7 +120,7 @@ export default function AssistantView({
             </div>
             <div className="assistant-guidance">
               <span>Les suggestions remplissent le champ sans envoyer de demande.</span>
-              <button type="button" disabled={!canAsk} onClick={() => prepareQuestion("Que peux-tu faire ?")}>Découvrir DocuMind</button>
+              <button type="button" onClick={onDiscover}>Découvrir DocuMind</button>
             </div>
           </div> :
             <div className="messages">
