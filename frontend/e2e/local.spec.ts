@@ -291,7 +291,7 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
           main => main.classList.contains("is-windowed"),
         ), { message: "Compact layout should follow actual available height" }).toBe(expectedWindowed);
         if (expectedWindowed && viewport.height > 685) {
-          const windowed = await page.evaluate(() => {
+          const windowed = await page.evaluate((currentPage: string) => {
             const main = document.querySelector<HTMLElement>(".workspace-content")!;
             const view = main.querySelector<HTMLElement>(".page-stack")!;
             const footer = main.querySelector<HTMLElement>(".workspace-footer")!;
@@ -309,7 +309,7 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
             const outer = main.getBoundingClientRect();
             const content = view.getBoundingClientRect();
             const note = footer.getBoundingClientRect();
-            const moduleRects = (modules[key] ?? []).map(selector => {
+            const moduleRects = (modules[currentPage] ?? []).map(selector => {
               const element = main.querySelector<HTMLElement>(selector);
               const rect = element?.getBoundingClientRect();
               return { selector, top: rect?.top ?? 0, bottom: rect?.bottom ?? 0,
@@ -327,7 +327,7 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
               catalogueHeight: catalogue?.getBoundingClientRect().height ?? null,
               chatHeight: chat?.getBoundingClientRect().height ?? null,
             };
-          });
+          }, key);
           expect(windowed.overflowY, `${key} — desktop workspace must not scroll`).toBe("hidden");
           expect(windowed.pageBottom, `${key} — page overlaps footer`)
             .toBeLessThanOrEqual(windowed.footerTop + 2);
