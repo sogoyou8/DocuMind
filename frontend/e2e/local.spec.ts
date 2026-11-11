@@ -61,6 +61,8 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
   await page.getByRole("button", { name: "Résumer une facture" }).click();
   await expect(page.getByRole("textbox", { name: "Poser une question documentaire" }))
     .toHaveValue(/Résume la facture DM-2026-001/);
+  await expect(page.getByRole("textbox", { name: "Poser une question documentaire" }))
+    .toBeFocused();
   expect(askRequests, "Example requests must only prefill the question").toBe(0);
   await page.getByRole("button", { name: "Découvrir DocuMind" }).click();
   await expect(page.getByRole("textbox", { name: "Poser une question documentaire" }))
