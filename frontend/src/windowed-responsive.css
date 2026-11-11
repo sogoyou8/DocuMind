@@ -1,100 +1,147 @@
-/* DocuMind V1.0 — Browser-window responsive fallback.
- * The five cockpit pages retain their large-screen compositions.
- * In a browser window (tabs + toolbar / split-screen), avoid fixed-height
- * clipping: give each useful panel a readable height, then scroll the
- * workspace or the list itself. No data or functional behavior is altered.
+/* DocuMind V1.0 — Real-height desktop cockpit.
+ * This file is loaded after the five premium page styles.
+ * The app measures usable workspace height (ResizeObserver) and adds
+ * is-windowed only when the desktop loses height to the browser chrome.
  *
- * Intentionally loaded LAST, after all premium page-specific styles.
+ * Normal desktop window: 100% of the usable workspace, NO outer scrollbar.
+ * Long document rows, source excerpts, chat and audit events scroll inside
+ * their own modules. Below a truly unusable height we fall back to scrolling.
+ * No simulated values and no change to backend/business interactions.
  */
-
-/* Desktop browser windows shorter than the full-screen target. */
 @media (min-width: 1200px) {
-  /* The sidebar must remain navigable when the browser's top chrome reduces
-     the available height; the bottom session card may require scrolling. */
   .app-shell.is-windowed .sidebar {
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
     scrollbar-width: thin;
     scrollbar-color: rgba(115, 224, 192, .35) transparent;
-    padding-top: 20px;
+    padding-top: 17px;
   }
-  .app-shell.is-windowed .sidebar-brand { margin-bottom: 28px; }
-  .app-shell.is-windowed .sidebar-tools-label { margin-top: 25px; }
-  .app-shell.is-windowed .sidebar-env { gap: 13px; }
+  .app-shell.is-windowed .sidebar-brand { margin-bottom: 25px; }
+  .app-shell.is-windowed .sidebar-tools-label { margin-top: 20px; }
+  .app-shell.is-windowed .sidebar-env { gap: 12px; }
   .app-shell.is-windowed .sidebar-status,
   .app-shell.is-windowed .sidebar-footer { flex-shrink: 0; }
-  .app-shell.is-windowed .sidebar-status { padding: 12px; }
-  .app-shell.is-windowed .sidebar-footer { padding-top: 13px; }
+  .app-shell.is-windowed .sidebar-status { padding: 11px; }
+  .app-shell.is-windowed .sidebar-footer { padding-top: 9px; }
 
   .workspace-content.is-windowed {
     display: flex;
     flex-direction: column;
     min-height: 0;
+    min-width: 0;
     overflow-x: hidden;
-    overflow-y: auto;
-    padding: 12px 18px 14px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(118, 221, 193, .52) rgba(17, 47, 54, .25);
-    scroll-padding-bottom: 18px;
+    overflow-y: hidden;
+    padding: 10px 16px 9px;
   }
   .workspace-content.is-windowed > .page-stack {
-    flex: 0 0 auto;
+    flex: 1 1 0;
     height: auto;
     min-height: 0;
     max-height: none;
-    overflow: visible;
+    overflow: hidden;
   }
   .workspace-content.is-windowed > .workspace-footer {
     flex: 0 0 auto;
-    min-height: 22px;
-    margin-top: 10px;
-    padding: 5px 2px 2px;
+    min-height: 19px;
+    margin: 5px 1px 0;
+    padding: 4px 2px 0;
   }
 
-  /* Overview: the hero, both chart modules and the lower row stay readable.
-     Scrolling the WORKSPACE is preferable to clipping a panel. */
+  /* 01 — All three rows stay inside the workspace.
+   * A compact hero holds the heading and four real KPI cards;
+   * internal recent-document scrolling preserves its lower modules. */
   .workspace-content.is-windowed > .overview-view {
     display: grid;
-    grid-template-rows: minmax(235px, auto) minmax(232px, auto) minmax(218px, auto);
-    gap: 10px;
+    height: auto;
     min-height: 0;
+    grid-template-rows: minmax(200px, 1.06fr) minmax(173px, 1fr) minmax(158px, .89fr);
+    gap: 8px;
   }
-  .workspace-content.is-windowed > .overview-view .overview-hero { min-height: 235px; }
+  .workspace-content.is-windowed > .overview-view .overview-hero {
+    min-height: 0;
+    height: 100%;
+  }
+  .workspace-content.is-windowed > .overview-view .overview-hero-top {
+    min-height: 0;
+    padding: 7px 18px 2px;
+  }
+  .workspace-content.is-windowed > .overview-view .overview-hero h1 {
+    margin: 4px 0;
+    font-size: clamp(21px, 1.76vw, 27px);
+    line-height: 1.09;
+  }
+  .workspace-content.is-windowed > .overview-view .overview-hero .hero-actions {
+    margin-top: 7px;
+  }
+  .workspace-content.is-windowed > .overview-view .overview-hero-kpis {
+    padding: 0 12px 8px;
+  }
+  .workspace-content.is-windowed > .overview-view .overview-hero-kpis .stat-card {
+    min-height: 63px;
+    padding: 5px 8px;
+  }
   .workspace-content.is-windowed > .overview-view .overview-main-grid,
-  .workspace-content.is-windowed > .overview-view .overview-lower-grid { min-height: 0; }
+  .workspace-content.is-windowed > .overview-view .overview-lower-grid {
+    min-height: 0;
+    gap: 8px;
+  }
   .workspace-content.is-windowed > .overview-view .overview-main-grid > .pane,
   .workspace-content.is-windowed > .overview-view .overview-lower-grid > .pane {
     min-height: 0;
     overflow: hidden;
+    padding: 9px 12px;
   }
-  .workspace-content.is-windowed > .overview-view .overview-main-grid .line-chart {
-    height: clamp(125px, 16vh, 150px);
+  .workspace-content.is-windowed > .overview-view .pane-top { margin-bottom: 6px; }
+  .workspace-content.is-windowed > .overview-view .line-chart {
+    height: min(112px, 15vh);
   }
   .workspace-content.is-windowed > .overview-view .overview-recent-pane .recent-docs {
     min-height: 0;
-    max-height: 150px;
+    max-height: 100%;
     overflow-y: auto;
+    overscroll-behavior: contain;
     scrollbar-width: thin;
   }
+  .workspace-content.is-windowed > .overview-view .recent-doc { padding: 4px 0; }
+  .workspace-content.is-windowed > .overview-view .supplier-bars { gap: 8px; }
 
-  /* Documents: keep the catalogue and inspector side-by-side. Their own
-     scroll containers handle long files and large result sets. */
+  /* 02 — The catalogue and inspector remain next to each other, each with
+   * its own scroll area. Only the document rows/excerpts scroll. */
   .workspace-content.is-windowed > .documents-premium-page {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: grid;
+    min-height: 0;
+    height: auto;
+    grid-template-rows: minmax(190px, .70fr) minmax(300px, 1.30fr) auto;
+    gap: 8px;
   }
   .workspace-content.is-windowed > .documents-premium-page .documents-hero {
-    flex: 0 0 auto;
-    min-height: 215px;
+    min-height: 0;
+    height: 100%;
+  }
+  .workspace-content.is-windowed > .documents-premium-page .documents-hero-main {
+    min-height: 0;
+    padding: 8px 17px 4px;
+  }
+  .workspace-content.is-windowed > .documents-premium-page .documents-hero h1 {
+    margin: 4px 0;
+    font-size: clamp(21px, 1.8vw, 27px);
+  }
+  .workspace-content.is-windowed > .documents-premium-page .documents-hero-actions {
+    margin-top: 7px;
+  }
+  .workspace-content.is-windowed > .documents-premium-page .documents-hero-bottom {
+    min-height: 66px;
+    padding: 0 10px 9px;
+  }
+  .workspace-content.is-windowed > .documents-premium-page .documents-dropzone {
+    min-height: 47px;
   }
   .workspace-content.is-windowed > .documents-premium-page .documents-cockpit {
     display: grid;
     grid-template-columns: minmax(0, 1.55fr) minmax(345px, .92fr);
-    flex: 0 0 auto;
-    height: clamp(385px, 49vh, 465px);
-    min-height: 385px;
+    min-height: 0;
+    height: 100%;
     overflow: hidden;
   }
   .workspace-content.is-windowed > .documents-premium-page .document-table-pane,
@@ -103,137 +150,212 @@
     min-height: 0;
     height: 100%;
   }
+  .workspace-content.is-windowed > .documents-premium-page .document-table-pane {
+    padding: 9px 12px 8px;
+  }
+  .workspace-content.is-windowed > .documents-premium-page .document-table-pane .pane-top {
+    margin-bottom: 7px;
+  }
   .workspace-content.is-windowed > .documents-premium-page .document-table-pane .table-overflow,
   .workspace-content.is-windowed > .documents-premium-page .document-drawer .drawer-scroll {
+    flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
   }
-  .workspace-content.is-windowed > .documents-premium-page > .hint { flex: 0 0 auto; }
+  .workspace-content.is-windowed > .documents-premium-page .drawer-header {
+    padding: 9px 12px 8px;
+  }
+  .workspace-content.is-windowed > .documents-premium-page .drawer-scroll {
+    padding: 7px 12px 10px;
+  }
+  .workspace-content.is-windowed > .documents-premium-page > .hint {
+    flex: 0 0 auto;
+    min-height: 0;
+    padding: 7px 10px;
+  }
 
-  /* Analytics: restore a proper 3-row layout with all five original
-     analytics modules below the integrated KPI hero. */
+  /* 03 — The integrated KPI hero + three charts + two bottom modules all
+   * fit the same window; the six modules keep their existing data and axes. */
   .workspace-content.is-windowed > .analytics-premium-page {
     display: grid;
-    grid-template-rows: minmax(205px, auto) minmax(232px, auto) minmax(175px, auto);
-    gap: 10px;
+    height: auto;
+    min-height: 0;
+    grid-template-rows: minmax(188px, .98fr) minmax(183px, 1.10fr) minmax(145px, .82fr);
+    gap: 8px;
   }
-  .workspace-content.is-windowed > .analytics-premium-page .analytics-premium-hero { min-height: 205px; }
+  .workspace-content.is-windowed > .analytics-premium-page .analytics-premium-hero {
+    min-height: 0;
+    height: 100%;
+  }
+  .workspace-content.is-windowed > .analytics-premium-page .analytics-hero-top {
+    min-height: 0;
+    padding: 8px 17px 3px;
+  }
+  .workspace-content.is-windowed > .analytics-premium-page .analytics-hero-copy h1 {
+    margin: 4px 0;
+    font-size: clamp(22px, 1.9vw, 27px);
+  }
+  .workspace-content.is-windowed > .analytics-premium-page .analytics-premium-kpis {
+    gap: 7px;
+    padding: 0 9px 9px;
+  }
+  .workspace-content.is-windowed > .analytics-premium-page .analytics-premium-kpis .stat-card {
+    min-height: 68px;
+    padding: 6px 8px;
+  }
   .workspace-content.is-windowed > .analytics-premium-page .analytics-grid,
-  .workspace-content.is-windowed > .analytics-premium-page .analytics-bottom-grid { min-height: 0; }
+  .workspace-content.is-windowed > .analytics-premium-page .analytics-bottom-grid {
+    min-height: 0;
+    gap: 8px;
+  }
   .workspace-content.is-windowed > .analytics-premium-page .analytics-grid > .pane,
   .workspace-content.is-windowed > .analytics-premium-page .analytics-bottom-grid > .pane {
     min-height: 0;
     overflow: hidden;
+    padding: 10px 12px;
+  }
+  .workspace-content.is-windowed > .analytics-premium-page .pane-top {
+    margin-bottom: 7px;
   }
   .workspace-content.is-windowed > .analytics-premium-page .analytics-grid .line-chart {
-    height: clamp(125px, 16vh, 155px);
+    height: min(114px, 15vh);
   }
   .workspace-content.is-windowed > .analytics-premium-page .analytics-grid .donut-layout {
-    min-height: 130px;
+    min-height: 92px;
+    gap: 5px;
+  }
+  .workspace-content.is-windowed > .analytics-premium-page .analytics-grid .donut {
+    width: 91px;
+    height: 91px;
+    padding: 8px;
+  }
+  .workspace-content.is-windowed > .analytics-premium-page .analytics-grid .donut-legend {
+    gap: 6px;
+  }
+  .workspace-content.is-windowed > .analytics-premium-page .supplier-bars {
+    gap: 9px;
+  }
+  .workspace-content.is-windowed > .analytics-premium-page .issue-bar-item {
+    padding: 8px 5px;
   }
 
-  /* Assistant: compact hero and a stable chat composer. Conversation
-     messages scroll within the left module; information stays on the right. */
-  .workspace-content.is-windowed.is-assistant {
-    overflow-y: auto;
-  }
+  /* 04 — Chat composer stays visible and the three sidebar panels remain
+   * in view. Only conversation messages overflow internally. */
   .workspace-content.is-windowed.is-assistant > .assistant-premium-page {
     display: flex;
-    flex: 0 0 auto;
     flex-direction: column;
-    gap: 9px;
+    flex: 1 1 0;
     height: auto;
     max-height: none;
     min-height: 0;
-    overflow: visible;
+    overflow: hidden;
+    gap: 8px;
   }
   .workspace-content.is-windowed.is-assistant > .assistant-premium-page .assistant-premium-hero {
-    flex: 0 0 113px;
-    min-height: 113px;
-    padding: 12px 18px;
+    flex: 0 0 106px;
+    min-height: 106px;
+    padding: 11px 18px;
   }
   .workspace-content.is-windowed.is-assistant > .assistant-premium-page .assistant-premium-grid {
-    flex: 0 0 auto;
-    height: clamp(490px, 59vh, 565px);
-    min-height: 490px;
-    overflow: hidden;
-  }
-  .workspace-content.is-windowed.is-assistant > .assistant-premium-page .assistant-premium-main,
-  .workspace-content.is-windowed.is-assistant > .assistant-premium-page .assistant-premium-side {
-    height: 100%;
+    flex: 1 1 0;
+    height: auto;
     min-height: 0;
+    overflow: hidden;
+    gap: 8px;
+  }
+  .workspace-content.is-windowed.is-assistant > .assistant-premium-page .assistant-premium-side {
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    gap: 8px;
+  }
+  .workspace-content.is-windowed.is-assistant > .assistant-premium-page .assistant-premium-main {
+    min-height: 0;
+    height: 100%;
   }
   .workspace-content.is-windowed.is-assistant > .assistant-premium-page .assistant-conversation {
+    flex: 1 1 0;
     min-height: 0;
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .workspace-content.is-windowed.is-assistant > .assistant-premium-page .assistant-compose {
     flex: 0 0 auto;
   }
 
-  /* History: fix the zero-height journal! Flex-basis:0 on an auto-height
-     parent collapsed the journal to a thin strip outside full-screen.
-     Give the log an explicit readable height and its own scrollbar. */
+  /* 05 — The timeline no longer collapses; the journal consumes all
+   * remaining height between its hero and the provenance note. */
   .workspace-content.is-windowed > .activity-premium-page {
     display: flex;
-    flex: 0 0 auto;
     flex-direction: column;
-    gap: 10px;
     height: auto;
     min-height: 0;
-    max-height: none;
-    overflow: visible;
+    overflow: hidden;
+    gap: 8px;
   }
   .workspace-content.is-windowed > .activity-premium-page .activity-premium-hero {
-    flex: 0 0 118px;
-    min-height: 118px;
+    flex: 0 0 111px;
+    min-height: 111px;
   }
   .workspace-content.is-windowed > .activity-premium-page .activity-premium-journal {
-    flex: 0 0 auto;
-    height: clamp(390px, 50vh, 490px);
-    min-height: 390px;
+    flex: 1 1 0;
+    height: auto;
+    min-height: 0;
     overflow: hidden;
   }
   .workspace-content.is-windowed > .activity-premium-page .activity-timeline-scroll {
-    min-height: 170px;
-    flex: 1 1 auto;
+    flex: 1 1 0;
+    min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
   }
   .workspace-content.is-windowed > .activity-premium-page .activity-premium-note {
     flex: 0 0 auto;
+    min-height: 0;
   }
 }
 
-/* A short laptop window should scroll, rather than squeeze labels and
-   interactive controls below their usable minimum. */
-@media (min-width: 1200px) and (max-height: 735px) {
-  .workspace-content.is-windowed > .overview-view {
-    grid-template-rows: minmax(225px, auto) minmax(220px, auto) minmax(208px, auto);
+/* Laptop browser windows that are too short to keep readable module minima
+ * use a safe fallback; this does not affect normal 760–930px viewports. */
+@media (min-width: 1200px) and (max-height: 685px) {
+  .workspace-content.is-windowed {
+    overflow-y: auto;
   }
-  .workspace-content.is-windowed > .documents-premium-page .documents-cockpit {
-    height: 385px;
+  .workspace-content.is-windowed > .page-stack {
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+  .workspace-content.is-windowed > .overview-view {
+    grid-template-rows: 195px 175px 160px;
+  }
+  .workspace-content.is-windowed > .documents-premium-page {
+    grid-template-rows: 190px 320px auto;
   }
   .workspace-content.is-windowed > .analytics-premium-page {
-    grid-template-rows: minmax(205px, auto) minmax(220px, auto) minmax(175px, auto);
+    grid-template-rows: 190px 190px 155px;
   }
   .workspace-content.is-windowed.is-assistant > .assistant-premium-page .assistant-premium-grid {
-    height: 490px;
+    flex: 0 0 480px;
+    min-height: 480px;
   }
   .workspace-content.is-windowed > .activity-premium-page .activity-premium-journal {
-    height: 390px;
+    flex: 0 0 360px;
+    min-height: 360px;
   }
 }
 
-/* Mid-width laptops already stack parts of analytics and Documents.
-   History must have a substantial journal even without a full-screen
-   ancestor, and its scrollable area must never vanish. */
+/* Medium widths need a wider list/detail layout rather than a 3-column
+ * forced desktop cockpit. Preserve the existing tablet/mobile breakpoints.
+ * History keeps its own list scroll with no missing events. */
 @media (min-width: 876px) and (max-width: 1199px) {
   .workspace-content > .activity-premium-page .activity-premium-journal {
+    flex: 0 0 auto;
     height: clamp(395px, 55vh, 560px);
     min-height: 395px;
-    flex: 0 0 auto;
   }
   .workspace-content > .activity-premium-page .activity-timeline-scroll {
     flex: 1 1 auto;
