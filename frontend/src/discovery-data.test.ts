@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { discoveryPage, discoveryPages, discoveryRoute } from "./discovery-data";
+import { beginnerRoute, discoveryPage, discoveryPages, discoveryRoute } from "./discovery-data";
 
 describe("DocuMind discovery is a faithful practical guide", () => {
   it("covers precisely the existing five application pages", () => {
     expect(discoveryPages.map(item => item.id)).toEqual(discoveryRoute);
     expect(discoveryRoute).toEqual(["overview", "documents", "analytics", "assistant", "activity"]);
     expect(discoveryPages.every(item => item.purpose && item.steps.length >= 2)).toBe(true);
+    expect(beginnerRoute).toEqual(["documents", "overview", "analytics", "assistant", "activity"]);
     expect(discoveryPages.reduce((count, item) => count + item.steps.length, 0)).toBe(15);
   });
 
