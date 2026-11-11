@@ -210,6 +210,7 @@ export default function App() {
     try {
       const document = await api.upload(file, session.csrf_token);
       setNotice(`Document « ${document.original_name} » reçu. Il reste à le traiter.`);
+      setSelected(document);
       setPage(1);refresh();
     } catch (err) {throw new Error(errorMessage(err));}
     finally {setBusy(null);}
