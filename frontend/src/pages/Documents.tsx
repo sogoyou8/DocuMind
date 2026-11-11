@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AlertTriangle, ArrowLeft, ArrowRight, BrainCircuit, CheckCircle2, ChevronRight,
-  CloudUpload, FileCheck, FileClock, FileText, FileUp, Fingerprint, LockKeyhole,
+  CloudUpload, FileCheck, FileClock, FileText, FileUp, Fingerprint,
   Search, ShieldCheck, Sparkles, Upload, X,
 } from "lucide-react";
 import type { Document, Overview, Page, Tab } from "../types";
