@@ -92,8 +92,28 @@ export default function App() {
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const mainRef = useRef<HTMLElement>(null);
+  // The real content height changes when the browser toolbar is visible,
+  // even if the screen resolution stays the same. Preserve the approved
+  // full-screen cockpit and enable scrolling only for shorter workspaces.
+  const [windowedWorkspace, setWindowedWorkspace] = useState(false);
   const demo = session?.mode === "synthetic-demo";
   const canLoad = Boolean(session && (demo || session.authenticated));
+  useEffect(() => {
+    if (!canLoad || !mainRef.current) return;
+    const main = mainRef.current;
+    const measure = () => {
+      const compact = window.innerWidth >= 1200 && main.clientHeight < 790;
+      setWindowedWorkspace(previous => previous === compact ? previous : compact);
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(main);
+    window.addEventListener("resize", measure);
+    measure();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [canLoad]);
   // Keep success feedback visible briefly, but never cover dashboard cards forever.
   // Errors remain persistent until the user dismisses them.
   useEffect(() => {
@@ -325,7 +345,7 @@ export default function App() {
         </div>
       </header>
 
-      <main ref={mainRef} className={`workspace-content ${view === "assistant" ? "is-assistant" : ""}`} id="main-content">
+      <main ref={mainRef} className={`workspace-content ${view === "assistant" ? "is-assistant" : ""} ${windowedWorkspace ? "is-windowed" : ""}`} id="main-content">
         {view === "overview" && <OverviewView overview={overview} analytics={analytics}
           documents={docs?.results ?? []} demo={Boolean(demo)} loading={loading}
           onTab={navigate} onDocument={openDocument}/>}
