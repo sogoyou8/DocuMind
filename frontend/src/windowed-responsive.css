@@ -1,0 +1,224 @@
+/* DocuMind V1.0 — Browser-window responsive fallback.
+ * The five cockpit pages retain their large-screen compositions.
+ * In a browser window (tabs + toolbar / split-screen), avoid fixed-height
+ * clipping: give each useful panel a readable height, then scroll the
+ * workspace or the list itself. No data or functional behavior is altered.
+ *
+ * Intentionally loaded LAST, after all premium page-specific styles.
+ */
+
+/* Desktop browser windows shorter than the full-screen target. */
+@media (min-width: 1200px) and (max-height: 940px) {
+  .workspace-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 12px 18px 14px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(118, 221, 193, .52) rgba(17, 47, 54, .25);
+    scroll-padding-bottom: 18px;
+  }
+  .workspace-content > .page-stack {
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+  }
+  .workspace-content > .workspace-footer {
+    flex: 0 0 auto;
+    min-height: 22px;
+    margin-top: 10px;
+    padding: 5px 2px 2px;
+  }
+
+  /* Overview: the hero, both chart modules and the lower row stay readable.
+     Scrolling the WORKSPACE is preferable to clipping a panel. */
+  .workspace-content > .overview-view {
+    display: grid;
+    grid-template-rows: minmax(235px, auto) minmax(232px, auto) minmax(218px, auto);
+    gap: 10px;
+    min-height: 0;
+  }
+  .workspace-content > .overview-view .overview-hero { min-height: 235px; }
+  .workspace-content > .overview-view .overview-main-grid,
+  .workspace-content > .overview-view .overview-lower-grid { min-height: 0; }
+  .workspace-content > .overview-view .overview-main-grid > .pane,
+  .workspace-content > .overview-view .overview-lower-grid > .pane {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .workspace-content > .overview-view .overview-main-grid .line-chart {
+    height: clamp(125px, 16vh, 150px);
+  }
+  .workspace-content > .overview-view .overview-recent-pane .recent-docs {
+    min-height: 0;
+    max-height: 150px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  /* Documents: keep the catalogue and inspector side-by-side. Their own
+     scroll containers handle long files and large result sets. */
+  .workspace-content > .documents-premium-page {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .workspace-content > .documents-premium-page .documents-hero {
+    flex: 0 0 auto;
+    min-height: 215px;
+  }
+  .workspace-content > .documents-premium-page .documents-cockpit {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(345px, .92fr);
+    flex: 0 0 auto;
+    height: clamp(385px, 49vh, 465px);
+    min-height: 385px;
+    overflow: hidden;
+  }
+  .workspace-content > .documents-premium-page .document-table-pane,
+  .workspace-content > .documents-premium-page .documents-preview-layer,
+  .workspace-content > .documents-premium-page .document-drawer {
+    min-height: 0;
+    height: 100%;
+  }
+  .workspace-content > .documents-premium-page .document-table-pane .table-overflow,
+  .workspace-content > .documents-premium-page .document-drawer .drawer-scroll {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .workspace-content > .documents-premium-page > .hint { flex: 0 0 auto; }
+
+  /* Analytics: restore a proper 3-row layout with all five original
+     analytics modules below the integrated KPI hero. */
+  .workspace-content > .analytics-premium-page {
+    display: grid;
+    grid-template-rows: minmax(205px, auto) minmax(232px, auto) minmax(175px, auto);
+    gap: 10px;
+  }
+  .workspace-content > .analytics-premium-page .analytics-premium-hero { min-height: 205px; }
+  .workspace-content > .analytics-premium-page .analytics-grid,
+  .workspace-content > .analytics-premium-page .analytics-bottom-grid { min-height: 0; }
+  .workspace-content > .analytics-premium-page .analytics-grid > .pane,
+  .workspace-content > .analytics-premium-page .analytics-bottom-grid > .pane {
+    min-height: 0;
+    overflow: hidden;
+  }
+  .workspace-content > .analytics-premium-page .analytics-grid .line-chart {
+    height: clamp(125px, 16vh, 155px);
+  }
+  .workspace-content > .analytics-premium-page .analytics-grid .donut-layout {
+    min-height: 130px;
+  }
+
+  /* Assistant: compact hero and a stable chat composer. Conversation
+     messages scroll within the left module; information stays on the right. */
+  .workspace-content.is-assistant {
+    overflow-y: auto;
+  }
+  .workspace-content.is-assistant > .assistant-premium-page {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 9px;
+    height: auto;
+    max-height: none;
+    min-height: 0;
+    overflow: visible;
+  }
+  .workspace-content.is-assistant > .assistant-premium-page .assistant-premium-hero {
+    flex: 0 0 113px;
+    min-height: 113px;
+    padding: 12px 18px;
+  }
+  .workspace-content.is-assistant > .assistant-premium-page .assistant-premium-grid {
+    flex: 0 0 auto;
+    height: clamp(490px, 59vh, 565px);
+    min-height: 490px;
+    overflow: hidden;
+  }
+  .workspace-content.is-assistant > .assistant-premium-page .assistant-premium-main,
+  .workspace-content.is-assistant > .assistant-premium-page .assistant-premium-side {
+    height: 100%;
+    min-height: 0;
+  }
+  .workspace-content.is-assistant > .assistant-premium-page .assistant-conversation {
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .workspace-content.is-assistant > .assistant-premium-page .assistant-compose {
+    flex: 0 0 auto;
+  }
+
+  /* History: fix the zero-height journal! Flex-basis:0 on an auto-height
+     parent collapsed the journal to a thin strip outside full-screen.
+     Give the log an explicit readable height and its own scrollbar. */
+  .workspace-content > .activity-premium-page {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 10px;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+  }
+  .workspace-content > .activity-premium-page .activity-premium-hero {
+    flex: 0 0 118px;
+    min-height: 118px;
+  }
+  .workspace-content > .activity-premium-page .activity-premium-journal {
+    flex: 0 0 auto;
+    height: clamp(390px, 50vh, 490px);
+    min-height: 390px;
+    overflow: hidden;
+  }
+  .workspace-content > .activity-premium-page .activity-timeline-scroll {
+    min-height: 170px;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .workspace-content > .activity-premium-page .activity-premium-note {
+    flex: 0 0 auto;
+  }
+}
+
+/* A short laptop window should scroll, rather than squeeze labels and
+   interactive controls below their usable minimum. */
+@media (min-width: 1200px) and (max-height: 735px) {
+  .workspace-content > .overview-view {
+    grid-template-rows: minmax(225px, auto) minmax(220px, auto) minmax(208px, auto);
+  }
+  .workspace-content > .documents-premium-page .documents-cockpit {
+    height: 385px;
+  }
+  .workspace-content > .analytics-premium-page {
+    grid-template-rows: minmax(205px, auto) minmax(220px, auto) minmax(175px, auto);
+  }
+  .workspace-content.is-assistant > .assistant-premium-page .assistant-premium-grid {
+    height: 490px;
+  }
+  .workspace-content > .activity-premium-page .activity-premium-journal {
+    height: 390px;
+  }
+}
+
+/* Mid-width laptops already stack parts of analytics and Documents.
+   History must have a substantial journal even without a full-screen
+   ancestor, and its scrollable area must never vanish. */
+@media (min-width: 876px) and (max-width: 1199px) {
+  .workspace-content > .activity-premium-page .activity-premium-journal {
+    height: clamp(395px, 55vh, 560px);
+    min-height: 395px;
+    flex: 0 0 auto;
+  }
+  .workspace-content > .activity-premium-page .activity-timeline-scroll {
+    flex: 1 1 auto;
+    min-height: 170px;
+  }
+}
