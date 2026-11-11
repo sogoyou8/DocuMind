@@ -62,6 +62,12 @@ test("public demo is transparent, navigable and has no fabricated KPIs", async (
   await page.getByRole("button", { name: "Assistant IA" }).click();
   await expect(page.getByText("Désactivé en démo")).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Poser une question documentaire" })).toBeDisabled();
+  await expect(page.locator(".assistant-premium-hero")).toBeVisible();
+  await expect(page.locator(".assistant-premium-side > .pane")).toHaveCount(3);
+  await expect(page.locator(".assistant-request-grid button")).toHaveCount(4);
+  for (const example of await page.locator(".assistant-request-grid button").all()) {
+    await expect(example).toBeDisabled();
+  }
   await page.screenshot({ path: testInfo.outputPath("assistant-demo.png"), fullPage: true });
 });
 
