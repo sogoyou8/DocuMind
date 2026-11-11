@@ -8,6 +8,7 @@ import "./documents-premium.css";
 import "./analytics-premium.css";
 import "./assistant-premium.css";
 import "./history-premium.css";
+import "./windowed-responsive.css";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode><App /></React.StrictMode>
