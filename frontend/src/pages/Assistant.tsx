@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowUp, BookOpenCheck, BrainCircuit, CheckCheck, ChevronRight,
-  Cpu, FileSearch, Fingerprint, LockKeyhole, MessageCircle,
-  ShieldCheck, Sparkles,
+  Cpu, FileSearch, FileText, Fingerprint, LockKeyhole, MessageCircle,
+  SearchCheck, ShieldCheck, Sparkles,
 } from "lucide-react";
 import type { AssistantAnswer, AssistantStatus } from "../types";
 import { Hint, LabelPill, Pane } from "../components/Visuals";
@@ -21,6 +21,19 @@ const suggestions = [
   "Quel fournisseur apparaît sur la facture DM-2026-001 ?",
   "Quel est le numéro de la facture présente dans le document ?",
 ];
+
+// Every example pre-fills the composer. It never generates a sample answer or
+// assumes that a requested document exists in the local, indexed corpus.
+const requestExamples = [
+  { title: "Résumer une facture",
+    question: "Résume la facture DM-2026-001 à partir de ses passages indexés et cite les sources." },
+  { title: "Retrouver une TVA",
+    question: "Quel est le montant de TVA indiqué dans la facture DM-2026-001 ? Cite la source." },
+  { title: "Identifier un fournisseur",
+    question: "Quel fournisseur est mentionné dans la facture DM-2026-001 ? Cite la source." },
+  { title: "Vérifier une source",
+    question: "Dans quel document et à quelle ligne ou page se trouve le montant TTC de la facture DM-2026-001 ?" },
+] as const;
 
 export default function AssistantView({
   enabled, demo, status, onAsk, onCitation,
@@ -65,20 +78,33 @@ export default function AssistantView({
     }
   };
 
-  return <div className="page-stack assistant-page">
-    <div className="page-intro">
-      <div><div className="eyebrow">ASSISTANT / RAG LOCAL D4</div><h1>Parlez à vos documents</h1>
-        <p>Des réponses liées à leurs sources — jamais un texte généré sans contrôle.</p></div>
-      <LabelPill kind={canAsk && status ? "good" : "neutral"}>
-        <span className="inline-icon">{canAsk && status ? <CheckCheck size={14}/> : <LockKeyhole size={14}/>}
-          {canAsk && status ? "Ollama local prêt" : demo ? "Désactivé en démo" : "IA locale indisponible"}</span>
+  return <div className="page-stack assistant-page assistant-premium-page">
+    <header className="assistant-premium-hero glass">
+      <div className="assistant-hero-content">
+        <div className="eyebrow"><span className="signal-pulse"/> ASSISTANT / RAG LOCAL D4</div>
+        <h1>Parlez à vos <span>documents</span></h1>
+        <p>Des réponses liées à leurs sources — jamais un texte généré sans contrôle.</p>
+      </div>
+      <div className="assistant-hero-art" aria-hidden="true">
+        <div className="assistant-hero-orbit"/>
+        <div className="assistant-hero-doc assistant-hero-doc-back"/>
+        <div className="assistant-hero-doc assistant-hero-doc-middle"/>
+        <div className="assistant-hero-doc assistant-hero-doc-front">
+          <BrainCircuit size={26}/><i/><i/><i/>
+        </div>
+      </div>
+      <LabelPill kind={canAsk && status?.enabled ? "good" : "neutral"}>
+        <span className="inline-icon">{canAsk && status?.enabled ? <CheckCheck size={14}/> : <LockKeyhole size={14}/>}
+          {canAsk && status?.enabled ? "Ollama local prêt" : demo ? "Désactivé en démo" : "IA locale indisponible"}</span>
       </LabelPill>
-    </div>
-    <div className="assistant-grid">
-      <Pane className="assistant-main">
+    </header>
+    <div className="assistant-grid assistant-premium-grid">
+      <Pane className="assistant-main assistant-premium-main">
         <div className="assistant-conversation" aria-live="polite">
-          {!messages.length ? <div className="assistant-empty">
-            <span className="assistant-symbol"><BrainCircuit size={35}/></span>
+          {!messages.length ? <div className="assistant-empty assistant-premium-empty">
+            <div className="assistant-symbol-stage" aria-hidden="true">
+              <span className="assistant-symbol"><BrainCircuit size={35}/></span>
+            </div>
             <div className="eyebrow">UN ASSISTANT, DES PREUVES</div>
             <h2>Que souhaitez-vous comprendre ?</h2>
             <p>Interrogez les documents validés. Chaque citation indique précisément le fichier et la ligne ou page d'origine.</p>
@@ -156,25 +182,45 @@ export default function AssistantView({
             <span>{question.length}/500</span></div>
         </div>
       </Pane>
-      <div className="assistant-side">
-        <Pane title="Moteur documentaire" subtitle="Exécution privée et vérifiable">
-          <div className="model-block"><div className="model-icon"><Cpu size={20}/></div>
-            <div><small>Modèle de génération</small><strong>{status?.generation_model ?? "—"}</strong></div></div>
-          <div className="model-block"><div className="model-icon"><Fingerprint size={20}/></div>
-            <div><small>Modèle d'embedding</small><strong>{status?.embedding_model ?? "—"}</strong></div></div>
-          <div className="model-block"><div className="model-icon"><BookOpenCheck size={20}/></div>
-            <div><small>Passages indexés</small><strong>{status?.indexed_chunks ?? "—"}</strong></div></div>
+      <div className="assistant-side assistant-premium-side">
+        <Pane className="assistant-engine-pane" title="Moteur documentaire" subtitle="Exécution privée et vérifiable">
+          <div className="assistant-engine-stats">
+            <div className="model-block"><div className="model-icon"><Cpu size={20}/></div>
+              <div><small>Modèle de génération</small><strong>{status?.generation_model ?? "—"}</strong></div></div>
+            <div className="model-block"><div className="model-icon"><Fingerprint size={20}/></div>
+              <div><small>Modèle d'embedding</small><strong>{status?.embedding_model ?? "—"}</strong></div></div>
+            <div className="model-block"><div className="model-icon"><BookOpenCheck size={20}/></div>
+              <div><small>Passages indexés</small><strong>{status?.indexed_chunks ?? "—"}</strong></div></div>
+          </div>
           <div className="subtle-divider"/>
           <div className="model-note"><ShieldCheck size={17}/> Aucune API IA externe nécessaire.</div>
         </Pane>
-        <Pane title="Ce que l'assistant fait" subtitle="Un circuit fermé, sans outil arbitraire">
+        <Pane className="assistant-workflow-pane" title="Ce que l'assistant fait" subtitle="Un circuit fermé, sans outil arbitraire">
           <div className="trust-steps assistant-steps">
             <div><span><FileSearch size={17}/></span><p><strong>Recherche</strong><small>Chroma + documents acceptés</small></p></div>
             <div><span><MessageCircle size={17}/></span><p><strong>Réponse</strong><small>Ollama et LangGraph locaux</small></p></div>
             <div><span><ShieldCheck size={17}/></span><p><strong>Vérification</strong><small>Empreinte et citations SQL</small></p></div>
           </div>
+          <div className="assistant-safety-note" role="note">
+            <ShieldCheck size={15}/>
+            <span>Une réponse IA peut être incorrecte malgré ses citations. Vérifiez les extraits avant toute décision importante.</span>
+          </div>
         </Pane>
-        <Hint warning>Une réponse IA peut être incorrecte malgré ses citations. Vérifiez les extraits sources pour les décisions importantes.</Hint>
+        <Pane className="assistant-examples-pane" title="Exemples de demandes"
+          subtitle="Des questions pour commencer, sans envoi automatique">
+          <div className="assistant-request-grid">
+            {requestExamples.map((item, index) => <button key={item.title} type="button"
+              disabled={!canAsk || busy}
+              title="Préparer cette question sans l'envoyer"
+              onClick={() => setQuestion(item.question)}>
+              {index === 0 ? <FileText size={18}/> :
+                index === 1 ? <SearchCheck size={18}/> :
+                  index === 2 ? <Fingerprint size={18}/> : <BookOpenCheck size={18}/>}
+              <span>{item.title}</span>
+              <ChevronRight size={15}/>
+            </button>)}
+          </div>
+        </Pane>
       </div>
     </div>
   </div>;
