@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, ChevronRight,
-  FileCheck, FileText, FileUp, Fingerprint, LockKeyhole,
-  Search, Sparkles, Upload, X,
+  CloudUpload, FileCheck, FileClock, FileText, FileUp, Fingerprint, LockKeyhole,
+  Search, ShieldCheck, Sparkles, Upload, X,
 } from "lucide-react";
-import type { Document, Page } from "../types";
+import type { Document, Overview, Page } from "../types";
 import type { DocumentDetail } from "../types";
 import { bytes, money, shortDate, stateLabels } from "../format";
 import { displayFieldValue, eventDate, eventLabel, eventTone, fieldLabel, issueLabel, mismatchEvidence, runLabel, sourceLabel } from "../ux";
@@ -20,6 +20,7 @@ const filters = [
 
 type Props = {
   listing: Page<Document> | null;
+  overview: Overview | null;
   loading: boolean;
   selected: Document | null;
   detail: DocumentDetail | null;
@@ -37,7 +38,7 @@ type Props = {
 };
 
 export function DocumentsView({
-  listing, loading, selected, detail, detailLoading, demo, operator,
+  listing, overview, loading, selected, detail, detailLoading, demo, operator,
   aiEnabled, actionBusy, page, onPage, onSelect, onUpload, onProcess, onIndex,
 }: Props) {
   const [filter, setFilter] = useState<(typeof filters)[number]["id"]>("all");
@@ -45,6 +46,29 @@ export function DocumentsView({
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const ref = useRef<HTMLInputElement>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const [desktop, setDesktop] = useState(() =>
+    typeof window === "undefined" || window.matchMedia("(min-width: 1120px)").matches,
+  );
+  const pickedInitial = useRef(false);
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 1120px)");
+    const sync = () => setDesktop(query.matches);
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+  useEffect(() => {
+    if (!desktop || pickedInitial.current || selected || loading || !listing?.results.length) return;
+    pickedInitial.current = true;
+    onSelect(listing.results[0]);
+  }, [desktop, selected, loading, listing, onSelect]);
+  const closePreview = useCallback(() => onSelect(null), [onSelect]);
+  const chooseFile = (next: File | null) => { setFile(next); setFileError(null); };
+  const totalDocuments = overview?.total ?? listing?.count ?? null;
+  const validDocuments = overview?.processed ?? null;
+  const rejectedDocuments = overview?.rejected ?? null;
+  const waitingDocuments = overview
+    ? Math.max(0, overview.total - overview.processed - overview.rejected) : null;
   const displayed = (listing?.results ?? []).filter(doc =>
     (filter === "all" || doc.state === filter) &&
     doc.original_name.toLocaleLowerCase("fr").includes(search.trim().toLocaleLowerCase("fr")),
