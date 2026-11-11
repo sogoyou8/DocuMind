@@ -113,6 +113,28 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
       }
       await nav.getByRole("button", { name: title, exact: true }).click();
       await expect(page.locator(".workspace-content .page-stack").first()).toBeVisible();
+      if (key === "overview") {
+        const hero = page.locator(".overview-hero");
+        await expect(hero).toBeVisible();
+        await expect(hero.getByRole("heading", { name: /Gérez, vérifiez, analysez et interrogez vos documents/i }))
+          .toBeVisible();
+        // Four genuine API-backed KPIs are part of the hero, not a separate row.
+        await expect(hero.locator(".overview-hero-kpis .stat-card")).toHaveCount(4);
+        await expect(hero.getByText("Documents suivis")).toBeVisible();
+        await expect(hero.getByText("Validés ou indexés")).toBeVisible();
+        await expect(hero.getByText("Montant TTC vérifié")).toBeVisible();
+        await expect(hero.getByText("Documents rejetés")).toBeVisible();
+        if (viewport.width >= 1200 && viewport.height >= 730) {
+          const fitted = await hero.evaluate(el => {
+            const frame = el.getBoundingClientRect();
+            const metrics = el.querySelector<HTMLElement>(".overview-hero-kpis")?.getBoundingClientRect();
+            return Boolean(metrics && metrics.left >= frame.left - 1 &&
+              metrics.right <= frame.right + 1 && metrics.bottom <= frame.bottom + 1);
+          });
+          expect(fitted, "Hero KPI containment at " + viewport.width + "x" + viewport.height).toBe(true);
+        }
+      }
+
       const dimensions = await page.evaluate(() => {
         const root = document.documentElement;
         const appShell = document.querySelector<HTMLElement>(".app-shell");
