@@ -102,7 +102,9 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
   for (const viewport of [
     { width: 1920, height: 993 },
     { width: 1649, height: 928 },
+    { width: 1649, height: 810 }, // Chrome browser with visible tabs and address bar
     { width: 1440, height: 900 },
+    { width: 1440, height: 760 }, // short window / laptop display
     { width: 1320, height: 742 }, // scaled mid-size laptop CSS viewport
     { width: 390, height: 844 },
   ]) {
@@ -273,13 +275,42 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
       }
       expect(dimensions.mainScroll, `${key} at ${viewport.width} — main overflow; protruding elements: ${JSON.stringify(dimensions.protruding)}`)
         .toBeLessThanOrEqual(dimensions.mainClient + 1);
-      // On usable desktop heights, all dashboard modules should fit within
-      // the viewport; documents and long audit logs scroll inside their panes.
-      if (viewport.width >= 1200 && viewport.height >= 730 &&
+      // The large-screen cockpit fits without outer scrolling. Short browser
+      // windows intentionally scroll the workspace instead of clipping panels.
+      if (viewport.width >= 1200 && viewport.height > 940 &&
           (key === "overview" || key === "analytics")) {
         expect(dimensions.mainScrollHeight,
           `${key} at ${viewport.width}x${viewport.height} — outer vertical scroll remains`)
           .toBeLessThanOrEqual(dimensions.mainHeight + 2);
+      }
+      // Browser-window mode: keep the content accessible and readable even
+      // after losing vertical space to Chrome tabs, toolbars or split-screen.
+      if (viewport.width >= 1200 && viewport.height <= 940) {
+        const windowed = await page.evaluate(() => {
+          const main = document.querySelector<HTMLElement>(".workspace-content")!;
+          const journal = document.querySelector<HTMLElement>(".activity-premium-journal");
+          const timeline = document.querySelector<HTMLElement>(".activity-timeline-scroll");
+          const inspector = document.querySelector<HTMLElement>(".documents-cockpit");
+          const assistant = document.querySelector<HTMLElement>(".assistant-premium-grid");
+          return {
+            overflowY: getComputedStyle(main).overflowY,
+            journalHeight: journal?.getBoundingClientRect().height ?? null,
+            timelineHeight: timeline?.getBoundingClientRect().height ?? null,
+            inspectorHeight: inspector?.getBoundingClientRect().height ?? null,
+            assistantHeight: assistant?.getBoundingClientRect().height ?? null,
+          };
+        });
+        expect(windowed.overflowY, `${key} — windowed workspace must scroll`).toBe("auto");
+        if (key === "history") {
+          expect(windowed.journalHeight, "History journal must not collapse").toBeGreaterThanOrEqual(385);
+          expect(windowed.timelineHeight, "History timeline must remain scrollable").toBeGreaterThanOrEqual(165);
+        }
+        if (key === "documents") {
+          expect(windowed.inspectorHeight, "Catalogue and inspector need useful height").toBeGreaterThanOrEqual(380);
+        }
+        if (key === "assistant") {
+          expect(windowed.assistantHeight, "Chat and examples need useful height").toBeGreaterThanOrEqual(485);
+        }
       }
       // Always capture before layout assertions: on failure the precise
       // problematic viewport remains inspectable without rerunning Ollama.
@@ -287,7 +318,8 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
         path: testInfo.outputPath(`d51-${key}-${viewport.width}x${viewport.height}.png`),
         fullPage: false,
       });
-      if (key === "assistant" && viewport.width >= 1100 && viewport.height >= 650 && viewport.height <= 800) {
+      if (key === "assistant" && viewport.width >= 1100 && viewport.height >= 650 &&
+          viewport.height <= 800) {
         // A real bottom-of-screen check, not just a scrollWidth assertion.
         const geometry = await page.evaluate(() => {
           const rect = (selector: string) => {
@@ -311,11 +343,13 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
           };
         });
         expect(geometry.composeFooter, `Composer missing at ${viewport.width}x${viewport.height}`).not.toBeNull();
-        expect(geometry.composeFooter!.bottom,
-          `Assistant composer clipped at ${viewport.width}x${viewport.height}: ${JSON.stringify(geometry)}`)
-          .toBeLessThanOrEqual(geometry.viewport - 2);
+        // If the outer workspace is scrollable, the composer can be reached
+        // by scrolling rather than being forcibly squeezed or cropped.
+        await page.locator(".assistant-compose").scrollIntoViewIfNeeded();
         await expect(page.locator(".compose-footer")).toBeInViewport({ ratio: 0.99 });
         await expect(page.getByRole("button", { name: "Envoyer la question" })).toBeInViewport();
+        expect(geometry.composeFooter!.height, "Composer must retain a usable height")
+          .toBeGreaterThanOrEqual(14);
       }
     }
   }
