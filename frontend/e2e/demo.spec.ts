@@ -69,6 +69,13 @@ test("public demo is transparent, navigable and has no fabricated KPIs", async (
     await expect(example).toBeDisabled();
   }
   await page.screenshot({ path: testInfo.outputPath("assistant-demo.png"), fullPage: true });
+  await page.getByRole("button", { name: "Historique", exact: true }).click();
+  await expect(page.locator(".activity-premium-hero")).toBeVisible();
+  await expect(page.getByText("Démo sans événements")).toBeVisible();
+  await expect(page.getByText("Aucun événement dans la démo")).toBeVisible();
+  await expect(page.locator(".timeline-entry")).toHaveCount(0);
+  await expect(page.locator(".activity-premium-note")).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("history-demo.png"), fullPage: true });
 });
 
 test("mobile navigation remains usable with no horizontal overflow", async ({ page }, testInfo) => {
