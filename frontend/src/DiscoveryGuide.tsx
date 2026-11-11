@@ -154,6 +154,15 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
     setMode("spotlight");
   };
 
+  // If the user follows a real in-app link and changes page, show the guide
+  // again instead of leaving a spotlight over an unrelated screen.
+  useEffect(() => {
+    if (mode === "spotlight" && currentPage !== pageId) {
+      setFrame(null);
+      setMode("lesson");
+    }
+  }, [mode, currentPage, pageId]);
+
   useEffect(() => {
     if (mode !== "spotlight") return;
     let raf = 0;
