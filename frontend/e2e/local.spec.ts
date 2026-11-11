@@ -54,6 +54,14 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
   page.on("request", request => {
     if (request.url().includes("/api/v1/assistant/ask")) askRequests += 1;
   });
+  await expect(page.locator(".assistant-premium-hero")).toBeVisible();
+  await expect(page.locator(".assistant-premium-grid .assistant-premium-main")).toBeVisible();
+  await expect(page.locator(".assistant-premium-side > .pane")).toHaveCount(3);
+  await expect(page.locator(".assistant-request-grid button")).toHaveCount(4);
+  await page.getByRole("button", { name: "Résumer une facture" }).click();
+  await expect(page.getByRole("textbox", { name: "Poser une question documentaire" }))
+    .toHaveValue(/Résume la facture DM-2026-001/);
+  expect(askRequests, "Example requests must only prefill the question").toBe(0);
   await page.getByRole("button", { name: "Découvrir DocuMind" }).click();
   await expect(page.getByRole("textbox", { name: "Poser une question documentaire" }))
     .toHaveValue("Que peux-tu faire ?");
@@ -178,6 +186,26 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
               && metrics.right <= frame.right + 1 && metrics.bottom <= frame.bottom + 1);
           });
           expect(fitted, "Analytics KPIs must fit inside hero").toBe(true);
+        }
+      }
+      if (key === "assistant") {
+        await expect(page.locator(".assistant-premium-hero")).toBeVisible();
+        await expect(page.locator(".assistant-premium-side > .pane")).toHaveCount(3);
+        await expect(page.locator(".assistant-request-grid button")).toHaveCount(4);
+        await expect(page.getByText("Une réponse IA peut être incorrecte malgré ses citations.")).toBeVisible();
+        if (viewport.width >= 1200 && viewport.height >= 730) {
+          const fitted = await page.evaluate(() => {
+            const grid = document.querySelector<HTMLElement>(".assistant-premium-grid");
+            const side = document.querySelector<HTMLElement>(".assistant-premium-side");
+            const composer = document.querySelector<HTMLElement>(".assistant-compose");
+            if (!grid || !side || !composer) return false;
+            const panel = grid.getBoundingClientRect();
+            const info = side.getBoundingClientRect();
+            const input = composer.getBoundingClientRect();
+            return info.left >= panel.left && info.right <= panel.right + 1
+              && input.bottom <= panel.bottom + 1;
+          });
+          expect(fitted, "Assistant modules and composer must fit the workspace").toBe(true);
         }
       }
       const dimensions = await page.evaluate(() => {
