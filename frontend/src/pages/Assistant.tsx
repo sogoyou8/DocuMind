@@ -48,8 +48,13 @@ export default function AssistantView({
   const [messages, setMessages] = useState<Message[]>([]);
   const [busy, setBusy] = useState(false);
   const bottom = useRef<HTMLDivElement>(null);
+  const composer = useRef<HTMLTextAreaElement>(null);
   const messageSequence = useRef(0);
   const canAsk = enabled && !demo;
+  const prepareQuestion = (value: string) => {
+    setQuestion(value);
+    composer.current?.focus();
+  };
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }, [messages, busy]);
@@ -110,11 +115,11 @@ export default function AssistantView({
             <p>Interrogez les documents validés. Chaque citation indique précisément le fichier et la ligne ou page d'origine.</p>
             <div className="assistant-prompts">
               {suggestions.map(s => <button key={s} type="button" disabled={!canAsk}
-                onClick={() => setQuestion(s)} title="Placer la question dans le champ de saisie"><Sparkles size={14}/><span>{s}</span><ChevronRight size={15}/></button>)}
+                onClick={() => prepareQuestion(s)} title="Placer la question dans le champ de saisie"><Sparkles size={14}/><span>{s}</span><ChevronRight size={15}/></button>)}
             </div>
             <div className="assistant-guidance">
               <span>Les suggestions remplissent le champ sans envoyer de demande.</span>
-              <button type="button" disabled={!canAsk} onClick={() => setQuestion("Que peux-tu faire ?")}>Découvrir DocuMind</button>
+              <button type="button" disabled={!canAsk} onClick={() => prepareQuestion("Que peux-tu faire ?")}>Découvrir DocuMind</button>
             </div>
           </div> :
             <div className="messages">
@@ -165,7 +170,7 @@ export default function AssistantView({
               "Démarre le profil Docker IA et connecte-toi à l'instance RAG."}</div>}
           <form onSubmit={event => { event.preventDefault(); void ask(); }} className="assistant-form">
             <label htmlFor="assistant-question" className="sr-only">Poser une question documentaire</label>
-            <textarea id="assistant-question" value={question} rows={2} maxLength={500}
+            <textarea ref={composer} id="assistant-question" value={question} rows={2} maxLength={500}
               disabled={!canAsk || busy}
               placeholder={canAsk ? "Posez une question sur les documents acceptés…" : "Assistant disponible uniquement en local"}
               onChange={event => setQuestion(event.target.value)}
@@ -212,7 +217,7 @@ export default function AssistantView({
             {requestExamples.map((item, index) => <button key={item.title} type="button"
               disabled={!canAsk || busy}
               title="Préparer cette question sans l'envoyer"
-              onClick={() => setQuestion(item.question)}>
+              onClick={() => prepareQuestion(item.question)}>
               {index === 0 ? <FileText size={18}/> :
                 index === 1 ? <SearchCheck size={18}/> :
                   index === 2 ? <Fingerprint size={18}/> : <BookOpenCheck size={18}/>}
