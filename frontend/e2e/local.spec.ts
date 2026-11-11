@@ -275,48 +275,81 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
       }
       expect(dimensions.mainScroll, `${key} at ${viewport.width} — main overflow; protruding elements: ${JSON.stringify(dimensions.protruding)}`)
         .toBeLessThanOrEqual(dimensions.mainClient + 1);
-      // The large-screen cockpit fits without outer scrolling. Short browser
-      // windows intentionally scroll the workspace instead of clipping panels.
-      if (viewport.width >= 1200 && viewport.height > 940 &&
-          (key === "overview" || key === "analytics")) {
+      // The desktop cockpit must remain single-screen WITH or WITHOUT Chrome
+      // toolbars. Only genuinely tiny windows can use outer scrolling.
+      if (viewport.width >= 1200 && viewport.height > 685) {
         expect(dimensions.mainScrollHeight,
           `${key} at ${viewport.width}x${viewport.height} — outer vertical scroll remains`)
-          .toBeLessThanOrEqual(dimensions.mainHeight + 2);
+          .toBeLessThanOrEqual(dimensions.mainHeight + 3);
       }
-      // Browser-window mode: keep the content accessible and readable even
-      // after losing vertical space to Chrome tabs, toolbars or split-screen.
+      // Browser-window mode is based on usable main height, not raw screen
+      // resolution or whether F11 happens to be pressed.
       if (viewport.width >= 1200) {
         const measuredContentHeight = await page.locator(".workspace-content").evaluate(main => main.clientHeight);
         const expectedWindowed = measuredContentHeight < 790;
         await expect.poll(() => page.locator(".workspace-content").evaluate(
           main => main.classList.contains("is-windowed"),
         ), { message: "Compact layout should follow actual available height" }).toBe(expectedWindowed);
-        if (expectedWindowed) {
-        const windowed = await page.evaluate(() => {
-          const main = document.querySelector<HTMLElement>(".workspace-content")!;
-          const journal = document.querySelector<HTMLElement>(".activity-premium-journal");
-          const timeline = document.querySelector<HTMLElement>(".activity-timeline-scroll");
-          const inspector = document.querySelector<HTMLElement>(".documents-cockpit");
-          const assistant = document.querySelector<HTMLElement>(".assistant-premium-grid");
-          return {
-            overflowY: getComputedStyle(main).overflowY,
-            journalHeight: journal?.getBoundingClientRect().height ?? null,
-            timelineHeight: timeline?.getBoundingClientRect().height ?? null,
-            inspectorHeight: inspector?.getBoundingClientRect().height ?? null,
-            assistantHeight: assistant?.getBoundingClientRect().height ?? null,
-          };
-        });
-        expect(windowed.overflowY, `${key} — windowed workspace must scroll`).toBe("auto");
-        if (key === "history") {
-          expect(windowed.journalHeight, "History journal must not collapse").toBeGreaterThanOrEqual(385);
-          expect(windowed.timelineHeight, "History timeline must remain scrollable").toBeGreaterThanOrEqual(165);
-        }
-        if (key === "documents") {
-          expect(windowed.inspectorHeight, "Catalogue and inspector need useful height").toBeGreaterThanOrEqual(380);
-        }
-        if (key === "assistant") {
-          expect(windowed.assistantHeight, "Chat and examples need useful height").toBeGreaterThanOrEqual(485);
-        }
+        if (expectedWindowed && viewport.height > 685) {
+          const windowed = await page.evaluate(() => {
+            const main = document.querySelector<HTMLElement>(".workspace-content")!;
+            const view = main.querySelector<HTMLElement>(".page-stack")!;
+            const footer = main.querySelector<HTMLElement>(".workspace-footer")!;
+            const journal = main.querySelector<HTMLElement>(".activity-premium-journal");
+            const timeline = main.querySelector<HTMLElement>(".activity-timeline-scroll");
+            const catalogue = main.querySelector<HTMLElement>(".documents-cockpit");
+            const chat = main.querySelector<HTMLElement>(".assistant-premium-grid");
+            const modules = {
+              overview: [".overview-hero", ".overview-main-grid", ".overview-lower-grid"],
+              documents: [".documents-hero", ".documents-cockpit", ".documents-premium-page > .hint"],
+              analytics: [".analytics-premium-hero", ".analytics-grid", ".analytics-bottom-grid"],
+              assistant: [".assistant-premium-hero", ".assistant-premium-grid"],
+              history: [".activity-premium-hero", ".activity-premium-journal", ".activity-premium-note"],
+            } as Record<string, string[]>;
+            const outer = main.getBoundingClientRect();
+            const content = view.getBoundingClientRect();
+            const note = footer.getBoundingClientRect();
+            const moduleRects = (modules[key] ?? []).map(selector => {
+              const element = main.querySelector<HTMLElement>(selector);
+              const rect = element?.getBoundingClientRect();
+              return { selector, top: rect?.top ?? 0, bottom: rect?.bottom ?? 0,
+                height: rect?.height ?? 0 };
+            });
+            return {
+              overflowY: getComputedStyle(main).overflowY,
+              pageBottom: content.bottom,
+              footerTop: note.top,
+              footerBottom: note.bottom,
+              mainBottom: outer.bottom,
+              modules: moduleRects,
+              journalHeight: journal?.getBoundingClientRect().height ?? null,
+              timelineHeight: timeline?.getBoundingClientRect().height ?? null,
+              catalogueHeight: catalogue?.getBoundingClientRect().height ?? null,
+              chatHeight: chat?.getBoundingClientRect().height ?? null,
+            };
+          });
+          expect(windowed.overflowY, `${key} — desktop workspace must not scroll`).toBe("hidden");
+          expect(windowed.pageBottom, `${key} — page overlaps footer`)
+            .toBeLessThanOrEqual(windowed.footerTop + 2);
+          expect(windowed.footerBottom, `${key} — footer outside window`)
+            .toBeLessThanOrEqual(windowed.mainBottom + 2);
+          for (const module of windowed.modules) {
+            expect(module.height,
+              `${key} — ${module.selector} collapsed`).toBeGreaterThan(95);
+            expect(module.bottom,
+              `${key} — ${module.selector} clipped at ${viewport.width}x${viewport.height}`)
+              .toBeLessThanOrEqual(windowed.pageBottom + 2);
+          }
+          if (key === "history") {
+            expect(windowed.journalHeight, "History journal must not collapse").toBeGreaterThan(260);
+            expect(windowed.timelineHeight, "History timeline must remain scrollable").toBeGreaterThan(130);
+          }
+          if (key === "documents") {
+            expect(windowed.catalogueHeight, "Catalogue and inspector must fit").toBeGreaterThan(285);
+          }
+          if (key === "assistant") {
+            expect(windowed.chatHeight, "Assistant conversation must fit").toBeGreaterThan(370);
+          }
         }
       }
       // Always capture before layout assertions: on failure the precise
@@ -350,10 +383,8 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
           };
         });
         expect(geometry.composeFooter, `Composer missing at ${viewport.width}x${viewport.height}`).not.toBeNull();
-        // If the outer workspace is scrollable, the composer can be reached
-        // by scrolling rather than being forcibly squeezed or cropped.
-        await page.locator(".assistant-compose").scrollIntoViewIfNeeded();
-        await expect(page.locator(".compose-footer")).toBeInViewport({ ratio: 0.99 });
+        // The composer must remain visible without scrolling the main page.
+        await expect(page.locator(".compose-footer")).toBeInViewport({ ratio: 0.95 });
         await expect(page.getByRole("button", { name: "Envoyer la question" })).toBeInViewport();
         expect(geometry.composeFooter!.height, "Composer must retain a usable height")
           .toBeGreaterThanOrEqual(14);
