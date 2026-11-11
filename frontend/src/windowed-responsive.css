@@ -9,6 +9,24 @@
 
 /* Desktop browser windows shorter than the full-screen target. */
 @media (min-width: 1200px) {
+  /* The sidebar must remain navigable when the browser's top chrome reduces
+     the available height; the bottom session card may require scrolling. */
+  .app-shell.is-windowed .sidebar {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(115, 224, 192, .35) transparent;
+    padding-top: 20px;
+  }
+  .app-shell.is-windowed .sidebar-brand { margin-bottom: 28px; }
+  .app-shell.is-windowed .sidebar-tools-label { margin-top: 25px; }
+  .app-shell.is-windowed .sidebar-env { gap: 13px; }
+  .app-shell.is-windowed .sidebar-status,
+  .app-shell.is-windowed .sidebar-footer { flex-shrink: 0; }
+  .app-shell.is-windowed .sidebar-status { padding: 12px; }
+  .app-shell.is-windowed .sidebar-footer { padding-top: 13px; }
+
   .workspace-content.is-windowed {
     display: flex;
     flex-direction: column;
