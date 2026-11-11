@@ -219,16 +219,40 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
   const total = discoveryPages.reduce((sum, item) => sum + item.steps.length, 0);
 
   if (mode === "spotlight") {
-    const tooltipBelow = Boolean(frame && frame.top < window.innerHeight * .42 &&
-      frame.top + frame.height + 225 < window.innerHeight);
-    const tooltipStyle = frame ? {
-      top: Math.max(8, tooltipBelow
-        ? frame.top + frame.height + 15
-        : frame.top - 212),
-      left: Math.max(12, Math.min(
-        frame.left + frame.width / 2 - 180, window.innerWidth - 372,
-      )),
-    } : undefined;
+    // Keep the instruction card OUTSIDE the highlighted real control.
+    // The former fixed 212px offset let a longer tooltip obscure its own target.
+    const tooltipWidth = Math.min(360, window.innerWidth - 24);
+    const tooltipHeight = Math.min(
+      tooltipRef.current?.offsetHeight || 315,
+      Math.min(340, window.innerHeight - 20),
+    );
+    const gap = 13;
+    const freeBelow = frame ? window.innerHeight - (frame.top + frame.height) - gap : 0;
+    const freeAbove = frame ? frame.top - gap : 0;
+    const freeLeft = frame ? frame.left - gap : 0;
+    const freeRight = frame ? window.innerWidth - frame.left - frame.width - gap : 0;
+    const side = frame && Math.max(freeLeft, freeRight) >= tooltipWidth + gap &&
+      Math.max(freeAbove, freeBelow) < tooltipHeight + gap;
+    const tooltipTop = !frame ? 8 : side
+      ? Math.max(8, Math.min(
+        frame.top + frame.height / 2 - tooltipHeight / 2,
+        window.innerHeight - tooltipHeight - 8,
+      ))
+      : freeBelow >= tooltipHeight + gap
+        ? frame.top + frame.height + gap
+        : freeAbove >= tooltipHeight + gap
+          ? frame.top - tooltipHeight - gap
+          : Math.max(8, Math.min(frame.top - tooltipHeight - gap,
+            window.innerHeight - tooltipHeight - 8));
+    const tooltipLeft = !frame ? 12 : side
+      ? freeRight >= tooltipWidth + gap
+        ? frame.left + frame.width + gap
+        : frame.left - tooltipWidth - gap
+      : Math.max(12, Math.min(
+        frame.left + frame.width / 2 - tooltipWidth / 2,
+        window.innerWidth - tooltipWidth - 12,
+      ));
+    const tooltipStyle = frame ? { top: tooltipTop, left: tooltipLeft } : undefined;
     return <div className="discovery-context-layer" data-guide-mode="spotlight">
       {frame ? <div className="discovery-focus-frame" aria-hidden="true"
         style={{ top: frame.top, left: frame.left, width: frame.width, height: frame.height }}/> :
@@ -244,7 +268,9 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
         <p>{step.action}</p>
         {unavailable ? <small className="discovery-unavailable">Contrôle absent dans cette instance ou cet état. Aucun clic n'est simulé.</small>
           : <small className="discovery-outcome"><CheckCheck size={13}/>{step.outcome}</small>}
-        {step.caution && <small className="discovery-context-caution">{step.caution}</small>}
+        {step.caution && !demo && !(pageId === "assistant" && aiEnabled) &&
+          !(pageId === "documents" && stepIndex === 0 && operator) &&
+          <small className="discovery-context-caution">{step.caution}</small>}
         {(demo || pageId === "documents" && !operator || pageId === "assistant" && !aiEnabled) &&
           <small className="discovery-context-caution">
             {demo ? "Démonstration en lecture seule : les actions métier sont désactivées."
