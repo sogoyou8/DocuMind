@@ -230,48 +230,36 @@ export function DocumentsView({
 }
 
 function DocumentDrawer({
-  doc, detail, loading, demo, operator, aiEnabled, busy, onClose, onProcess, onIndex,
+  doc, detail, loading, demo, operator, aiEnabled, busy, desktop, onClose, onProcess, onIndex,
 }: {
   doc: Document; detail: DocumentDetail | null; loading: boolean;
-  demo: boolean; operator: boolean; aiEnabled: boolean; busy: string | null;
+  demo: boolean; operator: boolean; aiEnabled: boolean; busy: string | null; desktop: boolean;
   onClose: () => void; onProcess: (doc: Document, force?: boolean) => Promise<void>;
   onIndex: (doc: Document) => Promise<void>;
 }) {
-  const [section, setSection] = useState<"invoices" | "records" | "issues" | "history">("invoices");
+  const [section, setSection] = useState<"overview" | "invoices" | "records" | "issues" | "history">("overview");
+  useEffect(() => setSection("overview"), [doc.id]);
   const closeRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    closeRef.current?.focus();
+    if (!desktop) closeRef.current?.focus();
     const escape = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
     };
     window.addEventListener("keydown", escape);
     return () => window.removeEventListener("keydown", escape);
-  }, [onClose]);
+  }, [onClose, desktop]);
   const actionAllowed = operator && !demo && !busy;
   const canProcess = doc.state === "RECEIVED" || doc.state === "REJECTED";
   const canIndex = doc.state === "ACCEPTED" && aiEnabled;
 
-  return <div className="drawer-layer">
+  return <div className="drawer-layer documents-preview-layer">
     <button className="drawer-scrim" onClick={onClose} type="button" aria-label="Fermer les détails du document"/>
-    <aside className="document-drawer glass" role="dialog" aria-modal="true" aria-label={`Détails de ${doc.original_name}`}>
+    <aside className="document-drawer glass" role="dialog" aria-modal={!desktop} aria-label={`Détails de ${doc.original_name}`}>
       <div className="drawer-header">
         <div><div className="eyebrow">FICHE DOCUMENTAIRE</div><h2>{doc.original_name}</h2></div>
         <button ref={closeRef} type="button" className="icon-button" onClick={onClose} aria-label="Fermer"><X size={19}/></button>
       </div>
       <div className="drawer-scroll">
-        <div className="detail-summary">
-          <span className={`file-badge file-${doc.file_type.toLowerCase()}`}>{doc.file_type}</span>
-          <StatusChip state={doc.state}/>
-          {doc.source === "DEMO" && <LabelPill kind="info">Fictif</LabelPill>}
-        </div>
-        <div className="detail-grid">
-          <Field label="Date d'import">{shortDate(doc.created_at)}</Field>
-          <Field label="Taille">{bytes(doc.size_bytes)}</Field>
-          <Field label="Type">{doc.file_type}</Field>
-          <Field label="Statut">{stateLabels[doc.state]}</Field>
-        </div>
-        <div className="fingerprint"><Fingerprint size={16}/>
-          <div><span>Empreinte SHA-256</span><code>{doc.sha256}</code></div></div>
         {demo ? <EmptyState icon="shield" title="Métadonnées fictives uniquement"
           description="Ce document n'a pas de fichier source, de facture calculée, d'extrait ni de trace d'IA sur Render."/> :
         <>
@@ -288,10 +276,34 @@ function DocumentDrawer({
           {!operator && <Hint>Ton compte peut consulter les documents, mais le traitement et l'indexation nécessitent le rôle opérateur.</Hint>}
           {!aiEnabled && <Hint>L'index IA nécessite l'instance locale Ollama/Chroma. Les données ne sont pas envoyées à un service externe.</Hint>}
           <div className="detail-tabs" role="tablist" aria-label="Informations du document">
-            {([["invoices","Factures"],["records","Extraits"],["issues","Anomalies"],["history","Historique"]] as const).map(([id,label]) =>
+            {([["overview","Aperçu"],["invoices","Factures"],["records","Extraits"],["issues","Anomalies"],["history","Historique"]] as const).map(([id,label]) =>
               <button type="button" role="tab" aria-selected={section === id} className={section === id ? "active" : ""}
                 key={id} onClick={() => setSection(id)}>{label}</button>)}
           </div>
+          {section === "overview" && <div className="document-detail-overview">
+            <div className="document-preview-metrics">
+              <div className="document-preview-metric">
+                <FileText size={20}/><span><strong>{loading ? "—" : detail?.records.length ?? "—"}</strong><small>Extraits disponibles</small></span>
+              </div>
+              <div className="document-preview-metric is-alert">
+                <AlertTriangle size={20}/><span><strong>{loading ? "—" : detail?.issues.length ?? "—"}</strong><small>Anomalies détectées</small></span>
+              </div>
+            </div>
+        <div className="detail-summary">
+          <span className={`file-badge file-${doc.file_type.toLowerCase()}`}>{doc.file_type}</span>
+          <StatusChip state={doc.state}/>
+          {doc.source === "DEMO" && <LabelPill kind="info">Fictif</LabelPill>}
+        </div>
+        <div className="detail-grid">
+          <Field label="Date d'import">{shortDate(doc.created_at)}</Field>
+          <Field label="Taille">{bytes(doc.size_bytes)}</Field>
+          <Field label="Type">{doc.file_type}</Field>
+          <Field label="Statut">{stateLabels[doc.state]}</Field>
+        </div>
+        <div className="fingerprint"><Fingerprint size={16}/>
+          <div><span>Empreinte SHA-256</span><code>{doc.sha256}</code></div></div>
+            {doc.state === "REJECTED" && <Hint warning>Les données extraites de ce document rejeté ne contribuent pas aux indicateurs financiers.</Hint>}
+          </div>}
           {loading && <div className="drawer-placeholder">Chargement des informations…</div>}
           {!loading && detail && section === "invoices" &&
             (detail.invoices.length ? <div className="detail-list">{detail.invoices.map(inv => <article key={inv.id} className="detail-record">
