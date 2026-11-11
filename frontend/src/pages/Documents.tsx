@@ -179,13 +179,13 @@ export function DocumentsView({
       : "Chargement depuis l'API"} aside={<FileText className="muted-icon" size={18}/>}>
       <div className="table-toolbar">
         <label className="search-field"><Search size={17}/>
-          <input type="search" value={search} onChange={event => setSearch(event.target.value)}
+          <input type="search" value={search} onChange={event => {setSearch(event.target.value);onSelect(null);}}
             placeholder="Rechercher sur cette page…" aria-label="Rechercher un document sur la page"/>
         </label>
         <div className="filter-pills" aria-label="Filtrer selon l'état">
           {filters.map(f => <button type="button" key={f.id}
             className={`filter-pill ${filter === f.id ? "selected" : ""}`}
-            aria-pressed={filter === f.id} onClick={() => setFilter(f.id)}>{f.label}</button>)}
+            aria-pressed={filter === f.id} onClick={() => {setFilter(f.id);onSelect(null);}}>{f.label}</button>)}
         </div>
       </div>
       <div className="table-overflow">
@@ -214,9 +214,9 @@ export function DocumentsView({
       <div className="table-bottom">
         <span>Filtre local sur la page · {displayed.length} résultat(s) affiché(s)</span>
         <div className="pager">
-          <button type="button" disabled={page <= 1 || loading} onClick={() => onPage(page - 1)} aria-label="Page précédente"><ArrowLeft size={16}/></button>
+          <button type="button" disabled={page <= 1 || loading} onClick={() => {onSelect(null);onPage(page - 1);}} aria-label="Page précédente"><ArrowLeft size={16}/></button>
           <strong>Page {page}</strong>
-          <button type="button" disabled={!listing?.next || loading} onClick={() => onPage(page + 1)} aria-label="Page suivante"><ArrowRight size={16}/></button>
+          <button type="button" disabled={!listing?.next || loading} onClick={() => {onSelect(null);onPage(page + 1);}} aria-label="Page suivante"><ArrowRight size={16}/></button>
         </div>
       </div>
     </Pane>
