@@ -3,7 +3,7 @@ import {
   Activity, ArrowRight, BarChart3, BrainCircuit,
   Check, ChevronRight, CircleAlert, Database,
   Files, Fingerprint, LayoutDashboard, LockKeyhole, LogOut,
-  Menu, RefreshCcw, ShieldCheck, X,
+  Menu, BookOpenCheck, RefreshCcw, ShieldCheck, X,
 } from "lucide-react";
 import { api } from "./api";
 import type {
@@ -15,6 +15,7 @@ import { DocumentsView } from "./pages/Documents";
 import AnalyticsView from "./pages/Analytics";
 import AssistantView from "./pages/Assistant";
 import ActivityView from "./pages/Activity";
+import DiscoveryGuide from "./DiscoveryGuide";
 
 const navigation = [
   { id: "overview" as Tab, label: "Vue d'ensemble", icon: LayoutDashboard },
@@ -77,6 +78,7 @@ export default function App() {
   const [bootError, setBootError] = useState<string | null>(null);
   const [view, setView] = useState<Tab>("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
   const [overview, setOverview] = useState<Overview | null>(null);
   const [docs, setDocs] = useState<Page<Document> | null>(null);
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
@@ -217,6 +219,7 @@ export default function App() {
       await api.logout(session.csrf_token);
       setOverview(null);setDocs(null);setAnalytics(null);setSelected(null);
       setAudits({count:0,results:[]});
+      setGuideOpen(false);
       setSession(await api.session());
       navigate("overview");
       setNotice("Session locale fermée.");
@@ -331,6 +334,9 @@ export default function App() {
         <div className="topbar-right">
           <span className={`topbar-mode ${demo ? "demo" : ""}`}><span className="signal-pulse"/>
             {demo ? "Démonstration" : "Instance locale"}</span>
+          <button className="icon-button discovery-trigger" type="button"
+            aria-label="Découvrir DocuMind" title="Découvrir DocuMind"
+            onClick={() => setGuideOpen(true)}><BookOpenCheck size={19}/></button>
           <button className="icon-button" type="button" disabled={loading}
             onClick={refresh} aria-label="Actualiser les données" title="Actualiser">
             <RefreshCcw size={18} className={loading ? "spinning" : ""}/>
@@ -357,7 +363,7 @@ export default function App() {
         {view === "analytics" && <AnalyticsView data={analytics} overview={overview}
           demo={Boolean(demo)}/>}
         {view === "assistant" && <AssistantView demo={Boolean(demo)} enabled={aiEnabled}
-          status={assistantStatus} onAsk={ask}
+          status={assistantStatus} onAsk={ask} onDiscover={() => setGuideOpen(true)}
           onCitation={id => void openDocumentId(id)}/>}
         {view === "activity" && <ActivityView events={audits.results} count={audits.count}
           demo={Boolean(demo)} onDocument={id => void openDocumentId(id)}/>}
@@ -375,5 +381,8 @@ export default function App() {
           aria-label="Fermer la notification" onClick={() => setNotice(null)}><X size={16}/></button>
       </div>}
     </div>
+    {guideOpen && <DiscoveryGuide currentPage={view} onNavigate={navigate}
+      onClose={() => setGuideOpen(false)} demo={Boolean(demo)}
+      operator={operator} aiEnabled={aiEnabled}/>}
   </div>;
 }
