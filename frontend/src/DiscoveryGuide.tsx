@@ -4,6 +4,7 @@ import {
   ChevronRight, CircleHelp, FileCheck2, Files, Fingerprint, LayoutDashboard,
   MousePointerClick, ShieldCheck, Sparkles, Upload, X, BarChart3,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { Tab } from "./types";
 import { discoveryPage, discoveryPages, discoveryRoute } from "./discovery-data";
 
@@ -24,7 +25,7 @@ const icons = {
   analytics: BarChart3,
   assistant: BrainCircuit,
   activity: Activity,
-} satisfies Record<Tab, typeof LayoutDashboard>;
+} satisfies Record<Tab, LucideIcon>;
 
 const topics = [
   { label: "Importer", icon: Upload },
@@ -224,6 +225,13 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
         <p>{step.action}</p>
         {unavailable ? <small className="discovery-unavailable">Contrôle absent dans cette instance ou cet état. Aucun clic n'est simulé.</small>
           : <small className="discovery-outcome"><CheckCheck size={13}/>{step.outcome}</small>}
+        {step.caution && <small className="discovery-context-caution">{step.caution}</small>}
+        {(demo || pageId === "documents" && !operator || pageId === "assistant" && !aiEnabled) &&
+          <small className="discovery-context-caution">
+            {demo ? "Démonstration en lecture seule : les actions métier sont désactivées."
+              : pageId === "documents" ? "Opération réservée au rôle opérateur."
+                : "Assistant IA local indisponible dans cette instance."}
+          </small>}
         <div className="discovery-context-actions">
           <button type="button" onClick={() => setMode("lesson")}>Retour au guide</button>
           <button type="button" onClick={next} className="discovery-mini-next">
