@@ -63,10 +63,14 @@ export default function ActivityView({
               </div>
             </button>;
           })}
-        </div> : <EmptyState title={demo ? "Aucun événement dans la démo" : "Aucun événement correspondant"}
-          icon="document" description={demo
-            ? "Le service Render n'exécute aucun import, pipeline ou indexation."
-            : "Aucun des événements chargés ne correspond au filtre."}/>}
+        </div> : <EmptyState
+          title={demo ? "Aucun événement dans la démo"
+            : events.length === 0 ? "Aucun événement enregistré" : "Aucun événement correspondant"}
+          icon="document"
+          description={demo ? "Le service Render n'exécute aucun import, pipeline ou indexation."
+            : events.length === 0
+              ? "Les imports, validations et indexations apparaîtront ici dès leur première exécution."
+              : "Aucun des événements chargés ne correspond au filtre."}/>}
       </div>
       {!demo && count > events.length && <Hint>La recherche porte sur les {events.length} dernières entrées chargées (maximum 40), pas sur tout l'historique PostgreSQL.</Hint>}
     </Pane>
