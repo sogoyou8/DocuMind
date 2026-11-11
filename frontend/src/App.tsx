@@ -336,7 +336,7 @@ export default function App() {
             {demo ? "Démonstration" : "Instance locale"}</span>
           <button className="icon-button discovery-trigger" type="button"
             aria-label="Découvrir DocuMind" title="Découvrir DocuMind"
-            onClick={() => setGuideOpen(true)}><BookOpenCheck size={19}/></button>
+            onClick={() => setGuideOpen(true)}><BookOpenCheck size={18}/><span>Découvrir</span></button>
           <button className="icon-button" type="button" disabled={loading}
             onClick={refresh} aria-label="Actualiser les données" title="Actualiser">
             <RefreshCcw size={18} className={loading ? "spinning" : ""}/>
