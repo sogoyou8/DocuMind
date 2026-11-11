@@ -322,7 +322,7 @@ export default function DiscoveryGuide({ currentPage, onNavigate, onClose, demo,
               </span>;
             })}
           </div>
-          <small className="discovery-flow-warning">Rejeté ? Montant exclu des dépenses validées. Historique : opérations tracées.</small>
+          <small className="discovery-flow-warning">Exemple fictif : facture de 120 € validée → montant exploitable ; rejetée → montant exclu. Les opérations restent traçables dans Historique.</small>
         </div>
       </div> : <div className="discovery-lesson">
         <div className="discovery-lesson-nav" aria-label="Guides des cinq pages">
