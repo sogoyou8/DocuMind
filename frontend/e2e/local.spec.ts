@@ -12,7 +12,7 @@ test("real PostgreSQL session, documents, SQL analytics and cited local AI", asy
   await page.getByLabel("Mot de passe local").fill(password!);
   await page.getByRole("button", { name: /Accéder à DocuMind/i }).click();
 
-  await expect(page.getByRole("heading", { name: /Vos documents/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Gérez, vérifiez, analysez et interrogez vos documents/i })).toBeVisible();
   // Success notices must disappear without manual interaction, unlike errors.
   const loginNotice = page.getByRole("button", { name: "Fermer la notification" });
   if (await loginNotice.isVisible()) await expect(loginNotice).toBeHidden({ timeout: 8000 });
@@ -103,7 +103,7 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
     if (await page.getByLabel("Mot de passe local").count()) {
       await page.getByLabel("Mot de passe local").fill(password!);
       await page.getByRole("button", { name: /Accéder à DocuMind/i }).click();
-      await expect(page.getByRole("heading", { name: /Vos documents/i })).toBeVisible();
+      await expect(page.getByRole("heading", { name: /Gérez, vérifiez, analysez et interrogez vos documents/i })).toBeVisible();
     }
     // Screenshots must not be obstructed by the login success notice.
     const noticeClose = page.getByRole("button", { name: "Fermer la notification" });
@@ -156,6 +156,28 @@ test("D5.1 five views fit desktop and mobile and audit outcomes are not misleadi
             return left.right <= right.left + 1 && right.right <= outer.right + 1;
           });
           expect(fitted, "Catalogue and preview must not overlap").toBe(true);
+        }
+      }
+      if (key === "analytics") {
+        const hero = page.locator(".analytics-premium-hero");
+        await expect(hero.getByRole("heading", { name: "Intelligence analytique" })).toBeVisible();
+        await expect(hero.locator(".analytics-premium-kpis .stat-card")).toHaveCount(4);
+        await expect(hero.getByText("Factures acceptées")).toBeVisible();
+        await expect(hero.getByText("Montant TTC · EUR")).toBeVisible();
+        await expect(hero.getByText("Fournisseurs · EUR")).toBeVisible();
+        await expect(hero.getByText("Taux de rejet")).toBeVisible();
+        await expect(page.locator(".analytics-grid > .pane")).toHaveCount(3);
+        await expect(page.locator(".analytics-bottom-grid > .pane")).toHaveCount(2);
+        await expect(page.locator(".metric-contract")).toHaveCount(0);
+        await expect(page.getByText("Contrat de confiance")).toHaveCount(0);
+        if (viewport.width >= 1200 && viewport.height >= 730) {
+          const fitted = await hero.evaluate(element => {
+            const frame = element.getBoundingClientRect();
+            const metrics = element.querySelector<HTMLElement>(".analytics-premium-kpis")?.getBoundingClientRect();
+            return Boolean(metrics && metrics.left >= frame.left - 1
+              && metrics.right <= frame.right + 1 && metrics.bottom <= frame.bottom + 1);
+          });
+          expect(fitted, "Analytics KPIs must fit inside hero").toBe(true);
         }
       }
       const dimensions = await page.evaluate(() => {
