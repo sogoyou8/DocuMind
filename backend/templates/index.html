@@ -193,13 +193,14 @@ h1,h2,h3,.kpi strong,.brand strong{font-family:Manrope,"Segoe UI",sans-serif}
 .art-icon svg{width:27px;height:27px}
 .art-lines{display:flex;flex-direction:column;gap:5px;margin-top:10px;width:100%}
 .art-lines i{display:block;height:4px;background:rgba(179,255,222,.5);border-radius:4px;width:87%}
-.art-lines i:nth-child(2){width:70%}.art-lines i:nth-child(3){width:53%}
+.art-lines i:nth-child(2){width:70%}.art-lines i:nth-child(3){width:53%}.art-lines i:nth-child(4){display:none}
 .art-float{position:absolute;display:grid;place-items:center;width:30px;height:30px;border:1px solid rgba(147,241,205,.32);border-radius:10px;background:rgba(14,54,57,.67);color:#a7fadd;font-weight:800}
 .art-float-one{right:0;top:73px}.art-float-two{left:42px;bottom:12px}
 .hero-art-analytics .art-lines{flex-direction:row;align-items:end;height:55px;gap:8px;margin-top:5px}
 .hero-art-analytics .art-lines i{width:11px;height:42%;background:linear-gradient(0deg,#60efbb,#b5ffe5)}
-.hero-art-analytics .art-lines i:nth-child(2){width:11px;height:65%}
-.hero-art-analytics .art-lines i:nth-child(3){width:11px;height:90%}
+.hero-art-analytics .art-lines i:nth-child(2){width:11px;height:51%}
+.hero-art-analytics .art-lines i:nth-child(3){width:11px;height:72%}
+.hero-art-analytics .art-lines i:nth-child(4){display:block;width:11px;height:94%}
 .hero-art-analytics .art-page-front .art-icon{display:none}
 @media(min-width:1081px){
  .shell{grid-template-columns:245px minmax(0,1fr)}
@@ -300,7 +301,7 @@ const el=document.getElementById('screen');
 const h=(value)=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const button=(label,action,primary=false)=>`<button class="button ${primary?'primary':''}" data-action="${action}">${label}</button>`;
 const icon = (name) => ({overview:"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/></svg>",documents:"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z\"/><path d=\"M14 3v5h5\"/><path d=\"M9 12h6M9 16h6\"/></svg>",analytics:"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"><path d=\"M4 20V11M9 20V5M14 20v-8M19 20V8\"/><path d=\"M3 21h18\"/></svg>",assistant:"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 4a3 3 0 0 0-5 2 3 3 0 0 0-2 5 3 3 0 0 0 1 5 3 3 0 0 0 6 4V4Z\"/><path d=\"M12 4a3 3 0 0 1 5 2 3 3 0 0 1 2 5 3 3 0 0 1-1 5 3 3 0 0 1-6 4V4Z\"/><path d=\"M7 9h2M15 9h2M8 15l2-2M16 15l-2-2\"/></svg>",history:"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12h4l2.5-7 5 14 2.5-7H21\"/></svg>"})[name] || '';
-const art = (kind) => `<div class="hero-art hero-art-${kind}" aria-hidden="true"><span class="art-wave"></span><span class="art-page art-page-back"></span><span class="art-page art-page-mid"></span><span class="art-page art-page-front"><span class="art-icon">${icon(kind)}</span><span class="art-lines"><i></i><i></i><i></i></span></span><span class="art-float art-float-one">✓</span><span class="art-float art-float-two">◈</span></div>`;
+const art = (kind) => `<div class="hero-art hero-art-${kind}" aria-hidden="true"><span class="art-wave"></span><span class="art-page art-page-back"></span><span class="art-page art-page-mid"></span><span class="art-page art-page-front"><span class="art-icon">${icon(kind)}</span><span class="art-lines"><i></i><i></i><i></i><i></i></span></span><span class="art-float art-float-one">✓</span><span class="art-float art-float-two">◈</span></div>`;
 const artKind = (eyebrow) => eyebrow.includes('ANALYSE')?'analytics':eyebrow.includes('ASSISTANT')?'assistant':eyebrow.includes('PREUVES')?'history':'documents';
 const hero = (eyebrow,title,subtitle,actions='') => `<section class="hero compact-hero"><div class="hero-copy"><div class="eyebrow"><span class="signal-pulse"></span> ${eyebrow}</div><h1>${title}</h1><p>${subtitle}</p>${actions?`<div class="hero-action">${actions}</div>`:''}</div>${art(artKind(eyebrow))}</section>`;
 const premiumHero = (eyebrow,title,subtitle,actions,kpis) => `<section class="hero premium-hero"><div class="hero-top"><div class="hero-copy"><div class="eyebrow"><span class="signal-pulse"></span> ${eyebrow}</div><h1>${title}</h1><p>${subtitle}</p>${actions?`<div class="hero-action">${actions}</div>`:''}</div>${art(artKind(eyebrow))}</div>${kpis}</section>`;
