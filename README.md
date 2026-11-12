@@ -4,7 +4,7 @@
 
 DocuMind aide à **importer, contrôler, analyser et interroger des documents d'entreprise** sans perdre leur provenance. Il s'adresse à une personne qui reçoit régulièrement des factures, tableaux ou fichiers PDF et veut en extraire des informations vérifiables.
 
-L'application complète fonctionne **localement**. Le seul service distant historique est une **démonstration backend D1 en lecture seule** sur Render, qui n'héberge ni la plateforme Full Stack, ni les calculs avancés, ni l'assistant IA.
+L'application complète fonctionne **localement**. Le service Render historique présente désormais une **démonstration interactive simulée de la V1.0** avec un corpus fictif et des réponses préenregistrées ; son API réelle demeure limitée au **backend D1 en lecture seule**. Ni PostgreSQL D3, ni Airflow, ni ChromaDB/Ollama ne sont exécutés sur Render.
 
 ## 1. À quoi sert DocuMind ?
 
@@ -173,10 +173,20 @@ Pour l'intégration backend et IA : `docker compose --profile ai exec -T rag pyt
 
 Captures et rapports locaux : `frontend/test-results/` et `frontend/playwright-report/`.
 
+### Démonstration interactive publique — Render
+
+**Adresse :** https://documind-d1-api-htpg.onrender.com
+
+La page d’accueil du service Render D1 présente les cinq écrans (Vue d’ensemble, Documents, Analyse & KPI, Assistant IA, Historique) avec les données fictives de référence. Les documents, les graphiques et les montants sont explicitement identifiés comme un **scénario public statique**. Les filtres, la sélection de documents et les réponses préenregistrées constituent de vraies interactions navigateur, mais **ne déclenchent ni extraction, ni SQL D3, ni RAG Ollama/ChromaDB**.
+
+Le lien « État API D1 » conserve l’accès au véritable endpoint de santé de la démo. Les routes API d’écriture sont interdites en mode `DOCUMIND_DEMO_READONLY=1`. L'application locale reste la référence pour la démonstration technique Full Stack et les véritables citations produites par le modèle.
+
+**Contrôles :** les cinq vues et interactions ont été testées dans Chromium, dont les recherches/filtres, les réponses sourcées de démonstration, l’abstention et le rendu mobile, sans erreur JavaScript ; les tests Django de non-régression spécifiques à la page ont été ajoutés, mais nécessitent une exécution avec les dépendances Python du projet.
+
 ## 7. Confidentialité et limites
 
 - **Application Full Stack : locale uniquement.** PostgreSQL, les fichiers importés, Ollama, ChromaDB, Metabase et Airflow ne sont pas déployés pour un accès public.
-- **Render Free :** [ancienne API D1 en lecture seule](https://documind-d1-api-htpg.onrender.com), uniquement des métadonnées synthétiques ; pas de calcul D3 ni d'assistant D4. Disponibilité et persistance non garanties.
+- **Render Free :** [présentation interactive simulée](https://documind-d1-api-htpg.onrender.com) des cinq vues de DocuMind sur des exemples fictifs. Recherche, filtres, fiche documentaire et assistant à réponses préenregistrées sont uniquement des interactions côté navigateur. L'API Django du même service reste **D1 en lecture seule**, sans calcul SQL D3 ni assistant D4 réellement exécutés. Disponibilité et persistance non garanties.
 - Les documents rejetés ne contribuent pas aux montants validés ni à l'index IA.
 - La recherche du catalogue s'applique à la page actuellement chargée ; l'Historique n'est pas une recherche globale sur l'intégralité de la base.
 - Les modèles IA peuvent se tromper : **une citation est une aide à la vérification, pas une garantie de justesse**.
@@ -193,7 +203,7 @@ scripts/       Recettes locales, scripts SQL/Metabase, vérifications
 docs/          Énoncé, architecture, UML, états D0-D5, preuves
 data/local/    Secrets et données locales (ignorés par Git)
 compose.yaml   Services Docker et profils facultatifs
-render.yaml    Contrat de la démo historique backend D1 uniquement
+render.yaml    Service Render existant : présentation HTML simulée + API Django D1 en lecture seule
 ```
 
 ## 9. Documentation et présentation
@@ -201,7 +211,7 @@ render.yaml    Contrat de la démo historique backend D1 uniquement
 - [Sujet du projet — PDF](docs/Sujet-du-projet.pdf) et [version Markdown](docs/Sujet-du-projet.md).
 - [Architecture technique](docs/ARCHITECTURE.md), [diagrammes UML](docs/UML.md) et [feuille de route](docs/ROADMAP.md).
 - [Recette V1 D5](docs/ETAT-D5.md), [plan de finition D5.1](docs/PLAN-D51.md).
-- **Abyss Showcase** : la fiche DocuMind présente l'interface et sa documentation ; elle ne doit **pas** prétendre proposer une démo publique de l'application Full Stack locale.
+- **Abyss Showcase** : le bouton « Voir la démo » doit renvoyer à la **présentation interactive simulée** du service Render, et non à une instance publique de la plateforme Full Stack locale. Les boutons « Code source » et « Document » conservent leurs destinations.
 
 ---
 
