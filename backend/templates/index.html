@@ -3,7 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="theme-color" content="#0a131d" />
+<meta name="theme-color" content="#080e16" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <meta name="description" content="DocuMind — démonstration interactive simulée d'une plateforme locale d'intelligence documentaire. Données fictives, aucun traitement IA distant." />
 <title>DocuMind V1.0 — Démonstration interactive</title>
 <style>
@@ -116,18 +119,161 @@
  .donut{width:84px;height:84px}
  .nav-item{padding:8px 11px}
 }
+
+/* PxM: premium visual parity with the approved local DocuMind V1.0 cockpit.
+ * Only the public HTML representation is changed. No D2/D3/D4 backend is enabled. */
+:root{--bg:#080e16;--surface:#13212e;--glass:#182c37;--glass2:#142631;--ink:#ebf5fa;--muted:#a0b4c1;--line:rgba(144,215,199,.29);--mint:#8eeccc;--mint2:#65e6c2;--coral:#f7a48f;font-family:"DM Sans","Segoe UI",sans-serif;font-synthesis:none}
+body{background:radial-gradient(ellipse at 84% 0%,rgba(23,65,76,.20),transparent 38%),radial-gradient(ellipse at 0% 100%,rgba(19,44,70,.22),transparent 44%),#080e16;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.kpi strong,.brand strong{font-family:Manrope,"Segoe UI",sans-serif}
+.sidebar{background:linear-gradient(165deg,rgba(15,28,39,.99),rgba(9,18,29,1));border-color:rgba(145,201,209,.14)}
+.logo{width:43px;height:43px;border-color:rgba(132,240,213,.38);background:radial-gradient(circle at 50% 23%,rgba(90,255,204,.21),rgba(12,41,50,.52));box-shadow:inset 0 1px rgba(200,255,233,.22),0 7px 22px rgba(27,239,181,.075)}
+.logo svg{width:27px;height:27px}
+.brand strong{font-weight:800;letter-spacing:-.07em}
+.nav-item{border-radius:11px;color:#8fa5b3;font-size:12px;letter-spacing:-.01em}
+.nav-item .nav-icon{width:22px;min-width:22px;display:grid;place-items:center}
+.nav-item .nav-icon svg{width:19px;height:19px}
+.nav-item.active{color:#a7f7de;background:linear-gradient(90deg,rgba(91,213,182,.17),rgba(95,172,176,.045));border-color:rgba(111,222,199,.18);box-shadow:inset 3px 0 var(--mint)}
+.sidebar-env{display:flex;flex-direction:column;gap:14px;padding:6px 11px 0}
+.sidebar-env-item{display:flex;align-items:center;gap:12px;min-width:0}
+.env-symbol{color:#87cbbd;width:23px;flex:none}
+.env-symbol svg{width:19px;height:19px}
+.sidebar-env-item p{display:flex;flex-direction:column;gap:3px;margin:0}
+.sidebar-env-item strong{font-size:10px;color:#bdd5d8}
+.sidebar-env-item small{font-size:9px;color:#7b93a2}
+.side-status{border-color:rgba(130,206,185,.18);background:rgba(33,57,64,.38)}
+.side-foot{font-size:10px}
+.topbar{background:rgba(6,14,24,.72);border-bottom-color:rgba(141,181,206,.1)}
+.chip{background:rgba(25,59,48,.36);border-color:rgba(138,238,198,.24);color:#a4e6cf}
+.top-link{background:rgba(16,32,43,.7);border-color:rgba(140,200,206,.18);color:#cbece2}
+.notice{background:rgba(19,48,43,.75);border:1px solid rgba(130,216,187,.34);box-shadow:inset 0 1px rgba(204,255,233,.045);color:#b5e4d5}
+.content{max-width:none}
+.hero{position:relative;isolation:isolate;overflow:hidden;border-radius:20px;border:1px solid rgba(119,245,209,.44);background:radial-gradient(ellipse at 72% 0%,rgba(26,184,141,.22),transparent 55%),radial-gradient(ellipse at 8% 110%,rgba(21,131,108,.20),transparent 50%),linear-gradient(112deg,rgba(11,44,48,.98),rgba(8,28,41,.98) 52%,rgba(10,46,46,.96));box-shadow:0 11px 36px rgba(0,0,0,.25),inset 0 1px rgba(203,255,236,.20),inset 0 -1px rgba(98,238,197,.12)}
+.hero::after{display:none}
+.hero-top{position:relative;display:flex;align-items:center;flex:1 1 auto;min-height:0;padding:12px 24px 3px}
+.hero-copy{position:relative;z-index:2;min-width:0;max-width:72%}
+.eyebrow{color:#9af3d6;letter-spacing:.16em;font-size:10px;line-height:1.3}
+.signal-pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:#91efce;box-shadow:0 0 0 4px rgba(112,229,187,.11),0 0 12px rgba(112,229,187,.33);margin:0 5px 1px 0}
+.hero h1{font-size:clamp(23px,2.1vw,34px);line-height:1.13;font-weight:800;letter-spacing:-.048em;text-wrap:balance;margin:7px 0 5px}
+.hero p{font-size:clamp(10px,.8vw,12px);color:#bed5d9;line-height:1.42}
+.hero-action{margin-top:9px;gap:9px}
+.button{border-radius:11px;font-size:11px;font-weight:800;border-color:rgba(145,205,195,.3);padding:8px 13px}
+.button.primary{background:linear-gradient(125deg,#b7f6dd,#7be0c8);border-color:#9ff2d8;color:#0d3630;box-shadow:0 0 24px rgba(74,242,179,.12),inset 0 1px rgba(255,255,255,.45)}
+.compact-hero{display:flex;align-items:center}
+.compact-hero .hero-copy{max-width:70%}
+.premium-hero{padding:0!important;display:flex;flex-direction:column;min-height:0}
+.premium-hero .kpis{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;flex:none;padding:0 12px 11px;margin:0}
+.card{border:1px solid rgba(117,225,204,.31);border-radius:18px;background:radial-gradient(ellipse at 96% 2%,rgba(22,130,105,.09),transparent 49%),linear-gradient(152deg,rgba(19,43,53,.96),rgba(10,27,40,.98));box-shadow:0 10px 24px rgba(0,0,0,.15),inset 0 1px rgba(213,255,231,.08)}
+.kpi{min-width:0;min-height:0;padding:8px 10px;display:grid;grid-template-columns:34px minmax(0,1fr);align-content:center;gap:8px;border-radius:13px;background:linear-gradient(124deg,rgba(36,111,92,.23),rgba(10,29,43,.78));border-color:rgba(120,237,201,.3)}
+.kpi.good{border-color:rgba(119,255,199,.57);background:linear-gradient(129deg,rgba(29,128,94,.38),rgba(10,48,48,.77))}
+.kpi.bad{border-color:rgba(249,156,138,.33);background:linear-gradient(120deg,rgba(87,48,51,.34),rgba(30,31,43,.83))}
+.kpi-icon{width:34px;height:38px;align-self:center;display:grid;place-items:center;color:#96e3c8;background:rgba(79,210,165,.13);border:1px solid rgba(138,247,206,.17);border-radius:10px}
+.kpi-icon svg{height:20px;width:20px}
+.kpi.bad .kpi-icon{color:#ffc0ab;background:rgba(240,122,107,.10);border-color:rgba(245,167,144,.19)}
+.kpi-copy{min-width:0;display:flex;flex-direction:column;justify-content:center}
+.kpi small{color:#d0e7e4;font-size:10px;line-height:1.2}
+.kpi strong{font-size:clamp(19px,1.72vw,28px);line-height:1.08;font-weight:800;letter-spacing:-.045em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi.bad strong{color:#eaf6f5}
+.kpi .hint{color:#a1bac2;font-size:9px;line-height:1.2}
+.panel{border-radius:18px;padding:14px 15px}
+.panel h2,.panel h3{font-family:Manrope,sans-serif;font-size:13px;font-weight:800;letter-spacing:-.025em}
+.panel h2::before,.panel h3::before{content:"";display:inline-block;width:4px;height:13px;border-radius:3px;background:#82f0c7;box-shadow:0 0 12px rgba(76,233,171,.22);margin-right:9px;vertical-align:-2px}
+.panel .caption{color:#a7bdc7;font-size:10px}
+.chart text{fill:#8199a9}
+.bar-fill{background:linear-gradient(90deg,#68c8af,#a0f2d0)}
+.bar-track{background:#233a43}
+.donut{background:conic-gradient(#91e9c9 0 77.8%,#f19a88 77.8% 100%)}
+.doc-mini{border-color:rgba(130,180,191,.12)}
+.hero-art{pointer-events:none;position:absolute;right:9%;top:-27px;width:260px;height:156px;opacity:.70;transform:rotate(-5deg);z-index:1}
+.art-wave{position:absolute;left:-160px;top:-58px;width:480px;height:175px;border-bottom:1px solid rgba(142,255,208,.35);border-radius:50%;transform:rotate(-17deg);box-shadow:0 20px 27px rgba(44,223,157,.04)}
+.art-page{position:absolute;top:23px;left:87px;width:94px;height:100px;border:1px solid rgba(148,255,215,.55);border-radius:11px;background:linear-gradient(147deg,rgba(21,155,121,.65),rgba(12,56,64,.89));box-shadow:inset 0 1px rgba(218,255,226,.16),0 0 22px rgba(76,245,179,.12);transform:rotate(12deg)}
+.art-page-back{transform:translate(69px,15px) rotate(22deg);opacity:.35}
+.art-page-mid{transform:translate(36px,7px) rotate(17deg);opacity:.5}
+.art-page-front{display:flex;flex-direction:column;align-items:flex-start;padding:16px 13px}
+.art-icon{display:block;color:#acffe1}
+.art-icon svg{width:27px;height:27px}
+.art-lines{display:flex;flex-direction:column;gap:5px;margin-top:10px;width:100%}
+.art-lines i{display:block;height:4px;background:rgba(179,255,222,.5);border-radius:4px;width:87%}
+.art-lines i:nth-child(2){width:70%}.art-lines i:nth-child(3){width:53%}
+.art-float{position:absolute;display:grid;place-items:center;width:30px;height:30px;border:1px solid rgba(147,241,205,.32);border-radius:10px;background:rgba(14,54,57,.67);color:#a7fadd;font-weight:800}
+.art-float-one{right:0;top:73px}.art-float-two{left:42px;bottom:12px}
+.hero-art-analytics .art-lines{flex-direction:row;align-items:end;height:55px;gap:8px;margin-top:5px}
+.hero-art-analytics .art-lines i{width:11px;height:42%;background:linear-gradient(0deg,#60efbb,#b5ffe5)}
+.hero-art-analytics .art-lines i:nth-child(2){width:11px;height:65%}
+.hero-art-analytics .art-lines i:nth-child(3){width:11px;height:90%}
+.hero-art-analytics .art-page-front .art-icon{display:none}
+@media(min-width:1081px){
+ .shell{grid-template-columns:245px minmax(0,1fr)}
+ .sidebar{padding-left:17px;padding-right:17px}
+ .brand{gap:11px;padding-bottom:25px}
+ .nav-item{padding:11px 13px}
+ .topbar{height:69px;padding:0 24px}
+ .content{padding:9px 17px 8px;row-gap:8px}
+ .notice{padding:6px 11px;margin:0;font-size:10px;line-height:1.34}
+ .footer{font-size:9px}
+ #screen{gap:10px}
+ #screen[data-view="overview"]{grid-template-rows:minmax(215px,1.12fr) minmax(175px,.98fr) minmax(170px,.95fr)}
+ #screen[data-view="analytics"]{grid-template-rows:minmax(215px,1.10fr) minmax(173px,1.01fr) minmax(145px,.88fr)}
+ #screen[data-view="documents"]{grid-template-rows:minmax(216px,1.15fr) minmax(220px,2.50fr) auto}
+ .premium-hero .hero-top{padding:11px 22px 3px}
+ .premium-hero .kpis{padding:0 11px 10px;gap:8px}
+ .premium-hero .kpi{min-height:0;padding:7px 10px}
+ .dash-main,.dash-bottom,.analysis-panels,.analysis-bottom,.two-columns,.assistant-layout{gap:10px}
+ .dash-main .panel,.dash-bottom .panel,.analysis-panels .panel,.analysis-bottom .panel{overflow:auto}
+ .donut-box{margin:4px 0}
+ .donut{width:clamp(86px,10vh,118px);height:clamp(86px,10vh,118px)}
+ .bar-row{margin:9px 0}
+ .doc-mini{padding:6px 0}
+ .panel .chart{min-height:0}
+ #screen[data-view="analytics"] .analysis-panels{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) minmax(0,1.03fr)}
+ #screen[data-view="analytics"] .analysis-bottom{grid-template-columns:minmax(0,1.57fr) minmax(0,1fr)}
+ #screen[data-view="analytics"] .panel .bottom-note{padding:6px 8px}
+}
+@media (min-width:1081px) and (max-height:780px){
+ #screen[data-view="overview"]{grid-template-rows:minmax(175px,1fr) minmax(140px,1fr) minmax(130px,.9fr)}
+ #screen[data-view="analytics"]{grid-template-rows:minmax(175px,1.08fr) minmax(145px,1fr) minmax(116px,.9fr)}
+ #screen[data-view="documents"]{grid-template-rows:minmax(175px,.95fr) minmax(195px,2.5fr) auto}
+ .hero h1{font-size:clamp(20px,2vw,26px)}
+ .premium-hero .kpis{padding-bottom:7px}
+ .kpi{grid-template-columns:29px minmax(0,1fr);gap:6px}
+ .kpi-icon{width:29px;height:31px}
+ .kpi strong{font-size:clamp(18px,1.65vw,23px)}
+ .sidebar-env{gap:9px}
+ .brand{padding-bottom:16px}
+}
+@media(max-width:1080px){
+ .hero-art{opacity:.30;right:5%}
+ .premium-hero{padding:0}
+ .premium-hero .hero-top{padding:19px 18px 10px;min-height:120px}
+ .premium-hero .kpis{padding:0 11px 12px}
+ .premium-hero .hero-copy{max-width:88%}
+ .kpi{min-height:82px}
+ .sidebar-env{display:none}
+}
+@media(max-width:700px){
+ .hero-art{display:none}
+ .premium-hero .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .premium-hero .hero-copy{max-width:100%}
+ .kpi{grid-template-columns:28px minmax(0,1fr);gap:6px}
+ .kpi-icon{width:28px;height:31px}
+ .kpi-icon svg{height:17px;width:17px}
+ .kpi strong{font-size:19px}
+ .hero h1{font-size:clamp(22px,5vw,29px)}
+}
 </style>
 </head>
 <body>
 <div class="shell"><aside class="sidebar" aria-label="Navigation principale">
-<div class="brand"><div class="logo" aria-hidden="true">◉</div><div><strong>DOCUMIND<span>.</span></strong><small>INTELLIGENT WORKSPACE</small></div></div>
+<div class="brand"><div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11a2 2 0 0 0-2 2c0 2.4-.3 5.4-1.4 7.1"/><path d="M14 13c0 3.1-.3 5.6-1.2 8"/><path d="M8 13c0-2.2 1.7-4 4-4s4 1.8 4 4c0 2.7-.2 4.8-.7 6.8"/><path d="M6 15.5V13a6 6 0 0 1 12 0v3.1"/><path d="M4.2 12a7.8 7.8 0 0 1 15.6 0v2.6"/><path d="M7.1 19.3c-.6 1-1 1.6-1.7 2"/><path d="M18.5 18.2c-.1 1-.3 1.8-.7 2.8"/></svg></div><div><strong>DOCUMIND<span>.</span></strong><small>INTELLIGENT WORKSPACE</small></div></div>
 <div class="sidebar-caption">ESPACE DE DÉMONSTRATION</div><nav class="nav" id="main-nav" aria-label="Pages de la démo">
-<button class="nav-item active" data-page="overview" aria-current="page"><span class="nav-icon">▦</span>Vue d’ensemble</button>
-<button class="nav-item" data-page="documents"><span class="nav-icon">▤</span>Documents</button>
-<button class="nav-item" data-page="analytics"><span class="nav-icon">▥</span>Analyse & KPI</button>
-<button class="nav-item" data-page="assistant"><span class="nav-icon">✳</span>Assistant IA</button>
-<button class="nav-item" data-page="history"><span class="nav-icon">⌁</span>Historique</button>
-</nav><div class="sidebar-caption" style="margin-top:24px">ENVIRONNEMENT</div>
+<button class="nav-item active" data-page="overview" aria-current="page"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Vue d’ensemble</button>
+<button class="nav-item" data-page="documents"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M14 3v5h5"/><path d="M9 12h6M9 16h6"/></svg></span>Documents</button>
+<button class="nav-item" data-page="analytics"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V11M9 20V5M14 20v-8M19 20V8"/><path d="M3 21h18"/></svg></span>Analyse & KPI</button>
+<button class="nav-item" data-page="assistant"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a3 3 0 0 0-5 2 3 3 0 0 0-2 5 3 3 0 0 0 1 5 3 3 0 0 0 6 4V4Z"/><path d="M12 4a3 3 0 0 1 5 2 3 3 0 0 1 2 5 3 3 0 0 1-1 5 3 3 0 0 1-6 4V4Z"/><path d="M7 9h2M15 9h2M8 15l2-2M16 15l-2-2"/></svg></span>Assistant IA</button>
+<button class="nav-item" data-page="history"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5-7 5 14 2.5-7H21"/></svg></span>Historique</button>
+</nav><div class="sidebar-caption" style="margin-top:24px">ENVIRONNEMENT</div><div class="sidebar-env" aria-label="Composants de la démonstration">
+<div class="sidebar-env-item"><span class="env-symbol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/></svg></span><p><strong>Corpus fictif</strong><small>9 documents de référence</small></p></div>
+<div class="sidebar-env-item"><span class="env-symbol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2 20 5v6c0 5-3 8-8 11-5-3-8-6-8-11V5l8-3Z"/><path d="m9 12 2 2 4-5"/></svg></span><p><strong>API Django D1</strong><small>Service en lecture seule</small></p></div>
+<div class="sidebar-env-item"><span class="env-symbol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a3 3 0 0 0-5 2 3 3 0 0 0-2 5 3 3 0 0 0 1 5 3 3 0 0 0 6 4V4Z"/><path d="M12 4a3 3 0 0 1 5 2 3 3 0 0 1 2 5 3 3 0 0 1-1 5 3 3 0 0 1-6 4V4Z"/><path d="M7 9h2M15 9h2M8 15l2-2M16 15l-2-2"/></svg></span><p><strong>Assistant simulé</strong><small>Réponses préenregistrées</small></p></div></div>
 <div class="side-status"><strong><span class="dot"></span>Démo publique simulée</strong><p>Scénarios fictifs locaux • API D1 séparée en lecture seule • aucune IA exécutée dans cette vitrine.</p></div>
 <div class="side-foot">DocuMind V1.0 · Présentation publique</div>
 </aside><main class="main"><header class="topbar"><div class="breadcrumbs">Workspace <span aria-hidden="true">›</span> <strong id="page-title">Vue d’ensemble</strong></div><div class="top-right"><span class="chip"><span class="dot"></span>Simulation publique</span><a class="top-link" href="/api/v1/health/" target="_blank" rel="noopener noreferrer">État API D1 ↗</a><a class="top-link" href="https://github.com/sogoyou8/DocuMind" target="_blank" rel="noopener noreferrer">Code source ↗</a></div></header>
@@ -153,22 +299,25 @@ const names={overview:'Vue d’ensemble',documents:'Documents',analytics:'Analys
 const el=document.getElementById('screen');
 const h=(value)=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const button=(label,action,primary=false)=>`<button class="button ${primary?'primary':''}" data-action="${action}">${label}</button>`;
-const hero=(eyebrow,title,subtitle,actions='')=>`<section class="hero"><div class="eyebrow">● ${eyebrow}</div><h1>${title}</h1><p>${subtitle}</p>${actions?`<div class="hero-action">${actions}</div>`:''}</section>`;
-const kpi=(label,value,note,cl='')=>`<article class="card kpi ${cl}"><small>${label}</small><strong>${value}</strong><div class="hint">${note}</div></article>`;
+const icon = (name) => ({overview:"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/></svg>",documents:"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z\"/><path d=\"M14 3v5h5\"/><path d=\"M9 12h6M9 16h6\"/></svg>",analytics:"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"><path d=\"M4 20V11M9 20V5M14 20v-8M19 20V8\"/><path d=\"M3 21h18\"/></svg>",assistant:"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 4a3 3 0 0 0-5 2 3 3 0 0 0-2 5 3 3 0 0 0 1 5 3 3 0 0 0 6 4V4Z\"/><path d=\"M12 4a3 3 0 0 1 5 2 3 3 0 0 1 2 5 3 3 0 0 1-1 5 3 3 0 0 1-6 4V4Z\"/><path d=\"M7 9h2M15 9h2M8 15l2-2M16 15l-2-2\"/></svg>",history:"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12h4l2.5-7 5 14 2.5-7H21\"/></svg>"})[name] || '';
+const art = (kind) => `<div class="hero-art hero-art-${kind}" aria-hidden="true"><span class="art-wave"></span><span class="art-page art-page-back"></span><span class="art-page art-page-mid"></span><span class="art-page art-page-front"><span class="art-icon">${icon(kind)}</span><span class="art-lines"><i></i><i></i><i></i></span></span><span class="art-float art-float-one">✓</span><span class="art-float art-float-two">◈</span></div>`;
+const artKind = (eyebrow) => eyebrow.includes('ANALYSE')?'analytics':eyebrow.includes('ASSISTANT')?'assistant':eyebrow.includes('PREUVES')?'history':'documents';
+const hero = (eyebrow,title,subtitle,actions='') => `<section class="hero compact-hero"><div class="hero-copy"><div class="eyebrow"><span class="signal-pulse"></span> ${eyebrow}</div><h1>${title}</h1><p>${subtitle}</p>${actions?`<div class="hero-action">${actions}</div>`:''}</div>${art(artKind(eyebrow))}</section>`;
+const premiumHero = (eyebrow,title,subtitle,actions,kpis) => `<section class="hero premium-hero"><div class="hero-top"><div class="hero-copy"><div class="eyebrow"><span class="signal-pulse"></span> ${eyebrow}</div><h1>${title}</h1><p>${subtitle}</p>${actions?`<div class="hero-action">${actions}</div>`:''}</div>${art(artKind(eyebrow))}</div>${kpis}</section>`;
+const kpi=(label,value,note,cl='')=>{const kind=/rejet|anomalie/i.test(label)?'history':/montant|dépense|fournisseur/i.test(label)?'analytics':/valid|index/i.test(label)?'shield':'documents';const glyph=kind==='shield'?"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linejoin=\"round\"><path d=\"M12 2 20 5v6c0 5-3 8-8 11-5-3-8-6-8-11V5l8-3Z\"/><path d=\"m9 12 2 2 4-5\"/></svg>":icon(kind);return `<article class="card kpi ${cl}"><span class="kpi-icon" aria-hidden="true">${glyph}</span><div class="kpi-copy"><small>${label}</small><strong>${value}</strong><div class="hint">${note}</div></div></article>`};
 const panel=(title,subtitle,body,extra='')=>`<section class="card panel ${extra}"><h2>${title}</h2><div class="caption">${subtitle}</div>${body}</section>`;
 const chart=()=>`<svg class="chart" viewBox="0 0 650 160" role="img" aria-label="Courbe illustrative des dépenses sur cinq périodes, sans valeurs mensuelles revendiquées"><defs><linearGradient id="fade" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#7dd9b9" stop-opacity=".34"/><stop offset="1" stop-color="#7dd9b9" stop-opacity="0"/></linearGradient></defs><path d="M34 32H610M34 70H610M34 108H610" stroke="#35505a" stroke-dasharray="4 5"/><path d="M40 94 L177 73 L315 50 L452 60 L598 94 L598 127 L40 127Z" fill="url(#fade)"/><path d="M40 94 L177 73 L315 50 L452 60 L598 94" stroke="#94e6cc" stroke-width="3" fill="none"/>${[[40,94],[177,73],[315,50],[452,60],[598,94]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#133b37" stroke="#a5e9d2" stroke-width="2"/>`).join('')}<text x="30" y="150">Juil.</text><text x="168" y="150">Août</text><text x="304" y="150">Sept.</text><text x="442" y="150">Oct.</text><text x="580" y="150">Nov.</text></svg><div class="legend"><span class="dot"></span> Courbe illustrative · les valeurs mensuelles ne sont pas reproduites</div>`;
 const donut=()=>`<div class="donut-box"><div class="donut"><div class="donut-center"><strong>9</strong><small>documents</small></div></div><div class="key"><div>🟢 Indexés / acceptés <b>7</b></div><div>🟠 Rejetés <b>2</b></div><div>○ En attente <b>0</b></div></div></div><div class="bottom-note">Les documents rejetés sont exclus des montants présentés.</div>`;
 const supplier=()=>[['Atelier Fictif','588,00 €',100],['Librairie Fictive','486,00 €',83],['Imprimerie Fictive','270,00 €',46]].map(([name,value,p])=>`<div class="bar-row"><div class="line"><span>${name}</span><b>${value}</b></div><div class="bar-track"><div class="bar-fill" style="width:${p}%"></div></div></div>`).join('');
-function overview(){return hero('DOCUMIND / WORKSPACE V1.0','Gérez, vérifiez, analysez et interrogez <span class="mint">vos documents.</span>','Du document brut aux indicateurs et à la citation : découvrez les cinq vues de la plateforme locale à travers un scénario public clairement simulé.',button('Explorer les documents →','go-documents',true)+button('Assistant IA →','go-assistant'))+
-`<div class="grid kpis">${kpi('Documents suivis','9','Corpus fictif de référence','good')}${kpi('Validés ou indexés','7','Documents retenus pour les analyses')}${kpi('Montant TTC vérifié','1 344,00 €','Total EUR du corpus fictif')}${kpi('Documents rejetés','2','Exclus des indicateurs','bad')}</div>`+
+function overview(){return premiumHero('DOCUMIND / WORKSPACE V1.0','Gérez, vérifiez, analysez et interrogez <span class="mint">vos documents.</span>','Du document brut aux indicateurs et à la citation : découvrez les cinq vues de la plateforme locale à travers un scénario public clairement simulé.',button('Explorer les documents →','go-documents',true)+button('Assistant IA →','go-assistant'),`<div class="grid kpis">${kpi('Documents suivis','9','Corpus fictif de référence','good')}${kpi('Validés ou indexés','7','Documents retenus pour les analyses')}${kpi('Montant TTC vérifié','1 344,00 €','Total EUR du corpus fictif')}${kpi('Documents rejetés','2','Exclus des indicateurs','bad')}</div>`)+
 `<div class="dash-main">${panel('Évolution des dépenses','Représentation illustrative, sans montant mensuel inventé',chart())}${panel('Contrôle documentaire','Répartition des états du corpus de démonstration',donut())}</div>`+
 `<div class="dash-bottom">${panel('Documents récents','Exemples de fichiers fictifs',docs.slice(0,4).map(d=>`<div class="doc-mini"><span>${h(d.name)}</span><span class="tag ${d.state==='REJETÉ'?'rejected':''}">${d.state}</span></div>`).join(''))}${panel('Principaux fournisseurs','Montants fictifs réconciliés (EUR)',supplier())}${panel('Intégrité & provenance','Le circuit de confiance de DocuMind',`<div class="trust"><div class="trust-item"><span>▤</span><div><b>01 · Réception</b><small>Fichier et empreinte SHA-256</small></div></div><div class="trust-item"><span>✓</span><div><b>02 · Validation</b><small>Contrôles qualité et anomalies</small></div></div><div class="trust-item"><span>✳</span><div><b>03 · Citation</b><small>Réponse reliée à sa source documentaire</small></div></div></div>`)}</div>`;
 }
 function docInspector(){const d=docs.find(x=>x.id===state.selected)||docs[2];const bad=d.state==='REJETÉ';const top=`<div class="inspector-top"><div><div class="eyebrow">Fiche documentaire</div><strong>${h(d.name)}</strong><div style="margin-top:9px"><span class="tag ${bad?'rejected':''}">${d.state}</span></div></div><span class="muted">Données fictives</span></div>`;const tabs=['Aperçu','Factures','Extraits','Anomalies','Historique'];let body='';if(state.inspector==='Aperçu')body=`<div class="statpair"><div><strong>${bad?'0':d.id==='sep'?'3':'1'}</strong><span class="muted">Extraits illustratifs</span></div><div><strong>${bad?'1':'0'}</strong><span class="muted">Anomalies illustratives</span></div></div><div class="dl"><div><small>Type</small><strong>${h(d.type)}</strong></div><div><small>Statut</small><strong>${d.state}</strong></div><div><small>Source</small><strong>Corpus fictif</strong></div><div><small>Accès</small><strong>Lecture seule</strong></div></div><p class="doc-inspector-copy">Le logiciel local réel conserve la provenance, les contrôles et les états. Cette fiche en montre le principe sans consulter de document privé.</p>`;else if(state.inspector==='Factures')body=d.id==='invoice'?`<div class="callout-inline">Facture DM-2026-001 · Atelier Fictif<br><b>HT : 100,00 € · TVA : 20,00 € · TTC : 120,00 €</b><br>Source : ${source.file}</div>`:`<div class="callout-inline">Aucune facture détaillée n'est exposée pour ce document dans le scénario public. Sélectionnez « demo-d2-facture-valide.csv » pour consulter l'exemple.</div>`;else if(state.inspector==='Extraits')body=d.id==='invoice'?`<div class="callout-inline"><b>${source.location}</b><p>${source.excerpt}</p></div>`:`<div class="callout-inline">Extraits non reproduits dans cette démonstration pour ce document. La V1 locale conserve ses preuves et ses empreintes.</div>`;else if(state.inspector==='Anomalies')body=bad?`<div class="callout-inline" style="border-color:#9d6662">Document rejeté lors des contrôles qualité du corpus de référence ; son contenu n'est pas comptabilisé.</div>`:`<div class="callout-inline">Aucune anomalie détaillée présentée pour ce document dans le scénario.</div>`;else body=`<div class="callout-inline">Réception → contrôle → ${bad?'rejet':'indexation'}. Le journal local complet conserve les événements horodatés ; ici, le chemin est illustratif.</div>`;
 return `<div class="card panel-pad">${top}<div class="tabs" role="tablist" aria-label="Détail du document">${tabs.map(t=>`<button role="tab" aria-selected="${t===state.inspector}" class="${t===state.inspector?'active':''}" data-inspector="${t}">${t}</button>`).join('')}</div>${body}</div>`;
 }
-function documents(){let list=docs.filter(d=>(state.filter==='TOUS'||(state.filter==='INDEXÉS'&&d.state==='INDEXÉ')||(state.filter==='REJETÉS'&&d.state==='REJETÉ'))&&d.name.toLowerCase().includes(state.search.toLowerCase()));return hero('DOCUMENTS / CATALOGUE','Bibliothèque <span class="mint">documentaire</span>','Explorez les états et les preuves d’un corpus fictif. L’import, le traitement et l’indexation réels restent désactivés sur cette démonstration.',`<button class="button primary" disabled title="Disponible uniquement dans l’application locale">Importer (local uniquement)</button>`)+`<div class="grid kpis">${kpi('Documents','9','Corpus fictif')}${kpi('Validés / indexés','7','Statuts représentés')}${kpi('En attente','0','Statut représenté')}${kpi('Rejetés','2','Exclus des calculs','bad')}</div>`+`<div class="two-columns"><section class="card panel-pad"><h2>Catalogue</h2><div class="caption">${list.length} fichier(s) dans la sélection · aucun import possible</div><div class="doc-tools"><input class="search" id="doc-search" type="search" placeholder="Rechercher un document…" value="${h(state.search)}" aria-label="Rechercher dans les documents"/><div class="seg" role="group" aria-label="Filtrer par état">${['TOUS','INDEXÉS','REJETÉS'].map(f=>`<button class="${f===state.filter?'active':''}" data-filter="${f}">${f}</button>`).join('')}</div></div><div class="table-wrap"><table class="docs-table"><thead><tr><th>Document</th><th>État</th><th>Type</th></tr></thead><tbody>${list.map(d=>`<tr tabindex="0" role="button" data-document="${d.id}" class="${state.selected===d.id?'is-selected':''}" aria-label="Ouvrir ${h(d.name)}"><td>${h(d.name)}</td><td><span class="tag ${d.state==='REJETÉ'?'rejected':''}">${d.state}</span></td><td>${d.type}</td></tr>`).join('')||'<tr><td colspan="3">Aucun document correspondant</td></tr>'}</tbody></table></div></section>${docInspector()}</div>`+`<div class="bottom-note">Import, validation, indexation et utilisation par l’IA sont des opérations distinctes dans l’application locale. Cette vitrine ne modifie aucune donnée.</div>`;}
-function analytics(){return hero('ANALYSE / SQL D3','Intelligence <span class="mint">analytique</span>','Scénario figé issu du corpus fictif validé : les montants sont explicitement identifiés et aucune requête PostgreSQL D3 n’est exécutée ici.',`<a class="button" href="https://github.com/sogoyou8/DocuMind" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Consulter la source →</a>`)+`<div class="grid kpis">${kpi('Factures acceptées','15','Nombre validé du corpus','good')}${kpi('Montant TTC · EUR','1 344,00 €','Rejetés exclus')}${kpi('Fournisseurs · EUR','3','Fournisseurs du corpus')}${kpi('Taux de rejet','22,2 %','2 documents sur 9','bad')}</div>`+`<div class="analysis-panels">${panel('Dépenses dans le temps','Courbe illustrative de cinq périodes',chart())}${panel('Dépenses par fournisseur','EUR · valeurs fictives de référence',supplier())}${panel('Qualité documentaire','États des 9 documents fictifs',donut())}</div>`+`<div class="analysis-bottom">${panel('Réconciliation par devise','Aucune conversion implicite',`<table class="summary-table"><thead><tr><th>Devise</th><th>Factures</th><th>HT</th><th>TVA</th><th>TTC</th></tr></thead><tbody><tr><td>EUR</td><td>15</td><td>1 120,00 €</td><td>224,00 €</td><td>1 344,00 €</td></tr></tbody></table>`)}${panel('Anomalies détectées','Contrôle du corpus fictif',`<div class="doc-mini"><span>Incohérence du montant TTC</span><b>2</b></div><div class="bottom-note">Les anomalies sont conservées, et les montants rejetés exclus de l’agrégation.</div>`)}</div>`;}
+function documents(){return premiumHero('DOCUMENTS / CATALOGUE','Bibliothèque <span class="mint">documentaire</span>','Explorez les états et les preuves d’un corpus fictif. L’import, le traitement et l’indexation réels restent désactivés sur cette démonstration.',`<button class="button primary" disabled title="Disponible uniquement dans l’application locale">Importer (local uniquement)</button>`,`<div class="grid kpis">${kpi('Documents','9','Corpus fictif')}${kpi('Validés / indexés','7','Statuts représentés')}${kpi('En attente','0','Statut représenté')}${kpi('Rejetés','2','Exclus des calculs','bad')}</div>`)+`<div class="two-columns"><section class="card panel-pad"><h2>Catalogue</h2><div class="caption">${list.length} fichier(s) dans la sélection · aucun import possible</div><div class="doc-tools"><input class="search" id="doc-search" type="search" placeholder="Rechercher un document…" value="${h(state.search)}" aria-label="Rechercher dans les documents"/><div class="seg" role="group" aria-label="Filtrer par état">${['TOUS','INDEXÉS','REJETÉS'].map(f=>`<button class="${f===state.filter?'active':''}" data-filter="${f}">${f}</button>`).join('')}</div></div><div class="table-wrap"><table class="docs-table"><thead><tr><th>Document</th><th>État</th><th>Type</th></tr></thead><tbody>${list.map(d=>`<tr tabindex="0" role="button" data-document="${d.id}" class="${state.selected===d.id?'is-selected':''}" aria-label="Ouvrir ${h(d.name)}"><td>${h(d.name)}</td><td><span class="tag ${d.state==='REJETÉ'?'rejected':''}">${d.state}</span></td><td>${d.type}</td></tr>`).join('')||'<tr><td colspan="3">Aucun document correspondant</td></tr>'}</tbody></table></div></section>${docInspector()}</div>`+`<div class="bottom-note">Import, validation, indexation et utilisation par l’IA sont des opérations distinctes dans l’application locale. Cette vitrine ne modifie aucune donnée.</div>`;}
+function analytics(){return premiumHero('ANALYSE / SQL D3','Intelligence <span class="mint">analytique</span>','Scénario figé issu du corpus fictif validé : les montants sont explicitement identifiés et aucune requête PostgreSQL D3 n’est exécutée ici.',`<a class="button" href="https://github.com/sogoyou8/DocuMind" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Consulter la source →</a>`,`<div class="grid kpis">${kpi('Factures acceptées','15','Nombre validé du corpus','good')}${kpi('Montant TTC · EUR','1 344,00 €','Rejetés exclus')}${kpi('Fournisseurs · EUR','3','Fournisseurs du corpus')}${kpi('Taux de rejet','22,2 %','2 documents sur 9','bad')}</div>`)+`<div class="analysis-panels">${panel('Dépenses dans le temps','Courbe illustrative de cinq périodes',chart())}${panel('Dépenses par fournisseur','EUR · valeurs fictives de référence',supplier())}${panel('Qualité documentaire','États des 9 documents fictifs',donut())}</div>`+`<div class="analysis-bottom">${panel('Réconciliation par devise','Aucune conversion implicite',`<table class="summary-table"><thead><tr><th>Devise</th><th>Factures</th><th>HT</th><th>TVA</th><th>TTC</th></tr></thead><tbody><tr><td>EUR</td><td>15</td><td>1 120,00 €</td><td>224,00 €</td><td>1 344,00 €</td></tr></tbody></table>`)}${panel('Anomalies détectées','Contrôle du corpus fictif',`<div class="doc-mini"><span>Incohérence du montant TTC</span><b>2</b></div><div class="bottom-note">Les anomalies sont conservées, et les montants rejetés exclus de l’agrégation.</div>`)}</div>`;}
 function answer(question){const q=question.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');const isInvoice=/dm-2026-001|facture|tva|ttc|atelier|fournisseur/.test(q);if(!isInvoice)return {reply:'Je ne peux pas établir cette réponse avec le seul scénario public. Dans l’application locale, l’assistant doit citer une preuve ou s’abstenir.',cited:false};if(/tva|taxe/.test(q))return {reply:'La TVA de la facture DM-2026-001 est de 20,00 €.',cited:true};if(/ttc|total/.test(q))return {reply:'Le montant TTC de la facture DM-2026-001 est de 120,00 €.',cited:true};if(/fournisseur|atelier/.test(q))return {reply:'Le fournisseur indiqué est Atelier Fictif.',cited:true};if(/numero|num[eé]ro|reference/.test(q))return {reply:'Le numéro de facture présent dans la source est DM-2026-001.',cited:true};return {reply:'Le scénario contient une facture DM-2026-001 d’Atelier Fictif : 100,00 € HT, 20,00 € de TVA et 120,00 € TTC.',cited:true};}
 function submitQuestion(question){if(!question.trim())return;const q=question.trim().slice(0,250),ans=answer(q);state.chat.push({q,reply:ans.reply,cited:ans.cited});state.page='assistant';render();const c=document.getElementById('conversation');if(c)c.scrollTop=c.scrollHeight;}
 function assistant(){const suggestions=['Quel est le montant de TVA de la facture DM-2026-001 ?','Quel est le montant TTC de la facture DM-2026-001 ?','Quel fournisseur apparaît sur la facture ?','Quel est le numéro de la facture ?'];return hero('ASSISTANT / RAG LOCAL D4','Parlez à vos <span class="mint">documents</span>','Voici une simulation de réponses préenregistrées et de citations vérifiables. Ollama et ChromaDB ne fonctionnent pas sur le serveur Render.',`<span class="tag">Scénarios fixes · aucune IA live</span>`)+`<div class="assistant-layout"><div class="card chat"><div class="conversation" id="conversation">${state.chat.length?state.chat.map(m=>`<div class="bubble user">${h(m.q)}</div><div class="bubble bot"><b>DocuMind · Réponse préenregistrée</b><p>${h(m.reply)}</p></div>${m.cited?`<div class="source"><strong>▤ Source illustrative vérifiée</strong>${h(source.file)} · ${h(source.location)}<p>${h(source.excerpt)}</p></div>`:''}`).join(''):`<div style="margin:auto;text-align:center;max-width:470px"><div style="font-size:42px;color:var(--mint)">✳</div><div class="eyebrow" style="margin-top:14px">Un assistant, des preuves</div><h2>Que souhaitez-vous comprendre ?</h2><p class="muted" style="line-height:1.8">Choisissez une question ci-dessous pour afficher une réponse prédéfinie avec sa source ; une question non couverte entraîne une abstention.</p></div>`}</div><form id="ask-form" class="chat-form"><input name="question" maxlength="250" aria-label="Question sur la facture fictive" placeholder="Posez une question sur le scénario fictif…" required/><button type="submit" class="button primary">Envoyer ↗</button></form></div><div class="right-stack">${panel('Moteur documentaire','Architecture de la V1 locale, non exécutée dans cette simulation',`<div class="engine-item"><span class="symbol">✳</span><div>Génération locale<br/><small class="muted">Ollama / Qwen (dans l’application réelle)</small></div></div><div class="engine-item"><span class="symbol">▤</span><div>Recherche vectorielle<br/><small class="muted">ChromaDB (dans l’application réelle)</small></div></div><div class="engine-item"><span class="symbol">✓</span><div>Citation et contrôle<br/><small class="muted">Extraits reliés au document</small></div></div><div class="bottom-note">Les réponses affichées ici sont préécrites ; aucune requête au modèle n'est envoyée.</div>`)}${panel('Questions de démonstration','Sélectionnez un scénario documenté',`<div class="demo-questions">${suggestions.map((q,i)=>`<button class="button" data-question="${i}">${['Retrouver la TVA','Vérifier le TTC','Identifier le fournisseur','Trouver le numéro'][i]} ↗</button>`).join('')}</div>`)}</div></div>`;}
