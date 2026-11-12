@@ -33,3 +33,19 @@ class RenderInteractiveDemoTests(SimpleTestCase):
         self.assertIn("el.dataset.view=state.page", page)
         self.assertIn("overflow-y:auto", page)
         self.assertIn("@media(max-width:700px)", page)
+
+    @override_settings(DEMO_READONLY=True)
+    def test_premium_visual_parity_structure(self):
+        """Prevent falling back to a separate KPI strip or generic dashboard."""
+        html = self.client.get("/").content.decode("utf-8")
+        self.assertIn("font-family:Manrope", html)
+        self.assertIn("PxM: premium visual parity", html)
+        self.assertIn("class=\"brand\"", html)
+        self.assertIn('class="hero-art hero-art-', html)
+        self.assertIn("const premiumHero", html)
+        self.assertIn("class=\"kpi-icon\"", html)
+        for view in ("overview", "documents", "analytics"):
+            self.assertIn("function " + view + "(){return premiumHero", html)
+        self.assertIn("grid-template-rows:minmax(215px", html)
+        self.assertIn("@media(max-width:700px)", html)
+        self.assertIn("Les API D1 restent en lecture seule", html)
