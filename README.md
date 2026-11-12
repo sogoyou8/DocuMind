@@ -173,6 +173,8 @@ Pour l'intégration backend et IA : `docker compose --profile ai exec -T rag pyt
 
 Captures et rapports locaux : `frontend/test-results/` et `frontend/playwright-report/`.
 
+**Affichage mono-écran (12 novembre 2026) :** sur les écrans de bureau (largeur supérieure à 1080 px et hauteur d’au moins 700 px), les cinq pages occupent exactement la hauteur disponible dans le navigateur. Les graphiques, les indicateurs et les modules principaux restent visibles ensemble ; seuls les catalogues, les inspecteurs, la conversation et les événements trop longs défilent dans leur zone. En dessous de ces dimensions, une mise en page défilante et responsive est conservée pour éviter la perte de contenu. Le mode démo reste une simulation sans backend D2/D3/D4 public.
+
 ### Démonstration interactive publique — Render
 
 **Adresse :** https://documind-d1-api-htpg.onrender.com
