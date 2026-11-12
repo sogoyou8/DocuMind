@@ -11,14 +11,14 @@ class RenderInteractiveDemoTests(SimpleTestCase):
         self.assertContains(response, "Simulation publique")
         self.assertContains(response, "scénario préenregistré")
         self.assertContains(response, "Les API D1 restent en lecture seule")
-        self.assertContains(response, "Aucune IA live")
+        self.assertContains(response, "aucune IA exécutée")
 
     @override_settings(DEMO_READONLY=True)
     def test_five_sections_are_present_without_external_analytics_or_ai(self):
         response = self.client.get("/")
         for tab in ("overview", "documents", "analytics", "assistant", "history"):
             self.assertContains(response, 'data-page="' + tab + '"')
-        self.assertContains(response, "Import (local uniquement)")
+        self.assertContains(response, "Importer (local uniquement)")
         self.assertContains(response, "1 344,00 €")
         self.assertContains(response, "demo-d2-facture-valide.csv")
         self.assertNotContains(response, '<script src="https://')
