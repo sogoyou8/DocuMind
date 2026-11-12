@@ -175,6 +175,12 @@ Captures et rapports locaux : `frontend/test-results/` et `frontend/playwright-r
 
 **Affichage mono-écran (12 novembre 2026) :** sur les écrans de bureau (largeur supérieure à 1080 px et hauteur d’au moins 700 px), les cinq pages occupent exactement la hauteur disponible dans le navigateur. Les graphiques, les indicateurs et les modules principaux restent visibles ensemble ; seuls les catalogues, les inspecteurs, la conversation et les événements trop longs défilent dans leur zone. En dessous de ces dimensions, une mise en page défilante et responsive est conservée pour éviter la perte de contenu. Le mode démo reste une simulation sans backend D2/D3/D4 public.
 
+### Alignement visuel PxM de la démonstration publique (13 novembre 2026)
+
+La présentation Render reprend les mêmes principes visuels que le cockpit premium local : palette noir/marine/menthe, typographies DM Sans/Manrope, logo empreinte, pictogrammes, illustrations translucides, bordures et ombres glassmorphism. Le bandeau des vues **Vue d’ensemble**, **Documents** et **Analyse & KPI** regroupe désormais le titre, le décor et les quatre KPI, au lieu d’une rangée indépendante. Les panneaux conservant davantage de contenu utilisent un défilement interne pour respecter la composition mono-écran sur ordinateur.
+
+Le rapprochement est **visuel et fonctionnel côté navigateur**, et non une duplication du frontend React. La bannière « Mode démonstration » et la mention du backend D1 restent volontairement visibles ; aucune capacité backend locale n'est rendue publique. Contrôles statiques : code JavaScript compilable, rendu des cinq vues en DOM simulé, quatre KPI inclus dans les bandeaux premium, filtres et inspector Documents, et exemple d'assistant à réponse préenregistrée. Le contrôle pixel-par-pixel dans un véritable navigateur reste une validation visuelle distincte.
+
 ### Démonstration interactive publique — Render
 
 **Adresse :** https://documind-d1-api-htpg.onrender.com
