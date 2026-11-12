@@ -44,6 +44,6 @@ describe("DocuMind discovery is a faithful practical guide", () => {
     expect(history).toContain("actuellement chargés");
     expect(discoveryPage("assistant").steps[0].action).toContain("sans envoyer");
     const data = JSON.stringify(discoveryPages);
-    expect(data).not.toMatch(/1\\s?344|4\\s?560|faker|setTimeout|fetch\\(/);
+    expect(data).not.toMatch(/1\s?344|4\s?560|faker|setTimeout|fetch\(/);
   });
 });
