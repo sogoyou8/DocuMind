@@ -22,3 +22,14 @@ class RenderInteractiveDemoTests(SimpleTestCase):
         self.assertContains(response, "1 344,00 €")
         self.assertContains(response, "demo-d2-facture-valide.csv")
         self.assertNotContains(response, '<script src="https://')
+
+    @override_settings(DEMO_READONLY=True)
+    def test_desktop_monoscreen_and_mobile_fallback_are_defined(self):
+        page = self.client.get("/").content.decode("utf-8")
+        self.assertIn("@media (min-width:1081px) and (min-height:700px)", page)
+        self.assertIn("height:100dvh;min-height:0;overflow:hidden", page)
+        for view in ("overview", "documents", "analytics", "assistant", "history"):
+            self.assertIn('#screen[data-view="' + view + '"]', page)
+        self.assertIn("el.dataset.view=state.page", page)
+        self.assertIn("overflow-y:auto", page)
+        self.assertIn("@media(max-width:700px)", page)
