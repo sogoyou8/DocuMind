@@ -13,6 +13,109 @@
 @media(max-width:1080px){.shell{grid-template-columns:190px 1fr}.sidebar{padding:20px 12px}.content{padding:15px}.dash-bottom,.analysis-panels{grid-template-columns:1fr 1fr}.dash-bottom .card:last-child,.analysis-panels .card:last-child{grid-column:1/-1}.kpis{grid-template-columns:repeat(2,1fr)}.two-columns,.assistant-layout{grid-template-columns:1fr}.chat{min-height:420px}}
 @media(max-width:700px){.shell{grid-template-columns:minmax(0,1fr)}.sidebar,.main{min-width:0}.nav{max-width:100%;min-width:0}.sidebar{height:auto;position:static;padding:12px 12px 8px;display:block}.brand{padding:2px 4px 10px}.sidebar-caption,.side-status,.side-foot{display:none}.nav{display:flex;gap:5px;overflow-x:auto}.nav-item{width:auto;flex:none;padding:10px 11px;font-size:11px}.nav-item .nav-icon{display:none}.topbar{height:auto;min-height:60px;padding:12px;flex-wrap:wrap}.breadcrumbs{font-size:11px}.top-right{flex-wrap:wrap}.content{padding:12px}.hero{padding:21px 16px}.kpis{grid-template-columns:repeat(2,1fr)}.dash-main,.dash-bottom,.analysis-panels,.analysis-bottom{grid-template-columns:1fr}.dash-bottom .card:last-child,.analysis-panels .card:last-child{grid-column:auto}.footer{flex-direction:column}.donut-box{justify-content:start}.docs-table td:nth-child(3),.docs-table th:nth-child(3){display:none}}
 @media(prefers-reduced-motion:no-preference){.nav-item,.button,.tag{transition:background .15s ease,filter .15s ease}}
+
+/* Mono-screen desktop: the viewport owns the frame, modules scroll internally. */
+@media (min-width:1081px) and (min-height:700px) {
+ html,body{height:100%;overflow:hidden}
+ .shell{height:100dvh;min-height:0;overflow:hidden}
+ .sidebar{height:100dvh;min-height:0;padding:13px 14px}
+ .brand{padding-bottom:19px}
+ .sidebar-caption{margin:5px 10px 7px}
+ .nav-item{padding:10px 12px;margin:1px 0}
+ .side-status{padding:11px}
+ .side-status p{margin-top:4px;line-height:1.45}
+ .side-foot{padding-top:10px}
+ .main{height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+ .topbar{height:55px;flex:none;padding:0 20px}
+ .content{width:100%;max-width:none;flex:1;min-height:0;min-width:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;row-gap:7px;padding:9px 16px 8px;overflow:hidden}
+ .notice{min-height:0;margin:0;padding:6px 9px;font-size:10px;line-height:1.35}
+ .footer{margin:0;font-size:9px;line-height:1.2}
+ #screen{height:100%;min-height:0;display:grid;align-content:stretch;gap:8px;overflow:hidden}
+ #screen>*{min-height:0;min-width:0;margin:0}
+ .hero{min-height:0;padding:13px 18px 12px;border-radius:13px}
+ .hero::after{font-size:125px;right:30px;top:-45px}
+ .hero h1{font-size:clamp(21px,2vw,27px);margin:7px 0 4px;line-height:1.12;max-width:none}
+ .hero p{font-size:11px;line-height:1.35}
+ .hero-action{margin-top:8px}
+ .button{padding:7px 11px;font-size:11px}
+ .kpis{margin:0;gap:8px}
+ .kpi{padding:8px 12px;min-height:0}
+ .kpi small{font-size:10px;line-height:1.2}
+ .kpi strong{font-size:22px;line-height:1.24}
+ .kpi .hint{font-size:9px;line-height:1.25}
+ .dash-main,.dash-bottom,.analysis-panels,.analysis-bottom,.two-columns,.assistant-layout{margin:0;gap:8px;min-height:0;overflow:hidden}
+ .dash-main>*,.dash-bottom>*,.analysis-panels>*,.analysis-bottom>*,.two-columns>*,.assistant-layout>*{min-height:0;height:100%}
+ .panel{min-height:0;padding:9px 12px;overflow:auto}
+ .panel h2,.panel h3{font-size:12px}
+ .panel .caption{font-size:9px;margin-bottom:7px}
+ .panel:has(.chart){display:flex;flex-direction:column}
+ .panel .chart{flex:1;min-height:0;height:50px;width:100%}
+ .donut-box{margin:6px 0;flex:1;min-height:0;gap:8px}
+ .donut{width:clamp(84px,11vh,112px);height:clamp(84px,11vh,112px)}
+ .donut::before{inset:11px}
+ .donut-center strong{font-size:23px}
+ .key{font-size:10px;line-height:1.75}
+ .bottom-note{margin-top:6px;padding:6px 8px;font-size:9px;line-height:1.35}
+ .doc-mini{padding:5px 0;font-size:10px}
+ .tag{font-size:9px;padding:4px 7px}
+ .bar-row{margin:8px 0}
+ .bar-row .line{font-size:10px}
+ .bar-track{margin-top:4px;height:6px}
+ .trust{gap:7px}
+ .trust-item{gap:8px}
+ .trust-item>span{width:25px;height:25px}
+ .trust-item div{font-size:10px}
+ .trust-item small{font-size:9px;margin-top:2px}
+ #screen[data-view="overview"]{grid-template-rows:minmax(105px,1.15fr) minmax(62px,.62fr) minmax(130px,1.6fr) minmax(145px,1.55fr)}
+ #screen[data-view="documents"]{grid-template-rows:minmax(100px,1.1fr) minmax(60px,.65fr) minmax(180px,3.6fr) auto}
+ #screen[data-view="analytics"]{grid-template-rows:minmax(95px,1fr) minmax(62px,.65fr) minmax(145px,1.8fr) minmax(130px,1.5fr)}
+ #screen[data-view="assistant"]{grid-template-rows:minmax(100px,1fr) minmax(260px,5fr)}
+ #screen[data-view="history"]{grid-template-rows:minmax(100px,1fr) minmax(170px,4.8fr) auto}
+ .two-columns>.card{height:100%;overflow:auto}
+ .two-columns>.card:first-child{display:flex;flex-direction:column;overflow:hidden}
+ .panel-pad{padding:10px 12px}
+ .doc-tools{margin:6px 0;gap:6px;flex:none}
+ .search{padding:7px 9px;font-size:11px}
+ .seg button{padding:6px 8px}
+ .table-wrap{max-height:none;flex:1;min-height:0;overflow:auto}
+ .docs-table td,.docs-table th{padding:7px 6px}
+ .tabs{margin:8px 0;gap:2px}
+ .tabs button{padding:6px 7px;font-size:10px}
+ .statpair{gap:6px}
+ .statpair>div{padding:7px}
+ .statpair strong{font-size:17px}
+ .dl{margin:7px 0;gap:6px}
+ .dl div{padding:7px}
+ .dl strong{margin-top:3px}
+ .doc-inspector-copy{font-size:10px;line-height:1.4}
+ .analysis-panels .panel,.analysis-bottom .panel{display:flex;flex-direction:column}
+ .analysis-bottom .panel{overflow:auto}
+ .summary-table td,.summary-table th{padding:7px 5px;font-size:10px}
+ .chat{min-height:0;height:100%;overflow:hidden}
+ .conversation{min-height:0;flex:1;max-height:none;overflow-y:auto;gap:8px;padding:11px}
+ .bubble{font-size:11px;line-height:1.4;padding:8px 10px}
+ .source{padding:8px 10px;font-size:10px}
+ .chat-form{padding:7px}
+ .chat-form input{padding:9px}
+ .right-stack{min-height:0;display:grid;grid-template-rows:minmax(0,1.35fr) minmax(0,.8fr);gap:8px;overflow:hidden}
+ .right-stack>.panel{min-height:0;overflow:auto}
+ .engine-item{margin:7px 0;font-size:10px}
+ .engine-item .symbol{padding:5px}
+ .demo-questions button{min-height:40px;padding:8px;font-size:10px}
+ #screen[data-view="history"]>.panel-pad{margin-top:0!important;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+ .timeline{margin-top:8px;min-height:0;max-height:none;flex:1;overflow:auto}
+ .event{padding-bottom:12px}
+}
+/* Smaller desktops may need a little more room for the same layout. */
+@media (min-width:1081px) and (min-height:700px) and (max-height:800px){
+ .hero{padding:10px 15px}
+ .hero h1{font-size:clamp(19px,1.9vw,24px);margin:5px 0 3px}
+ .hero-action{margin-top:6px}
+ .kpi{padding:6px 10px}
+ .panel{padding:7px 10px}
+ .donut{width:84px;height:84px}
+ .nav-item{padding:8px 11px}
+}
 </style>
 </head>
 <body>
@@ -70,8 +173,8 @@ function answer(question){const q=question.toLowerCase().normalize('NFD').replac
 function submitQuestion(question){if(!question.trim())return;const q=question.trim().slice(0,250),ans=answer(q);state.chat.push({q,reply:ans.reply,cited:ans.cited});state.page='assistant';render();const c=document.getElementById('conversation');if(c)c.scrollTop=c.scrollHeight;}
 function assistant(){const suggestions=['Quel est le montant de TVA de la facture DM-2026-001 ?','Quel est le montant TTC de la facture DM-2026-001 ?','Quel fournisseur apparaît sur la facture ?','Quel est le numéro de la facture ?'];return hero('ASSISTANT / RAG LOCAL D4','Parlez à vos <span class="mint">documents</span>','Voici une simulation de réponses préenregistrées et de citations vérifiables. Ollama et ChromaDB ne fonctionnent pas sur le serveur Render.',`<span class="tag">Scénarios fixes · aucune IA live</span>`)+`<div class="assistant-layout"><div class="card chat"><div class="conversation" id="conversation">${state.chat.length?state.chat.map(m=>`<div class="bubble user">${h(m.q)}</div><div class="bubble bot"><b>DocuMind · Réponse préenregistrée</b><p>${h(m.reply)}</p></div>${m.cited?`<div class="source"><strong>▤ Source illustrative vérifiée</strong>${h(source.file)} · ${h(source.location)}<p>${h(source.excerpt)}</p></div>`:''}`).join(''):`<div style="margin:auto;text-align:center;max-width:470px"><div style="font-size:42px;color:var(--mint)">✳</div><div class="eyebrow" style="margin-top:14px">Un assistant, des preuves</div><h2>Que souhaitez-vous comprendre ?</h2><p class="muted" style="line-height:1.8">Choisissez une question ci-dessous pour afficher une réponse prédéfinie avec sa source ; une question non couverte entraîne une abstention.</p></div>`}</div><form id="ask-form" class="chat-form"><input name="question" maxlength="250" aria-label="Question sur la facture fictive" placeholder="Posez une question sur le scénario fictif…" required/><button type="submit" class="button primary">Envoyer ↗</button></form></div><div class="right-stack">${panel('Moteur documentaire','Architecture de la V1 locale, non exécutée dans cette simulation',`<div class="engine-item"><span class="symbol">✳</span><div>Génération locale<br/><small class="muted">Ollama / Qwen (dans l’application réelle)</small></div></div><div class="engine-item"><span class="symbol">▤</span><div>Recherche vectorielle<br/><small class="muted">ChromaDB (dans l’application réelle)</small></div></div><div class="engine-item"><span class="symbol">✓</span><div>Citation et contrôle<br/><small class="muted">Extraits reliés au document</small></div></div><div class="bottom-note">Les réponses affichées ici sont préécrites ; aucune requête au modèle n'est envoyée.</div>`)}${panel('Questions de démonstration','Sélectionnez un scénario documenté',`<div class="demo-questions">${suggestions.map((q,i)=>`<button class="button" data-question="${i}">${['Retrouver la TVA','Vérifier le TTC','Identifier le fournisseur','Trouver le numéro'][i]} ↗</button>`).join('')}</div>`)}</div></div>`;}
 function history(){const events=[...docs.slice(1,5).map(d=>({title:'Document indexé pour l’IA',detail:d.name,bad:false})),{title:'Document rejeté',detail:'documind-d3-anomalie.csv',bad:true},{title:'Facture validée',detail:'demo-d2-facture-valide.csv',bad:false},{title:'Document indexé pour l’IA',detail:'demo-d2-factures.xlsx',bad:false},{title:'Document indexé pour l’IA',detail:'demo-d2-facture-texte.pdf',bad:false},{title:'Document rejeté',detail:'demo-d2-facture-anomalie.csv',bad:true}];const subset=events.filter(e=>(e.title+' '+e.detail).toLowerCase().includes(state.historyFilter.toLowerCase()));return hero('PREUVES / JOURNAL D’AUDIT','Historique <span class="mint">des opérations</span>','Échantillon illustratif du circuit réception → contrôle → indexation. Le journal Django réel et ses événements horodatés ne sont pas exposés publiquement.',`<span class="tag">9 événements illustratifs</span>`)+`<section class="card panel-pad" style="margin-top:12px"><h2>Journal documentaire</h2><div class="caption">${subset.length} élément(s) de démonstration</div><input id="history-search" class="search" type="search" placeholder="Rechercher une action ou un fichier…" aria-label="Filtrer les événements illustratifs" value="${h(state.historyFilter)}" style="width:min(100%,440px)"/><div class="timeline">${subset.map(e=>`<div class="event ${e.bad?'bad':''}"><strong>${h(e.title)}</strong><small>${h(e.detail)}</small><small>Source du scénario : données fictives de référence</small></div>`).join('')||'<p class="muted">Aucun événement correspondant.</p>'}</div></section><div class="bottom-note">Pour garantir des preuves authentiques, la version locale conserve l’audit Django et la provenance au niveau du document ; cet exemple public n’invente pas d’horodatage réel.</div>`;}
-function render(){document.getElementById('page-title').textContent=names[state.page];document.querySelectorAll('[data-page]').forEach(b=>{const active=b.dataset.page===state.page;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});el.innerHTML=({overview,documents,analytics,assistant,history})[state.page]();}
-function navigate(page){if(!names[page])return;state.page=page;render();window.scrollTo({top:0,behavior:'auto'});}
+function render(){el.dataset.view=state.page;document.getElementById('page-title').textContent=names[state.page];document.querySelectorAll('[data-page]').forEach(b=>{const active=b.dataset.page===state.page;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});el.innerHTML=({overview,documents,analytics,assistant,history})[state.page]();}
+function navigate(page){if(!names[page])return;state.page=page;render();const main=document.querySelector('.main');if(main)main.scrollTop=0;window.scrollTo({top:0,behavior:'auto'});}
 document.addEventListener('click',event=>{const target=event.target.closest('[data-page],[data-action],[data-filter],[data-document],[data-inspector],[data-question]');if(!target)return;if(target.dataset.page){navigate(target.dataset.page);return}if(target.dataset.action){navigate(target.dataset.action.replace('go-',''));return}if(target.dataset.filter){state.filter=target.dataset.filter;render();return}if(target.dataset.document){state.selected=target.dataset.document;state.inspector='Aperçu';render();return}if(target.dataset.inspector){state.inspector=target.dataset.inspector;render();return}if(target.dataset.question!==undefined){const preset=['Quel est le montant de TVA de la facture DM-2026-001 ?','Quel est le montant TTC de la facture DM-2026-001 ?','Quel fournisseur apparaît sur la facture ?','Quel est le numéro de la facture ?'];submitQuestion(preset[Number(target.dataset.question)]);return}});
 document.addEventListener('keydown',event=>{const tr=event.target.closest('tr[data-document]');if(tr&&(event.key==='Enter'||event.key===' ')){event.preventDefault();state.selected=tr.dataset.document;state.inspector='Aperçu';render();}});
 document.addEventListener('input',event=>{const t=event.target;if(t.id==='doc-search'){state.search=t.value;const n=t.selectionStart;render();const newInput=document.getElementById('doc-search');newInput.focus();newInput.setSelectionRange(n,n)}if(t.id==='history-search'){state.historyFilter=t.value;const n=t.selectionStart;render();const newInput=document.getElementById('history-search');newInput.focus();newInput.setSelectionRange(n,n)}});
