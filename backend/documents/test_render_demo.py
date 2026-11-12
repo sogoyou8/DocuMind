@@ -44,8 +44,10 @@ class RenderInteractiveDemoTests(SimpleTestCase):
         self.assertIn('class="hero-art hero-art-', html)
         self.assertIn("const premiumHero", html)
         self.assertIn("class=\"kpi-icon\"", html)
-        for view in ("overview", "documents", "analytics"):
-            self.assertIn("function " + view + "(){return premiumHero", html)
+        self.assertIn("function overview(){return premiumHero", html)
+        self.assertIn("function documents(){let list=docs.filter", html)
+        self.assertIn("return premiumHero", html)
+        self.assertIn("function analytics(){return premiumHero", html)
         self.assertIn("grid-template-rows:minmax(215px", html)
         self.assertIn("@media(max-width:700px)", html)
         self.assertIn("Les API D1 restent en lecture seule", html)
